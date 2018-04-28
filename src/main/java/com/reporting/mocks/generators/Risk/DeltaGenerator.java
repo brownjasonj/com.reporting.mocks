@@ -1,7 +1,7 @@
 package com.reporting.mocks.generators.Risk;
 
 import com.reporting.mocks.generators.IRiskGenerator;
-import com.reporting.mocks.model.RiskRun;
+import com.reporting.mocks.model.RiskRunRequest;
 import com.reporting.mocks.model.Trade;
 import com.reporting.mocks.model.risks.Delta;
 import com.reporting.mocks.model.risks.RiskType;
@@ -14,7 +14,7 @@ public class DeltaGenerator implements IRiskGenerator<Delta>{
     }
 
     @Override
-    public Delta generate(RiskRun riskRun, Trade trade) {
-        return new Delta(riskRun.getId(), trade.getTcn(), new Currency("EURUSD"));
+    public Delta generate(RiskRunRequest riskRun, Trade trade) {
+        return new Delta(riskRun.getId(), trade.getTcn(), new Currency(trade.getCcy1() + trade.getCcy2()));
     }
 }

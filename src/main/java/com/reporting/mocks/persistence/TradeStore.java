@@ -1,10 +1,10 @@
 package com.reporting.mocks.persistence;
 
 import com.reporting.mocks.model.Trade;
+import com.reporting.mocks.model.TradePopulation;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class TradeStore {
@@ -20,17 +20,13 @@ public class TradeStore {
     }
 
     protected HashMap<UUID, Trade> trades;
+    protected HashMap<UUID, TradePopulation> tradePopulation;
 
     private TradeStore() {
         this.trades = new HashMap<>();
+        this.tradePopulation = new HashMap<>();
     }
 
-    public Trade getTrade(UUID id) {
-        if (this.trades.containsKey(id))
-            return this.trades.get(id);
-        else
-            return null;
-    }
 
     public void putTrade(Trade t) {
         this.trades.put(t.getTcn(), t);
@@ -44,7 +40,22 @@ public class TradeStore {
             return null;
     }
 
-    public Collection<Trade> getAll() {
-        return this.trades.values();
+    public Collection<TradePopulation> getAllTradePopulation() {
+        return this.tradePopulation.values();
+    }
+
+    public TradePopulation getTradePopulation() {
+        TradePopulation tp = new TradePopulation(new HashMap<>(this.trades));
+        this.tradePopulation.put(tp.getId(), tp);
+        return tp;
+    }
+
+    public TradePopulation getTradePopulation(UUID id) {
+        if (this.tradePopulation.containsKey(id)) {
+            return this.tradePopulation.get(id);
+        }
+        else {
+            return null;
+        }
     }
 }
