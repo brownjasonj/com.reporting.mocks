@@ -1,0 +1,6 @@
+pring:
+  profiles: default
+server:
+  port: 30001
+  #port: ${PORT:${SERVER_PORT:0}}
+version: 0.0.1
