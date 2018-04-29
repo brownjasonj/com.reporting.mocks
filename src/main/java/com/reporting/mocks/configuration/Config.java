@@ -1,31 +1,51 @@
 package com.reporting.mocks.configuration;
 
-import java.util.List;
-
 public class Config {
-    int startingTradeCount;
-    int newTradePeriodicity;
-    int modifiedTradePeriodicity;
-    int deleteTradePeriodicity;
+    protected TradeConfig tradeConfig;
+    protected IntradayConfig intradayConfig;
+    protected EndofDayConfig endofdayConfig;
 
-    List<String> books;
-    List<String> currency;
+    protected boolean eod = true;
+    protected boolean sod = true;
+    protected boolean ind = true;
 
-    public Config(int count, List<String> books, List<String> currency) {
-        this.startingTradeCount = count;
-        this.books = books;
-        this.currency = currency;
+    protected int marketPeriodicity = 15 * 60 * 1000;   // milliseconds between change in market data.
+
+    public Config() {
     }
 
-    public int getStartingTradeCount() {
-        return startingTradeCount;
+    public Config(TradeConfig tradeConfig, EndofDayConfig eodc, IntradayConfig indc) {
+        this();
+        this.tradeConfig = tradeConfig;
+        this.intradayConfig = indc;
+        this.endofdayConfig = eodc;
     }
 
-    public List<String> getBooks() {
-        return books;
+    public TradeConfig getTradeConfig() {
+        return tradeConfig;
     }
 
-    public List<String> getCurrency() {
-        return currency;
+    public IntradayConfig getIntradayConfig() {
+        return intradayConfig;
+    }
+
+    public EndofDayConfig getEndofDayConfig() {
+        return endofdayConfig;
+    }
+
+    public boolean isEod() {
+        return eod;
+    }
+
+    public boolean isSod() {
+        return sod;
+    }
+
+    public boolean isInd() {
+        return ind;
+    }
+
+    public int getMarketPeriodicity() {
+        return marketPeriodicity;
     }
 }

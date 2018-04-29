@@ -1,0 +1,41 @@
+{
+  "tradeConfig": {
+    "startingTradeCount": 0,
+    "books": [
+      "Book1",
+      "Book2",
+      "Book3"
+    ],
+    "currency": [
+      "EUR",
+      "USD",
+      "CHF",
+      "GBP",
+      "JPY",
+      "MXN",
+      "RBL",
+      "AUD"
+    ]
+  },
+  "intradayConfig": {
+    "risks": [
+      {
+        "riskType": "PV",
+        "periodicity": 0
+      },
+      {
+        "riskType": "PV",
+        "periodicity": 0
+      }
+    ]
+  },
+  "eod": true,
+  "sod": true,
+  "ind": true,
+  "endofDayConfig": {
+    "risks": [
+      "PV",
+      "DELTA"
+    ]
+  }
+}
