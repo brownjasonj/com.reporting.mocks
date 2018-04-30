@@ -6,9 +6,9 @@ import java.util.UUID;
 public class MarketEnv {
     protected UUID id;
     protected Date asOf;
-    protected MarketEnvType type;
+    protected DataMarkerType type;
 
-    public MarketEnv(MarketEnvType type) {
+    public MarketEnv(DataMarkerType type) {
         this.id = UUID.randomUUID();
         this.asOf = new Date();
         this.type = type;

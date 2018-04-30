@@ -9,8 +9,10 @@ public class TradePopulation {
     protected UUID id;
     protected ConcurrentHashMap<UUID, Trade> trades;
     protected Date asOf;
+    protected DataMarkerType type;
 
-    public TradePopulation(ConcurrentHashMap<UUID, Trade> trades) {
+    public TradePopulation(ConcurrentHashMap<UUID, Trade> trades, DataMarkerType type) {
+        this.type = type;
         this.id = UUID.randomUUID();
         this.trades = trades;
         this.asOf = new Date();
@@ -26,6 +28,10 @@ public class TradePopulation {
 
     public int getTradeCount() {
         return this.trades.size();
+    }
+
+    public DataMarkerType getType() {
+        return type;
     }
 
     public Date getAsOf() {

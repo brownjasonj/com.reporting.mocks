@@ -50,10 +50,14 @@ public class TradePopulationProducerThread implements Runnable {
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, newTrade)));
                         break;
                     case Modify:
-                        // pick a trade at random, update it's version number and send as a modified trade
-                        // Trade modifiedTrade = new Trade(null);
+                        Trade tradeToModify = this.tradeStore.getTradeAtRandom();
+                        Trade modifiedTrade = new Trade(tradeToModify);
+                        this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, modifiedTrade)));
                         break;
                     case Delete:
+                        Trade tradeToDelete = this.tradeStore.getTradeAtRandom();
+                        this.tradeStore.deleteTrade(tradeToDelete.getTcn());
+                        this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, tradeToDelete)));
                         break;
                     default:
                         break;

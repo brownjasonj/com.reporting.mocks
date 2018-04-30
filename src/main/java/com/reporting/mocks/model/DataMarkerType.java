@@ -1,13 +1,13 @@
 package com.reporting.mocks.model;
 
-public enum MarketEnvType {
+public enum DataMarkerType {
     EOD("EOD"),
     SOD("SOD"),
     IND("IntraDay");
 
     String name;
 
-    MarketEnvType(String name) {
+    DataMarkerType(String name) {
         this.name = name;
     }
 

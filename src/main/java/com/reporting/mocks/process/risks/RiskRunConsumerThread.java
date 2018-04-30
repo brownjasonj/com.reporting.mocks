@@ -1,6 +1,6 @@
 package com.reporting.mocks.process.risks;
 
-import com.reporting.mocks.model.RiskRunResult;
+import com.reporting.mocks.process.risks.response.RiskRunResult;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -18,7 +18,7 @@ public class RiskRunConsumerThread implements Runnable {
             try {
                 RiskRunResult result = this.riskResultQueue.take();
 
-                System.out.println("Risk Result: " + result.getId() + " fragment: " + result.getFragmentNo() + "/" + result.getFragmentCount());
+                System.out.println("Risk Result: " + result.getId() + " Risk: " + result.getRequest() + " fragment: " + result.getFragmentNo() + "/" + result.getFragmentCount());
             }
             catch (InterruptedException e) {
                 e.printStackTrace();

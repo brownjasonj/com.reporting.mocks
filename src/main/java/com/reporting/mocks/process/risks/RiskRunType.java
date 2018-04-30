@@ -1,4 +1,4 @@
-package com.reporting.mocks.model;
+package com.reporting.mocks.process.risks;
 
 public enum RiskRunType {
     Intraday("Intraday"),

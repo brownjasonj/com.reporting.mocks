@@ -50,4 +50,9 @@ public class Trade {
     public String getTradeType() {
         return tradeType;
     }
+
+    @Override
+    public String toString() {
+        return "{Book: " + book + " TCN: " + tcn + "/" + version + "}";
+    }
 }

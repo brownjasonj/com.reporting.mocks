@@ -1,7 +1,7 @@
 package com.reporting.mocks.generators.Risk;
 
 import com.reporting.mocks.generators.IRiskGenerator;
-import com.reporting.mocks.model.RiskRunRequest;
+import com.reporting.mocks.process.risks.requests.RiskRunRequest;
 import com.reporting.mocks.model.Trade;
 import com.reporting.mocks.model.risks.Delta;
 import com.reporting.mocks.model.risks.RiskType;

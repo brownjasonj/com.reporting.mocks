@@ -1,9 +1,11 @@
 package com.reporting.mocks.persistence;
 
+import com.reporting.mocks.model.DataMarkerType;
 import com.reporting.mocks.model.Trade;
 import com.reporting.mocks.model.TradePopulation;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,12 +31,19 @@ public class TradeStore {
             return null;
     }
 
+    public Trade getTradeAtRandom() {
+        Collection<Trade> tradeCollection = trades.values();
+        Optional<Trade> optionalTrade = tradeCollection.stream()
+                .skip((int) (tradeCollection.size() * Math.random()))
+                .findFirst();
+        return optionalTrade.get();
+    }
     public Collection<TradePopulation> getAllTradePopulation() {
         return this.tradePopulation.values();
     }
 
-    public TradePopulation getTradePopulation() {
-        TradePopulation tp = new TradePopulation(new ConcurrentHashMap<>(this.trades));
+    public TradePopulation getTradePopulation(DataMarkerType type) {
+        TradePopulation tp = new TradePopulation(new ConcurrentHashMap<>(this.trades), type);
         this.tradePopulation.put(tp.getId(), tp);
         return tp;
     }

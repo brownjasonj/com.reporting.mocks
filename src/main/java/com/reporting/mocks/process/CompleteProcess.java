@@ -2,8 +2,7 @@ package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.generators.TradeGenerator;
-import com.reporting.mocks.model.MarketEnv;
-import com.reporting.mocks.model.RiskRunResult;
+import com.reporting.mocks.process.risks.response.RiskRunResult;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.persistence.TradeStore;
@@ -21,9 +20,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CompleteProcess implements Runnable {
     protected static ConcurrentHashMap<String, CompleteProcess> processes;
+    protected static ConcurrentHashMap<String, Thread> threads;
 
     static {
         CompleteProcess.processes = new ConcurrentHashMap<>();
+        CompleteProcess.threads = new ConcurrentHashMap<>();
     }
 
     public static CompleteProcess addProcess(CompleteProcess completeProcess) {
@@ -33,6 +34,23 @@ public class CompleteProcess implements Runnable {
     public static CompleteProcess getProcess(String name) {
         if (CompleteProcess.processes.containsKey(name))
             return CompleteProcess.processes.get(name);
+        else
+            return null;
+    }
+
+    public static Thread startProcess(String name) {
+        CompleteProcess cp = CompleteProcess.processes.get(name);
+        if (cp != null) {
+            if (CompleteProcess.threads.containsKey(name)) {
+                return CompleteProcess.threads.get(name);
+            }
+            else {
+                Thread thread = new Thread(cp);
+                CompleteProcess.threads.put(name, thread);
+                thread.start();
+                return thread;
+            }
+        }
         else
             return null;
     }
@@ -65,6 +83,9 @@ public class CompleteProcess implements Runnable {
         return this.tradeStore.getAllTradePopulation();
     }
 
+    public TradePopulation getTradePopulation(UUID tradePopulationId) {
+        return this.tradeStore.getTradePopulation(tradePopulationId);
+    }
     @Override
     public void run() {
 

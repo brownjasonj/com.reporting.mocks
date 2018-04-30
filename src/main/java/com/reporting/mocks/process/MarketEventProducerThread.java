@@ -1,7 +1,7 @@
 package com.reporting.mocks.process;
 
 import com.reporting.mocks.model.MarketEnv;
-import com.reporting.mocks.model.MarketEnvType;
+import com.reporting.mocks.model.DataMarkerType;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
 
@@ -35,7 +35,7 @@ public class MarketEventProducerThread implements Runnable {
         try {
             while(run)
             {
-                this.marketEventQueue.put(new IntradayEvent<>(IntradayEventType.Market, new MarketEnv(MarketEnvType.IND)));
+                this.marketEventQueue.put(new IntradayEvent<>(IntradayEventType.Market, new MarketEnv(DataMarkerType.IND)));
                 Thread.sleep(marketPeriodicity);
             }
         } catch (InterruptedException e) {
