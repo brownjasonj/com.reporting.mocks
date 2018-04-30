@@ -18,7 +18,7 @@ public class RiskRunConsumerThread implements Runnable {
             try {
                 RiskRunResult result = this.riskResultQueue.take();
 
-                System.out.println("Risk Result: " + result.getId() + " Risk: " + result.getRequest() + " fragment: " + result.getFragmentNo() + "/" + result.getFragmentCount());
+                System.out.println("{Risk Result: (" + result.getRequest().getType() + "): " + result.getId() + " Risk: " + result.getRequest() + " fragment: " + result.getFragmentNo() + "/" + result.getFragmentCount() + "}") ;
             }
             catch (InterruptedException e) {
                 e.printStackTrace();

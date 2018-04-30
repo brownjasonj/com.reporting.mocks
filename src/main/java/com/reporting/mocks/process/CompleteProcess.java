@@ -2,6 +2,7 @@ package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.generators.TradeGenerator;
+import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.response.RiskRunResult;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.model.TradePopulation;
@@ -94,7 +95,15 @@ public class CompleteProcess implements Runnable {
             this.tradeStore.putTrade(TradeGenerator.generateOne(config.getTradeConfig()));
         }
 
+        BlockingQueue<RiskRunResult> riskResultQueue = new ArrayBlockingQueue<>(4096);
+
+        RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(riskResultQueue);
+        new Thread(riskRunThread).start();
+
         // kick-off end-of-day
+
+        EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(this.config.getEndofDayConfig(), tradeStore, riskResultQueue);
+        new Thread(eodThread).start();
 
         // kick-off start-of-day
 
@@ -106,10 +115,6 @@ public class CompleteProcess implements Runnable {
         new Thread(this.marketEventProducerThread).start();
 
 
-        BlockingQueue<RiskRunResult> riskResultQueue = new ArrayBlockingQueue<>(1024);
-
-        RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(riskResultQueue);
-        new Thread(riskRunThread).start();
 
         // initiate intra-day risk jobs
         this.intradayRiskEventProducerThread = new IntradayRiskEventProducerThread(this.config.getIntradayConfig(), this.tradeStore, this.intraDayEventQueue, riskResultQueue);
