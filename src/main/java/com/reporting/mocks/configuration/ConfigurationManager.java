@@ -2,7 +2,6 @@ package com.reporting.mocks.configuration;
 
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
-import com.reporting.mocks.process.CompleteProcess;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +20,7 @@ public class ConfigurationManager {
             TradeConfig tradeConfig = new TradeConfig(books, currency);
 
             ArrayList<RiskType> eodr = new ArrayList<>(Arrays.asList(RiskType.PV, RiskType.DELTA));
-            EndofDayConfig eodc = new EndofDayConfig(eodr);
+            EndofDayConfig eodc = new EndofDayConfig(eodr, 60 * 1000);
 
             ArrayList<IntradayRiskType> indr = new ArrayList<>(Arrays.asList(new IntradayRiskType(RiskType.PV, 0), new IntradayRiskType(RiskType.DELTA, 0)));
             IntradayConfig indc = new IntradayConfig(indr);
@@ -32,11 +31,6 @@ public class ConfigurationManager {
 
         }
         return ConfigurationManager.configManager;
-    }
-
-
-    static {
-
     }
 
 

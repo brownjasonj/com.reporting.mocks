@@ -11,27 +11,6 @@ import java.util.*;
 
 @RestController
 public class TradePVController {
-    @RequestMapping(method = { RequestMethod.POST }, value = { "/setConfig" }, produces = "application/json")
-    public Config getConfiguration(@RequestBody Config config) {
-        ConfigurationManager.getConfigurationManager().setConfig(config);
-        return ConfigurationManager.getConfigurationManager().getConfig();
-    }
-
-    @RequestMapping(method = { RequestMethod.GET }, value = { "/getConfig" }, produces = "application/json")
-    public Config getConfiguration() {
-        return ConfigurationManager.getConfigurationManager().getConfig();
-    }
-
-
-    @RequestMapping(method = { RequestMethod.POST }, value = { "/setConfig/{pricingGroup}" }, produces = "application/json")
-    public PricingGroupConfig getConfiguration(@PathVariable String pricingGroupName, @RequestBody PricingGroupConfig pricingGroupConfig) {
-        return ConfigurationManager.getConfigurationManager().getConfig().addPricingGroup(pricingGroupConfig);
-    }
-
-    @RequestMapping(method = { RequestMethod.GET }, value = { "/getPricingGroupConfig" }, produces = "application/json")
-    public PricingGroupConfig getConfiguration(@RequestParam("name") String name) {
-        return ConfigurationManager.getConfigurationManager().getPriceingGroupConfig(name);
-    }
 
     @RequestMapping(method = { RequestMethod.GET }, value = { "/riskrun/{riskRunType}" }, produces = "application/json")
     public RiskRunResult solver2(@PathVariable RiskRunType riskRunType, @RequestParam("tradePopulationId") UUID tradePopulationId) {

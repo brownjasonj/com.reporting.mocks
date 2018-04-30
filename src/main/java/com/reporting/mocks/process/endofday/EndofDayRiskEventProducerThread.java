@@ -36,7 +36,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
         TimerTask eodTradePopTimerTask = new EndofDayEventTimerThread(tradeStore, this.tradePopulationIdQueue);
         //running timer task as daemon thread
         Timer tradeTimer = new Timer(true);
-        tradeTimer.scheduleAtFixedRate(eodTradePopTimerTask, 0, 20*1000);
+        tradeTimer.scheduleAtFixedRate(eodTradePopTimerTask, 0, this.config.getPeriodicity());
 
         try {
             while(true) {

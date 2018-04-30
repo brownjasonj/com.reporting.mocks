@@ -1,41 +1,51 @@
 {
-  "tradeConfig": {
-    "startingTradeCount": 0,
-    "books": [
-      "Book1",
-      "Book2",
-      "Book3"
-    ],
-    "currency": [
-      "EUR",
-      "USD",
-      "CHF",
-      "GBP",
-      "JPY",
-      "MXN",
-      "RBL",
-      "AUD"
-    ]
-  },
-  "intradayConfig": {
-    "risks": [
-      {
-        "riskType": "PV",
-        "periodicity": 0
+  "pricingGroups": [
+    {
+      "name": "FXDesk",
+      "tradeConfig": {
+        "startingTradeCount": 100,
+        "newTradePeriodicity": 10000,
+        "modifiedTradePeriodicity": 30000,
+        "deleteTradePeriodicity": 60000,
+        "books": [
+          "Book1",
+          "Book2",
+          "Book3"
+        ],
+        "currency": [
+          "EUR",
+          "USD",
+          "CHF",
+          "GBP",
+          "JPY",
+          "MXN",
+          "RBL",
+          "AUD"
+        ]
       },
-      {
-        "riskType": "PV",
-        "periodicity": 0
+      "intradayConfig": {
+        "risks": [
+          {
+            "riskType": "PV",
+            "periodicity": 0
+          },
+          {
+            "riskType": "DELTA",
+            "periodicity": 0
+          }
+        ]
+      },
+      "eod": true,
+      "sod": true,
+      "ind": true,
+      "marketPeriodicity": 5000,
+      "endofDayConfig": {
+        "risks": [
+          "PV",
+          "DELTA"
+        ],
+        "periodicity": 60000
       }
-    ]
-  },
-  "eod": true,
-  "sod": true,
-  "ind": true,
-  "endofDayConfig": {
-    "risks": [
-      "PV",
-      "DELTA"
-    ]
-  }
+    }
+  ]
 }
