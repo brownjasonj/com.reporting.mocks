@@ -2,27 +2,31 @@ package com.reporting.mocks.model;
 
 import com.reporting.mocks.model.risks.RiskType;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 public class RiskRunRequest {
-    UUID id;
-    RiskRunType type;
-    UUID marketEnvId;
-    UUID tradePopulationId;
-    protected List<RiskType> risks;
+    protected UUID id;
+    protected RiskRunType type;
+    protected UUID marketEnvId;
+    protected UUID tradePopulationId;
+    protected RiskType riskType;
+    protected int fragmentSize;
 
-    public RiskRunRequest(RiskRunType type, MarketEnv marketEnv, TradePopulation tradePop, List<RiskType> risks) {
+    public RiskRunRequest(RiskRunType type, MarketEnv marketEnv, TradePopulation tradePop, RiskType riskType, int fragmentSize) {
         this.type = type;
         this.id = UUID.randomUUID();
         this.tradePopulationId = tradePop.getId();
         this.marketEnvId = marketEnv.getId();
-        this.risks = risks;
+        this.riskType = riskType;
+        this.fragmentSize = fragmentSize;
     }
 
     public UUID getId() {
         return id;
+    }
+
+    public int getFragmentSize() {
+        return fragmentSize;
     }
 
     public RiskRunType getType() {
@@ -37,7 +41,7 @@ public class RiskRunRequest {
         return tradePopulationId;
     }
 
-    public List<RiskType> getRisks() {
-        return risks;
+    public RiskType getRiskType() {
+        return riskType;
     }
 }

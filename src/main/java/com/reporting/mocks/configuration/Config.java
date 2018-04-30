@@ -1,51 +1,30 @@
 package com.reporting.mocks.configuration;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Config {
-    protected TradeConfig tradeConfig;
-    protected IntradayConfig intradayConfig;
-    protected EndofDayConfig endofdayConfig;
-
-    protected boolean eod = true;
-    protected boolean sod = true;
-    protected boolean ind = true;
-
-    protected int marketPeriodicity = 15 * 60 * 1000;   // milliseconds between change in market data.
+    protected Map<String, PricingGroupConfig> pricingGroups;
 
     public Config() {
+        this.pricingGroups = new HashMap<>();
     }
 
-    public Config(TradeConfig tradeConfig, EndofDayConfig eodc, IntradayConfig indc) {
-        this();
-        this.tradeConfig = tradeConfig;
-        this.intradayConfig = indc;
-        this.endofdayConfig = eodc;
+    public Collection<PricingGroupConfig> getPricingGroups() {
+        return pricingGroups.values();
     }
 
-    public TradeConfig getTradeConfig() {
-        return tradeConfig;
+    public PricingGroupConfig addPricingGroup(PricingGroupConfig pricingGroup) {
+        return this.pricingGroups.put(pricingGroup.getName(), pricingGroup);
     }
 
-    public IntradayConfig getIntradayConfig() {
-        return intradayConfig;
-    }
-
-    public EndofDayConfig getEndofDayConfig() {
-        return endofdayConfig;
-    }
-
-    public boolean isEod() {
-        return eod;
-    }
-
-    public boolean isSod() {
-        return sod;
-    }
-
-    public boolean isInd() {
-        return ind;
-    }
-
-    public int getMarketPeriodicity() {
-        return marketPeriodicity;
+    public PricingGroupConfig getPricingGroup(String name) {
+        if (this.pricingGroups.containsKey(name)) {
+            return this.pricingGroups.get(name);
+        }
+        else {
+            return null;
+        }
     }
 }

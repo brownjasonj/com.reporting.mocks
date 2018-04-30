@@ -4,27 +4,16 @@ import com.reporting.mocks.model.Trade;
 import com.reporting.mocks.model.TradePopulation;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TradeStore {
+    protected ConcurrentHashMap<UUID, Trade> trades;
+    protected ConcurrentHashMap<UUID, TradePopulation> tradePopulation;
 
-    private static TradeStore singletonStore;
-
-    static {
-        TradeStore.singletonStore = new TradeStore();
-    }
-
-    public static TradeStore getStore() {
-        return TradeStore.singletonStore;
-    }
-
-    protected HashMap<UUID, Trade> trades;
-    protected HashMap<UUID, TradePopulation> tradePopulation;
-
-    private TradeStore() {
-        this.trades = new HashMap<>();
-        this.tradePopulation = new HashMap<>();
+    public TradeStore() {
+        this.trades = new ConcurrentHashMap<>();
+        this.tradePopulation = new ConcurrentHashMap<>();
     }
 
 
@@ -45,7 +34,7 @@ public class TradeStore {
     }
 
     public TradePopulation getTradePopulation() {
-        TradePopulation tp = new TradePopulation(new HashMap<>(this.trades));
+        TradePopulation tp = new TradePopulation(new ConcurrentHashMap<>(this.trades));
         this.tradePopulation.put(tp.getId(), tp);
         return tp;
     }

@@ -2,15 +2,15 @@ package com.reporting.mocks.model;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TradePopulation {
     protected UUID id;
-    protected HashMap<UUID, Trade> trades;
+    protected ConcurrentHashMap<UUID, Trade> trades;
     protected Date asOf;
 
-    public TradePopulation(HashMap<UUID, Trade> trades) {
+    public TradePopulation(ConcurrentHashMap<UUID, Trade> trades) {
         this.id = UUID.randomUUID();
         this.trades = trades;
         this.asOf = new Date();
