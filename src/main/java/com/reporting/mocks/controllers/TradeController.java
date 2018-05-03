@@ -1,7 +1,8 @@
 package com.reporting.mocks.controllers;
 
-import com.reporting.mocks.model.Trade;
+import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.TradePopulation;
+import com.reporting.mocks.model.underlying.SecurityStatic;
 import com.reporting.mocks.process.CompleteProcess;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,11 @@ public class TradeController {
 //            tradeStore.putTrade(t);
 //        }
 //        return tradeStore.getTradePopulation();
+        return null;
+    }
+
+    @RequestMapping(method = { RequestMethod.GET }, value = { "/getSecurityStatic/{pricingGroupName}" }, produces = "application/json")
+    public Collection<SecurityStatic> getSecurityStatic(@PathVariable String pricingGroupName) {
         return null;
     }
 

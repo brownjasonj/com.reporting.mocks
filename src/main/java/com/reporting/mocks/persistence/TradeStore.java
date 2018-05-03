@@ -1,7 +1,7 @@
 package com.reporting.mocks.persistence;
 
 import com.reporting.mocks.model.DataMarkerType;
-import com.reporting.mocks.model.Trade;
+import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.TradePopulation;
 
 import java.util.Collection;

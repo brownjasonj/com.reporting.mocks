@@ -1,17 +1,18 @@
 package com.reporting.mocks.model.risks;
 
 import com.reporting.mocks.model.underlying.Currency;
+import com.reporting.mocks.model.underlying.Underlying;
 
 import java.util.Random;
 import java.util.UUID;
 
 public class Delta extends Risk {
     protected Double value;
-    protected Currency currency;
+    protected Underlying underlying;
 
-    public Delta(UUID riskRun, UUID tcn, Currency currency) {
+    public Delta(UUID riskRun, UUID tcn, Underlying currency) {
         super(riskRun, tcn);
-        this.currency = currency;
+        this.underlying = currency;
         this.value = (new Random()).nextDouble();
     }
 
@@ -24,7 +25,7 @@ public class Delta extends Risk {
         return value;
     }
 
-    public Currency getCurrency() {
-        return currency;
+    public Underlying getUnderlying() {
+        return underlying;
     }
 }

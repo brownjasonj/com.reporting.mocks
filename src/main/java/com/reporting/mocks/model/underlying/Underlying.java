@@ -1,4 +1,7 @@
 package com.reporting.mocks.model.underlying;
 
-public class Underlying {
+public abstract class Underlying {
+
+    public abstract Currency getUnderlyingCurrency();
+
 }

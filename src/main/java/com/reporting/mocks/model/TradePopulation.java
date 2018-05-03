@@ -1,5 +1,7 @@
 package com.reporting.mocks.model;
 
+import com.reporting.mocks.model.trade.Trade;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;

@@ -2,9 +2,11 @@ package com.reporting.mocks.process.trades;
 
 import com.reporting.mocks.configuration.TradeConfig;
 import com.reporting.mocks.generators.TradeGenerator;
-import com.reporting.mocks.model.Trade;
+import com.reporting.mocks.model.trade.OtcTrade;
+import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.model.TradeLifecycleType;
+import com.reporting.mocks.model.trade.TradeKind;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
@@ -36,23 +38,25 @@ public class TradePopulationProducerThread implements Runnable {
         TimerTask modifiedTradeTask = new TradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.Modify);
         //running timer task as daemon thread
         Timer tradeTimer = new Timer(true);
-        tradeTimer.scheduleAtFixedRate(newTradeTask, 0, 1*1000);
-        tradeTimer.scheduleAtFixedRate(deleteTradeTask, 10*1000, 10*1000);
-        tradeTimer.scheduleAtFixedRate(modifiedTradeTask, 5*1000, 5*1000);
+        tradeTimer.scheduleAtFixedRate(newTradeTask, this.tradeConfig.getNewTradeStart(), this.tradeConfig.getNewTradePeriodicity());
+        tradeTimer.scheduleAtFixedRate(deleteTradeTask, this.tradeConfig.getDeleteTadeStart(), this.tradeConfig.getDeleteTradePeriodicity());
+        tradeTimer.scheduleAtFixedRate(modifiedTradeTask, this.tradeConfig.getModifiedTradeStart(), this.tradeConfig.getModifiedTradePeriodicity());
 
         try {
             while(true) {
                 TradeLifecycleType tradeEvent = this.tradeEventQueue.take();
                 switch (tradeEvent) {
                     case New:
-                        Trade newTrade = TradeGenerator.generateOne(this.tradeConfig);
+                        OtcTrade newTrade = TradeGenerator.generateOne(this.tradeConfig);
                         this.tradeStore.putTrade(newTrade);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, newTrade)));
                         break;
                     case Modify:
                         Trade tradeToModify = this.tradeStore.getTradeAtRandom();
-                        Trade modifiedTrade = new Trade(tradeToModify);
-                        this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, modifiedTrade)));
+                        if (tradeToModify.getKind() == TradeKind.Otc) {
+                            OtcTrade modifiedTrade = new OtcTrade((OtcTrade)tradeToModify);
+                            this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, modifiedTrade)));
+                        }
                         break;
                     case Delete:
                         Trade tradeToDelete = this.tradeStore.getTradeAtRandom();

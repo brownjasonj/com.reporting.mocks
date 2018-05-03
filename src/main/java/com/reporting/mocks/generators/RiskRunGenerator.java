@@ -4,6 +4,7 @@ import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.risks.RiskType;
+import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.process.risks.ResultKind;
 import com.reporting.mocks.process.risks.requests.*;
 import com.reporting.mocks.process.risks.response.MRRunResponse;

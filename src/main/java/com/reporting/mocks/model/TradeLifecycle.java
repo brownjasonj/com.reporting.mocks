@@ -1,5 +1,7 @@
 package com.reporting.mocks.model;
 
+import com.reporting.mocks.model.trade.Trade;
+
 public class TradeLifecycle {
     protected Trade trade;
     protected TradeLifecycleType lifecycleType;

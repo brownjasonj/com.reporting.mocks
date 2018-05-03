@@ -1,7 +1,7 @@
 package com.reporting.mocks.process.risks.requests;
 
 import com.reporting.mocks.model.MarketEnv;
-import com.reporting.mocks.model.Trade;
+import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.process.risks.RiskRunType;
 

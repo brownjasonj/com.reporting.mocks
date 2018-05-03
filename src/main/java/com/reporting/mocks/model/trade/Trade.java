@@ -1,30 +1,36 @@
-package com.reporting.mocks.model;
+package com.reporting.mocks.model.trade;
+
+import com.reporting.mocks.model.underlying.Underlying;
 
 import java.util.UUID;
 
-public class Trade {
+public abstract class Trade {
+    protected TradeKind kind;
     protected UUID tcn;
     protected int version;
     protected String book;
-    protected String ccy1;
-    protected String ccy2;
     protected String tradeType;
 
-
-    protected Trade(UUID tcn, int version, String book, String ccy1, String ccy2) {
+    protected Trade(TradeKind kind, UUID tcn, int version, String book) {
+        this.kind = kind;
         this.tcn = tcn;
         this.version = version;
         this.book = book;
-        this.ccy1 = ccy1;
-        this.ccy2 = ccy2;
     }
+
+    protected Trade(TradeKind kind, String book) {
+        this(kind, UUID.randomUUID(), 0, book);
+    }
+
 
     public Trade(Trade trade) {
-        this(trade.getTcn(), trade.getVersion() + 1, trade.getBook(), trade.getCcy1(), trade.getCcy2());
+        this(trade.getKind(), trade.getTcn(), trade.getVersion() + 1, trade.getBook());
     }
 
-    public Trade(String book, String ccy1, String ccy2) {
-        this(UUID.randomUUID(), 0, book, ccy1, ccy2);
+    public abstract Underlying getUnderlying();
+
+    public TradeKind getKind() {
+        return kind;
     }
 
     public UUID getTcn() {
@@ -37,14 +43,6 @@ public class Trade {
 
     public String getBook() {
         return book;
-    }
-
-    public String getCcy1() {
-        return ccy1;
-    }
-
-    public String getCcy2() {
-        return ccy2;
     }
 
     public String getTradeType() {

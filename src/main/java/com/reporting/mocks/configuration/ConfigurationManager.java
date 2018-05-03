@@ -2,9 +2,13 @@ package com.reporting.mocks.configuration;
 
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
+import com.reporting.mocks.model.underlying.CurrencyPair;
+import com.reporting.mocks.model.underlying.OtcUnderlying;
+import com.reporting.mocks.model.underlying.SecurityStatic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ConfigurationManager {
     protected static ConfigurationManager configManager = null;
@@ -16,8 +20,25 @@ public class ConfigurationManager {
             ConfigurationManager.configManager.setConfig(config);
 
             ArrayList<String> books = new ArrayList<>(Arrays.asList("Book1", "Book2", "Book3"));
-            ArrayList<String> currency = new ArrayList<>(Arrays.asList("EUR", "USD", "CHF", "GBP", "JPY", "MXN", "RBL", "AUD"));
-            TradeConfig tradeConfig = new TradeConfig(books, currency);
+            List<OtcUnderlying> otcUnderlying = new ArrayList<>();
+            List<SecurityStatic > securityStatic = new ArrayList<>();
+
+            otcUnderlying.add(new CurrencyPair("EUR", "USD"));
+            otcUnderlying.add(new CurrencyPair("EUR", "CHF"));
+            otcUnderlying.add(new CurrencyPair("EUR", "GBP"));
+            otcUnderlying.add(new CurrencyPair("EUR", "MXN"));
+            otcUnderlying.add(new CurrencyPair("EUR", "JPY"));
+            otcUnderlying.add(new CurrencyPair("EUR", "AUD"));
+            otcUnderlying.add(new CurrencyPair("EUR", "RBL"));
+            otcUnderlying.add(new CurrencyPair("USD", "CHF"));
+            otcUnderlying.add(new CurrencyPair("USD", "GBP"));
+            otcUnderlying.add(new CurrencyPair("USD", "MXN"));
+            otcUnderlying.add(new CurrencyPair("USD", "JPY"));
+            otcUnderlying.add(new CurrencyPair("USD", "AUD"));
+            otcUnderlying.add(new CurrencyPair("USD", "RBL"));
+
+
+            TradeConfig tradeConfig = new TradeConfig(books, otcUnderlying, securityStatic);
 
             ArrayList<RiskType> eodr = new ArrayList<>(Arrays.asList(RiskType.PV, RiskType.DELTA));
             EndofDayConfig eodc = new EndofDayConfig(eodr, 60 * 1000);
