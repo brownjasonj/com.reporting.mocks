@@ -10,6 +10,11 @@ public class Delta extends Risk {
     protected Double value;
     protected Underlying underlying;
 
+    public Delta() {
+        super();
+        this.riskType = RiskType.DELTA;
+    }
+
     public Delta(UUID riskRun, UUID tcn, Underlying currency) {
         super(riskRun, tcn);
         this.underlying = currency;

@@ -1,6 +1,7 @@
 package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.endpoints.kafka.MRRiskRunKafkaConsumer;
 import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.response.RiskRunResult;
@@ -99,6 +100,8 @@ public class CompleteProcess implements Runnable {
 
         RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(riskResultQueue);
         new Thread(riskRunThread).start();
+
+        new Thread(new MRRiskRunKafkaConsumer()).start();
 
         // kick-off end-of-day
 

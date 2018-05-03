@@ -13,7 +13,7 @@ public abstract class RiskRunResult {
     protected int fragmentCount;
     protected int fragmentNo;
     protected RiskRunRequest request;
-
+    protected RiskRunResultSetKind setKind;
 
     public RiskRunResult(ResultKind kind, int fragmentCount, int fragmentNo, RiskRunRequest request) {
         this.id = UUID.randomUUID();
@@ -25,6 +25,9 @@ public abstract class RiskRunResult {
 
     }
 
+    public RiskRunResultSetKind getSetKind() {
+        return setKind;
+    }
 
     public UUID getId() {
         return id;

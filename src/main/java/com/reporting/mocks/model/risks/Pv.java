@@ -9,6 +9,11 @@ public class Pv extends Risk {
     protected Double value;
     protected Currency currency;
 
+    public Pv() {
+        super();
+        this.riskType = RiskType.PV;
+    }
+
     public Pv(UUID riskRun, UUID tcn, Currency currency) {
         super(riskRun, tcn);
         Random rand = new Random();

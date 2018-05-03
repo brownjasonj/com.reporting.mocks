@@ -18,4 +18,9 @@ public class OtcTrade extends Trade {
     public OtcUnderlying getUnderlying() {
         return underlying;
     }
+
+    @Override
+    public OtcTrade getNewVersion() {
+        return new OtcTrade(this);
+    }
 }

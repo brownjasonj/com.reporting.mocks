@@ -49,6 +49,8 @@ public abstract class Trade {
         return tradeType;
     }
 
+    public abstract Trade getNewVersion();
+
     @Override
     public String toString() {
         return "{Book: " + book + " TCN: " + tcn + "/" + version + "}";

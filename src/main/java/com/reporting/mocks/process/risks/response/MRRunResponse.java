@@ -13,6 +13,7 @@ public class MRRunResponse extends RiskRunResult {
     public MRRunResponse(ResultKind kind, int fragmentCount, int fragmentNo, RiskRunRequest request, List<Risk> risks) {
         super(kind, fragmentCount, fragmentNo, request);
         this.risks = risks;
+        this.setKind = RiskRunResultSetKind.MR;
     }
 
     public MRRunResponse(RiskRunRequest request, List<Risk> risks) {

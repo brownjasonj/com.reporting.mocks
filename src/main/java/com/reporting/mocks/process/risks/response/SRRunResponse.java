@@ -11,6 +11,7 @@ public class SRRunResponse extends RiskRunResult {
     public SRRunResponse(ResultKind kind, RiskRunRequest request, Risk risk) {
         super(kind, 1, 0, request);
         this.risk = risk;
+        this.setKind = RiskRunResultSetKind.SR;
     }
 
     public Risk getRisk() {

@@ -30,6 +30,8 @@ ext {
 }
 
 dependencies {
+	// https://mvnrepository.com/artifact/com.google.code.gson/gson
+	compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-websocket')
 	compile('org.springframework.cloud:spring-cloud-starter-openfeign')
