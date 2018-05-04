@@ -1,6 +1,7 @@
 package com.reporting.mocks.process.endofday;
 
 import com.reporting.mocks.configuration.EndofDayConfig;
+import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.generators.RiskRunGenerator;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.TradePopulation;
@@ -19,15 +20,15 @@ import java.util.concurrent.BlockingQueue;
 
 public class EndofDayRiskEventProducerThread implements Runnable {
     protected BlockingQueue<UUID> tradePopulationIdQueue;
-    protected BlockingQueue<RiskRunResult> riskResultQueue;
+    protected RiskRunPublisher riskPublisher;
     protected TradeStore tradeStore;
     protected EndofDayConfig config;
 
-    public EndofDayRiskEventProducerThread(EndofDayConfig config, TradeStore tradeStore, BlockingQueue<RiskRunResult> riskResultQueue) {
+    public EndofDayRiskEventProducerThread(EndofDayConfig config, TradeStore tradeStore, RiskRunPublisher riskPublisher) {
         this.config = config;
         this.tradeStore = tradeStore;
         this.tradePopulationIdQueue = new ArrayBlockingQueue(1024);;
-        this.riskResultQueue = riskResultQueue;
+        this.riskPublisher = riskPublisher;
     }
 
     @Override
@@ -49,7 +50,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
                         MTSRRiskRunRequest riskRunRequest = new MTSRRiskRunRequest(RiskRunType.EndOfDay, market, tradePopulation, risk, 20);
                         List<RiskRunResult> results = RiskRunGenerator.generate(tradePopulation, riskRunRequest);
                         for(RiskRunResult r : results) {
-                            riskResultQueue.put(r);
+                            riskPublisher.send(r);
                         }
                     }
                 }

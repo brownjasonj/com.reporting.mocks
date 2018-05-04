@@ -1,6 +1,6 @@
 package com.reporting.mocks.endpoints.kafka;
 
-import com.reporting.mocks.process.risks.response.MRRunResponse;
+import com.reporting.mocks.process.risks.response.SRRunResponse;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -9,12 +9,12 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.UUID;
 
-public class MRRiskRunKafkaConsumer implements Runnable {
+public class SRRiskRunKafkaConsumer implements Runnable {
     private Properties kafkaProperties;
-    KafkaConsumer<UUID, MRRunResponse> consumer;
+    KafkaConsumer<UUID, SRRunResponse> consumer;
 
 
-    public MRRiskRunKafkaConsumer() {
+    public SRRiskRunKafkaConsumer() {
         this.kafkaProperties = new Properties();
 
         this.kafkaProperties.put("bootstrap.servers", "localhost:9092");
@@ -33,20 +33,20 @@ public class MRRiskRunKafkaConsumer implements Runnable {
         // static service (name) list - look up via consul(?) or use zookeeper (?)
         //
 
-        this.consumer = new KafkaConsumer<UUID, MRRunResponse>(this.kafkaProperties);
-        this.consumer.subscribe(Collections.singletonList("mrriskresult"));
+        this.consumer = new KafkaConsumer<UUID, SRRunResponse>(this.kafkaProperties);
+        this.consumer.subscribe(Collections.singletonList("srriskresult"));
     }
 
     public void consumer() {
         try {
             while (true) {
-                ConsumerRecords<UUID, MRRunResponse> records = this.consumer.poll(100);
-                for (ConsumerRecord<UUID, MRRunResponse> record : records)
+                ConsumerRecords<UUID, SRRunResponse> records = this.consumer.poll(100);
+                for (ConsumerRecord<UUID, SRRunResponse> record : records)
                 {
-                    System.out.printf("MR topic = %s, partition = %s, offset = %d, Key = %s, Value = %s\n",
+                    System.out.printf("SR topic = %s, partition = %s, offset = %d, Key = %s, Value = %s\n",
                             record.topic(), record.partition(), record.offset(), record.key(), record.value());
-                     MRRunResponse mrr = record.value();
-                    System.out.printf("Risk Count = %d\n", mrr.getRisks().size());
+                    SRRunResponse mrr = record.value();
+                    System.out.printf("Risk Count = %d\n", 1);
                 }
             }
         } finally {

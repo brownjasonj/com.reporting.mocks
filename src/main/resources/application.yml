@@ -1,6 +1,16 @@
-pring:
+spring:
   profiles: default
 server:
   port: 30001
   #port: ${PORT:${SERVER_PORT:0}}
 version: 0.0.1
+kafka:
+  mrresults:
+    bootstrapserver: localhost:9092
+    topic: mrriskresult
+  srresults:
+    bootstrapserver: localhost:9092
+    topic: srriskresults
+  tradepopulation:
+    bootstrapserver: localhost:9092
+    topic: tradepopulation

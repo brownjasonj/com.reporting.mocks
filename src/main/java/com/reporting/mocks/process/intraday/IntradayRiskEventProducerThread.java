@@ -1,6 +1,7 @@
 package com.reporting.mocks.process.intraday;
 
 import com.reporting.mocks.configuration.IntradayConfig;
+import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.generators.RiskRunGenerator;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.risks.IntradayRiskType;
@@ -16,17 +17,20 @@ import java.util.concurrent.BlockingQueue;
 
 public class IntradayRiskEventProducerThread implements Runnable {
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
-    protected BlockingQueue<RiskRunResult> riskResultQueue;
+    protected RiskRunPublisher riskPublisher;
     protected TradeStore tradeStore;
     protected IntradayConfig config;
     protected MarketEnv market;
     protected TradePopulation tradePopulation;
 
-    public IntradayRiskEventProducerThread(IntradayConfig config, TradeStore tradeStore, BlockingQueue<IntradayEvent<?>> intradayEventQueue, BlockingQueue<RiskRunResult> riskResultQueue) {
+    public IntradayRiskEventProducerThread(IntradayConfig config,
+                                           TradeStore tradeStore,
+                                           BlockingQueue<IntradayEvent<?>> intradayEventQueue,
+                                           RiskRunPublisher riskPublisher) {
         this.config = config;
         this.tradeStore = tradeStore;
         this.intradayEventQueue = intradayEventQueue;
-        this.riskResultQueue = riskResultQueue;
+        this.riskPublisher = riskPublisher;
     }
 
     @Override
@@ -57,7 +61,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                 MTSRRiskRunRequest riskRunRequest = new MTSRRiskRunRequest(RiskRunType.Intraday, this.market, tradePopulation, irt.getRiskType(), 20);
                                 List<RiskRunResult> results = RiskRunGenerator.generate(this.tradePopulation, riskRunRequest);
                                 for(RiskRunResult r : results) {
-                                    riskResultQueue.put(r);
+                                    riskPublisher.send(r);
                                 }
                             }
                         }
@@ -81,7 +85,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                             STSRRiskRunRequest riskRunRequest = new STSRRiskRunRequest(RiskRunType.Intraday, this.market, trade, irt.getRiskType());
                                             List<RiskRunResult> results = RiskRunGenerator.generate(riskRunRequest);
                                             for(RiskRunResult r : results) {
-                                                riskResultQueue.put(r);
+                                                riskPublisher.send(r);
                                             }
                                         }
                                     }
@@ -98,7 +102,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                             STSRRiskRunRequest riskRunRequest = new STSRRiskRunRequest(RiskRunType.Intraday, this.market, trade, irt.getRiskType());
                                             List<RiskRunResult> results = RiskRunGenerator.generate(riskRunRequest);
                                             for(RiskRunResult r : results) {
-                                                riskResultQueue.put(r);
+                                                riskPublisher.send(r);
                                             }
                                         }
                                     }

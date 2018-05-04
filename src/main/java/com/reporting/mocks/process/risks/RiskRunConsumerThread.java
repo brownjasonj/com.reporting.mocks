@@ -1,6 +1,7 @@
 package com.reporting.mocks.process.risks;
 
 import com.reporting.mocks.endpoints.kafka.MRRiskResultKafkaProducer;
+import com.reporting.mocks.process.risks.response.MRRunResponse;
 import com.reporting.mocks.process.risks.response.RiskRunResult;
 
 import java.util.concurrent.BlockingQueue;
@@ -26,7 +27,7 @@ public class RiskRunConsumerThread implements Runnable {
                 switch (result.getSetKind()) {
                     case MR: {
                         System.out.print("Sending to Kafka...");
-                        this.riskResultProducer.sendMessage(result);
+                        this.riskResultProducer.send((MRRunResponse)result);
                         System.out.println("Sent");
                     }
                     break;
