@@ -1,6 +1,8 @@
 package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.endpoints.JavaQueue.RiskRunResultQueuePublisher;
+import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.endpoints.kafka.MRRiskRunKafkaConsumer;
 import com.reporting.mocks.endpoints.kafka.RiskRunResultKafkaPublisher;
 import com.reporting.mocks.endpoints.kafka.SRRiskRunKafkaConsumer;
@@ -102,15 +104,16 @@ public class CompleteProcess implements Runnable {
 
         RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(riskResultQueue);
         new Thread(riskRunThread).start();
+        RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(riskResultQueue);
 
-        new Thread(new MRRiskRunKafkaConsumer()).start();
-        new Thread(new SRRiskRunKafkaConsumer()).start();
+//        new Thread(new MRRiskRunKafkaConsumer()).start();
+//        new Thread(new SRRiskRunKafkaConsumer()).start();
+//        RiskRunPublisher riskRunPublisher = new RiskRunResultKafkaPublisher();
 
 
-        RiskRunResultKafkaPublisher riskRunPublihser = new RiskRunResultKafkaPublisher();
         // kick-off end-of-day
 
-        EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(this.config.getEndofDayConfig(), tradeStore, riskRunPublihser);
+        EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(this.config.getEndofDayConfig(), tradeStore, riskRunPublisher);
         new Thread(eodThread).start();
 
         // kick-off start-of-day
@@ -125,7 +128,7 @@ public class CompleteProcess implements Runnable {
 
 
         // initiate intra-day risk jobs
-        this.intradayRiskEventProducerThread = new IntradayRiskEventProducerThread(this.config.getIntradayConfig(), this.tradeStore, this.intraDayEventQueue, riskRunPublihser);
+        this.intradayRiskEventProducerThread = new IntradayRiskEventProducerThread(this.config.getIntradayConfig(), this.tradeStore, this.intraDayEventQueue, riskRunPublisher);
         new Thread(this.intradayRiskEventProducerThread).start();
 
         this.marketEventProducerThread.setRun(true);
