@@ -13,4 +13,19 @@ consequences of the activity and business processes.
 
 
 #Using the simulator
-The simulator 
+To start the simulator run the following
+
+gradle bootRun
+
+There is one predefined configuration which includes a single pricing group called "FXDesk".  To see the configuration
+go to the following URL
+
+
+http://localhost:30001/getPricingGroupConfig?name=FXDesk
+
+
+then to start all the processes go to the following URL
+
+localhost:30001/startprocess/FXDesk
+
+There are several other uris that provide a way to looking up trade populations etc.
