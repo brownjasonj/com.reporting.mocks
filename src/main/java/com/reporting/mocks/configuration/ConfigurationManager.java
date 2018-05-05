@@ -1,5 +1,6 @@
 package com.reporting.mocks.configuration;
 
+import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.TradeType;
@@ -53,7 +54,7 @@ public class ConfigurationManager {
             IntradayConfig indc = new IntradayConfig(indr);
 
 
-            PricingGroupConfig pgc = new PricingGroupConfig("FXDesk", tradeConfig, eodc, indc);
+            PricingGroupConfig pgc = new PricingGroupConfig(new PricingGroup("FXDesk"), tradeConfig, eodc, indc);
             config.addPricingGroup(pgc);
 
         }

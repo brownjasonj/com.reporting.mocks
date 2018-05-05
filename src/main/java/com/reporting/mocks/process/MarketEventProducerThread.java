@@ -2,18 +2,20 @@ package com.reporting.mocks.process;
 
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.DataMarkerType;
+import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
 
 import java.util.concurrent.BlockingQueue;
 
 public class MarketEventProducerThread implements Runnable {
-
+    protected PricingGroup pricingGroup;
     protected BlockingQueue<IntradayEvent<?>> marketEventQueue;
     protected int marketPeriodicity;
     protected boolean run = true;
 
-    public MarketEventProducerThread(int marketPeriodicity, BlockingQueue<IntradayEvent<?>> marketEventQueue) {
+    public MarketEventProducerThread(PricingGroup pricingGroup, int marketPeriodicity, BlockingQueue<IntradayEvent<?>> marketEventQueue) {
+        this.pricingGroup = pricingGroup;
         this.marketPeriodicity = marketPeriodicity;
         this.marketEventQueue = marketEventQueue;
     }
@@ -35,7 +37,7 @@ public class MarketEventProducerThread implements Runnable {
         try {
             while(run)
             {
-                this.marketEventQueue.put(new IntradayEvent<>(IntradayEventType.Market, new MarketEnv(DataMarkerType.IND)));
+                this.marketEventQueue.put(new IntradayEvent<>(IntradayEventType.Market, new MarketEnv(this.pricingGroup, DataMarkerType.IND)));
                 Thread.sleep(marketPeriodicity);
             }
         } catch (InterruptedException e) {

@@ -1,12 +1,21 @@
 package com.reporting.mocks.model;
 
-import java.util.List;
+import java.util.UUID;
 
 public class PricingGroup {
+    protected UUID id;
     protected String name;
-    protected List<String> books;
 
-    public PricingGroup(String name, List<String> books) {
+    public PricingGroup(String name) {
+        this.id = UUID.randomUUID();
+        this.name = name;
+    }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

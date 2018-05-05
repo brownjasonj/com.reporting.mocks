@@ -3,10 +3,8 @@ package com.reporting.mocks.process;
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.JavaQueue.RiskRunResultQueuePublisher;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
-import com.reporting.mocks.endpoints.kafka.MRRiskRunKafkaConsumer;
-import com.reporting.mocks.endpoints.kafka.RiskRunResultKafkaPublisher;
-import com.reporting.mocks.endpoints.kafka.SRRiskRunKafkaConsumer;
 import com.reporting.mocks.generators.TradeGenerator;
+import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.response.RiskRunResult;
 import com.reporting.mocks.model.TradeLifecycle;
@@ -34,7 +32,7 @@ public class CompleteProcess implements Runnable {
     }
 
     public static CompleteProcess addProcess(CompleteProcess completeProcess) {
-        return CompleteProcess.processes.put(completeProcess.getPricingGroupName(), completeProcess);
+        return CompleteProcess.processes.put(completeProcess.getPricingGroupId().getName(), completeProcess);
     }
 
     public static CompleteProcess getProcess(String name) {
@@ -78,13 +76,9 @@ public class CompleteProcess implements Runnable {
     public CompleteProcess(PricingGroupConfig config) {
         this.id = UUID.randomUUID();
         this.config = config;
-        this.tradeStore = TradeStoreFactory.newTradeStore(config.getName());
+        this.tradeStore = TradeStoreFactory.newTradeStore(config.getPricingGroupId().getName());
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
 
-    }
-
-    public String getPricingGroupName() {
-        return this.config.getName();
     }
 
     public Collection<TradePopulation> getTradePopulations() {
@@ -94,6 +88,11 @@ public class CompleteProcess implements Runnable {
     public TradePopulation getTradePopulation(UUID tradePopulationId) {
         return this.tradeStore.getTradePopulation(tradePopulationId);
     }
+
+    public PricingGroup getPricingGroupId() {
+        return this.config.getPricingGroupId();
+    }
+
     @Override
     public void run() {
 
@@ -115,7 +114,7 @@ public class CompleteProcess implements Runnable {
 
         // kick-off end-of-day
 
-        EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(this.config.getEndofDayConfig(), tradeStore, riskRunPublisher);
+        EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(this.config, tradeStore, riskRunPublisher);
         new Thread(eodThread).start();
 
         // kick-off start-of-day
@@ -123,7 +122,7 @@ public class CompleteProcess implements Runnable {
         // start intra-day process
         // initiate market environment change process
         this.intraDayEventQueue = new ArrayBlockingQueue(1024);
-        this.marketEventProducerThread = new MarketEventProducerThread(this.config.getMarketPeriodicity(), this.intraDayEventQueue);
+        this.marketEventProducerThread = new MarketEventProducerThread(this.config.getPricingGroupId(), this.config.getMarketPeriodicity(), this.intraDayEventQueue);
         // start the market event thread
         new Thread(this.marketEventProducerThread).start();
 

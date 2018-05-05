@@ -1,7 +1,9 @@
 package com.reporting.mocks.configuration;
 
+import com.reporting.mocks.model.PricingGroup;
+
 public class PricingGroupConfig {
-    protected String name;
+    protected PricingGroup pricingGroupId;
     protected TradeConfig tradeConfig;
     protected IntradayConfig intradayConfig;
     protected EndofDayConfig endofdayConfig;
@@ -15,16 +17,20 @@ public class PricingGroupConfig {
     public PricingGroupConfig() {
     }
 
-    public PricingGroupConfig(String name, TradeConfig tradeConfig, EndofDayConfig eodc, IntradayConfig indc) {
+    public PricingGroupConfig(PricingGroup pricingGroupId, TradeConfig tradeConfig, EndofDayConfig eodc, IntradayConfig indc) {
         this();
-        this.name = name;
+        this.pricingGroupId = pricingGroupId;
         this.tradeConfig = tradeConfig;
         this.intradayConfig = indc;
         this.endofdayConfig = eodc;
     }
 
-    public String getName() {
-        return name;
+    public PricingGroup getPricingGroupId() {
+        return pricingGroupId;
+    }
+
+    public EndofDayConfig getEndofdayConfig() {
+        return endofdayConfig;
     }
 
     public TradeConfig getTradeConfig() {
