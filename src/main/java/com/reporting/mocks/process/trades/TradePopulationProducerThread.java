@@ -18,15 +18,18 @@ import java.util.concurrent.BlockingQueue;
 
 public class TradePopulationProducerThread implements Runnable {
     protected TradeStore tradeStore;
+    protected TradeGenerator tradeGenerator;
     protected BlockingQueue<TradeLifecycleType> tradeEventQueue;
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected TradeConfig tradeConfig;
 
     public TradePopulationProducerThread(TradeConfig tradeConfig,
                                          TradeStore tradeStore,
+                                         TradeGenerator tradeGenerator,
                                          BlockingQueue<IntradayEvent<?>> intradayEventQueue) {
         this.tradeEventQueue = new ArrayBlockingQueue(1024);
         this.tradeStore = tradeStore;
+        this.tradeGenerator = tradeGenerator;
         this.intradayEventQueue = intradayEventQueue;
         this.tradeConfig = tradeConfig;
     }
@@ -47,7 +50,7 @@ public class TradePopulationProducerThread implements Runnable {
                 TradeLifecycleType tradeEvent = this.tradeEventQueue.take();
                 switch (tradeEvent) {
                     case New:
-                        OtcTrade newTrade = TradeGenerator.generateOne(this.tradeConfig);
+                        OtcTrade newTrade = this.tradeGenerator.generateOneOtc();
                         this.tradeStore.putTrade(newTrade);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, newTrade)));
                         break;

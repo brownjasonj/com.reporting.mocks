@@ -9,22 +9,23 @@ public abstract class Trade {
     protected UUID tcn;
     protected int version;
     protected String book;
-    protected String tradeType;
+    protected TradeType tradeType;
 
-    protected Trade(TradeKind kind, UUID tcn, int version, String book) {
+    protected Trade(TradeKind kind, TradeType tradeType, UUID tcn, int version, String book) {
         this.kind = kind;
+        this.tradeType = tradeType;
         this.tcn = tcn;
         this.version = version;
         this.book = book;
     }
 
-    protected Trade(TradeKind kind, String book) {
-        this(kind, UUID.randomUUID(), 0, book);
+    protected Trade(TradeKind kind, TradeType tradeType, String book) {
+        this(kind, tradeType, UUID.randomUUID(), 0, book);
     }
 
 
     public Trade(Trade trade) {
-        this(trade.getKind(), trade.getTcn(), trade.getVersion() + 1, trade.getBook());
+        this(trade.getKind(), trade.getTradeType(), trade.getTcn(), trade.getVersion() + 1, trade.getBook());
     }
 
     public abstract Underlying getUnderlying();
@@ -45,7 +46,7 @@ public abstract class Trade {
         return book;
     }
 
-    public String getTradeType() {
+    public TradeType getTradeType() {
         return tradeType;
     }
 
@@ -53,6 +54,6 @@ public abstract class Trade {
 
     @Override
     public String toString() {
-        return "{Book: " + book + " TCN: " + tcn + "/" + version + "}";
+        return "{Type: " + tradeType + ", Book: " + book + ", TCN: " + tcn + "/" + version + "}";
     }
 }

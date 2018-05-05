@@ -2,6 +2,7 @@ package com.reporting.mocks.configuration;
 
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
+import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.model.underlying.CurrencyPair;
 import com.reporting.mocks.model.underlying.OtcUnderlying;
 import com.reporting.mocks.model.underlying.SecurityStatic;
@@ -21,6 +22,7 @@ public class ConfigurationManager {
 
             ArrayList<String> books = new ArrayList<>(Arrays.asList("Book1", "Book2", "Book3"));
             List<OtcUnderlying> otcUnderlying = new ArrayList<>();
+            List<TradeType> otcTradeTypes = new ArrayList<>();
             List<SecurityStatic > securityStatic = new ArrayList<>();
 
             otcUnderlying.add(new CurrencyPair("EUR", "USD"));
@@ -37,8 +39,12 @@ public class ConfigurationManager {
             otcUnderlying.add(new CurrencyPair("USD", "AUD"));
             otcUnderlying.add(new CurrencyPair("USD", "RBL"));
 
+            otcTradeTypes.add(TradeType.Spot);
+            otcTradeTypes.add(TradeType.Forward);
+            otcTradeTypes.add(TradeType.Swap);
 
-            TradeConfig tradeConfig = new TradeConfig(books, otcUnderlying, securityStatic);
+
+            TradeConfig tradeConfig = new TradeConfig(books, otcUnderlying, otcTradeTypes, securityStatic);
 
             ArrayList<RiskType> eodr = new ArrayList<>(Arrays.asList(RiskType.PV, RiskType.DELTA));
             EndofDayConfig eodc = new EndofDayConfig(eodr, 10 * 1000);

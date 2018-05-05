@@ -1,5 +1,6 @@
 package com.reporting.mocks.configuration;
 
+import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.model.underlying.OtcUnderlying;
 import com.reporting.mocks.model.underlying.SecurityStatic;
 
@@ -18,14 +19,16 @@ public class TradeConfig {
 
     List<String> books;
     List<OtcUnderlying> otcUnderlying;
+    List<TradeType> tradeTypes;
     List<SecurityStatic> securityStatic;
 
     public TradeConfig() {
     }
 
-    public TradeConfig(List<String> books, List<OtcUnderlying> otcUnderlying, List<SecurityStatic> securityStatic) {
+    public TradeConfig(List<String> books, List<OtcUnderlying> otcUnderlying, List<TradeType> otcTradeTypes, List<SecurityStatic> securityStatic) {
         this.books = books;
         this.otcUnderlying = otcUnderlying;
+        this.tradeTypes = otcTradeTypes;
         this.securityStatic = securityStatic;
     }
 
@@ -71,5 +74,9 @@ public class TradeConfig {
 
     public int getDeleteTadeStart() {
         return deleteTadeStart;
+    }
+
+    public List<TradeType> getTradeTypes() {
+        return tradeTypes;
     }
 }

@@ -71,6 +71,7 @@ public class CompleteProcess implements Runnable {
     protected IntradayRiskEventProducerThread intradayRiskEventProducerThread;
 
     protected TradeStore tradeStore;
+    protected TradeGenerator tradeGenerator;
     protected BlockingQueue<TradeLifecycle> tradeQueue;
     protected TradePopulationProducerThread tradePopulationProducerThread;
 
@@ -78,6 +79,7 @@ public class CompleteProcess implements Runnable {
         this.id = UUID.randomUUID();
         this.config = config;
         this.tradeStore = TradeStoreFactory.newTradeStore(config.getName());
+        this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
 
     }
 
@@ -97,7 +99,7 @@ public class CompleteProcess implements Runnable {
 
         // initiate construction of initial trade population
         for(int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {
-            this.tradeStore.putTrade(TradeGenerator.generateOne(config.getTradeConfig()));
+            this.tradeStore.putTrade(this.tradeGenerator.generateOneOtc());
         }
 
         BlockingQueue<RiskRunResult> riskResultQueue = new ArrayBlockingQueue<>(4096);
@@ -135,7 +137,7 @@ public class CompleteProcess implements Runnable {
 
 
         //TradeConfig tradeConfig, TradeStore tradeStore, BlockingQueue<Trade> tradeQueue
-        this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(), this.tradeStore, this.intraDayEventQueue);
+        this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(), this.tradeStore, this.tradeGenerator, this.intraDayEventQueue);
         new Thread(this.tradePopulationProducerThread).start();
 
 
