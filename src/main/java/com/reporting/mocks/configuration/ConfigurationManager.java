@@ -48,7 +48,7 @@ public class ConfigurationManager {
             TradeConfig tradeConfig = new TradeConfig(books, otcUnderlying, otcTradeTypes, securityStatic);
 
             ArrayList<RiskType> eodr = new ArrayList<>(Arrays.asList(RiskType.PV, RiskType.DELTA));
-            EndofDayConfig eodc = new EndofDayConfig(eodr, 10 * 1000);
+            EndofDayConfig eodc = new EndofDayConfig(eodr, 10 * 60 * 1000);
 
             ArrayList<IntradayRiskType> indr = new ArrayList<>(Arrays.asList(new IntradayRiskType(RiskType.PV, 0), new IntradayRiskType(RiskType.DELTA, 0)));
             IntradayConfig indc = new IntradayConfig(indr);

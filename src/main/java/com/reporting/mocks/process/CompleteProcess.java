@@ -3,6 +3,8 @@ package com.reporting.mocks.process;
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.JavaQueue.RiskRunResultQueuePublisher;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
+import com.reporting.mocks.endpoints.ignite.IgniteListner;
+import com.reporting.mocks.endpoints.ignite.RiskRunIgnitePublisher;
 import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
@@ -105,7 +107,11 @@ public class CompleteProcess implements Runnable {
 
         RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(riskResultQueue);
         new Thread(riskRunThread).start();
-        RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(riskResultQueue);
+        //RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(riskResultQueue);
+
+        RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher();
+
+
 
 //        new Thread(new MRRiskRunKafkaConsumer()).start();
 //        new Thread(new SRRiskRunKafkaConsumer()).start();
@@ -139,6 +145,7 @@ public class CompleteProcess implements Runnable {
         this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(), this.tradeStore, this.tradeGenerator, this.intraDayEventQueue);
         new Thread(this.tradePopulationProducerThread).start();
 
+       // new Thread(new IgniteListner(riskRunPublisher.getCache())).start();
 
     }
 }

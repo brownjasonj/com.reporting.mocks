@@ -11,7 +11,7 @@ public class EndofDayConfig {
 
     public EndofDayConfig() {
         this.risks = new ArrayList<>();
-        this.periodicity = 10 * 1000;
+        this.periodicity = 10 * 60 * 1000;
     }
 
     public EndofDayConfig(List<RiskType> risks, int periodicity) {
