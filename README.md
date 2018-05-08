@@ -31,10 +31,10 @@ localhost:30001/startprocess/FXDesk
 There are several other uris that provide a way to looking up trade populations etc.
 
 
-#Structure of the code
+<h2> Structure of the code </h2>
 There are seven packages
 
-##com.reporting.mocks.configuration
+<h3>com.reporting.mocks.configuration</h3>
 This contains closs models to hold the application configuration and is broken down into
 three main pairts
 
