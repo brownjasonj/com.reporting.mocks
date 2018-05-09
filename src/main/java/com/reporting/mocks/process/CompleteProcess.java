@@ -24,13 +24,11 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CompleteProcess implements Runnable {
+public class CompleteProcess {
     protected static ConcurrentHashMap<String, CompleteProcess> processes;
-    protected static ConcurrentHashMap<String, Thread> threads;
 
     static {
         CompleteProcess.processes = new ConcurrentHashMap<>();
-        CompleteProcess.threads = new ConcurrentHashMap<>();
     }
 
     public static CompleteProcess addProcess(CompleteProcess completeProcess) {
@@ -40,23 +38,6 @@ public class CompleteProcess implements Runnable {
     public static CompleteProcess getProcess(String name) {
         if (CompleteProcess.processes.containsKey(name))
             return CompleteProcess.processes.get(name);
-        else
-            return null;
-    }
-
-    public static Thread startProcess(String name) {
-        CompleteProcess cp = CompleteProcess.processes.get(name);
-        if (cp != null) {
-            if (CompleteProcess.threads.containsKey(name)) {
-                return CompleteProcess.threads.get(name);
-            }
-            else {
-                Thread thread = new Thread(cp);
-                CompleteProcess.threads.put(name, thread);
-                thread.start();
-                return thread;
-            }
-        }
         else
             return null;
     }
@@ -74,13 +55,17 @@ public class CompleteProcess implements Runnable {
     protected TradeGenerator tradeGenerator;
     protected BlockingQueue<TradeLifecycle> tradeQueue;
     protected TradePopulationProducerThread tradePopulationProducerThread;
+    protected BlockingQueue<RiskRunResult> riskResultQueue;
+
+    protected ThreadGroup threadGroup;
 
     public CompleteProcess(PricingGroupConfig config) {
         this.id = UUID.randomUUID();
         this.config = config;
         this.tradeStore = TradeStoreFactory.newTradeStore(config.getPricingGroupId().getName());
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
-
+        this.riskResultQueue = new ArrayBlockingQueue<>(4096);
+        this.intraDayEventQueue = new ArrayBlockingQueue(1024);
     }
 
     public Collection<TradePopulation> getTradePopulations() {
@@ -95,19 +80,14 @@ public class CompleteProcess implements Runnable {
         return this.config.getPricingGroupId();
     }
 
-    @Override
-    public void run() {
+    protected void init() {
+        if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
+            this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
 
-        // initiate construction of initial trade population
-        for(int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {
-            this.tradeStore.putTrade(this.tradeGenerator.generateOneOtc());
-        }
 
-        BlockingQueue<RiskRunResult> riskResultQueue = new ArrayBlockingQueue<>(4096);
-
-        RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(riskResultQueue);
-        new Thread(riskRunThread).start();
-        RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(riskResultQueue);
+            RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.riskResultQueue);
+            new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
+            RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.riskResultQueue);
 
 //        RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher();
 
@@ -118,34 +98,61 @@ public class CompleteProcess implements Runnable {
 //        RiskRunPublisher riskRunPublisher = new RiskRunResultKafkaPublisher();
 
 
-        // kick-off end-of-day
+            // kick-off end-of-day
 
-        EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(this.config, tradeStore, riskRunPublisher);
-        new Thread(eodThread).start();
+            EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(this.config, tradeStore, riskRunPublisher);
+            new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
 
-        // kick-off start-of-day
+            // kick-off start-of-day
 
-        // start intra-day process
-        // initiate market environment change process
-        this.intraDayEventQueue = new ArrayBlockingQueue(1024);
-        this.marketEventProducerThread = new MarketEventProducerThread(this.config.getPricingGroupId(), this.config.getMarketPeriodicity(), this.intraDayEventQueue);
-        // start the market event thread
-        new Thread(this.marketEventProducerThread).start();
-
+            // start intra-day process
+            // initiate market environment change process
+            this.marketEventProducerThread = new MarketEventProducerThread(this.config.getPricingGroupId(), this.config.getMarketPeriodicity(), this.intraDayEventQueue);
+            // start the market event thread
+            new Thread(threadGroup, this.marketEventProducerThread, "MarketEventProducer").start();
 
 
-        // initiate intra-day risk jobs
-        this.intradayRiskEventProducerThread = new IntradayRiskEventProducerThread(this.config.getIntradayConfig(), this.tradeStore, this.intraDayEventQueue, riskRunPublisher);
-        new Thread(this.intradayRiskEventProducerThread).start();
 
-        this.marketEventProducerThread.setRun(true);
+            // initiate intra-day risk jobs
+            this.intradayRiskEventProducerThread = new IntradayRiskEventProducerThread(this.config.getIntradayConfig(), this.tradeStore, this.intraDayEventQueue, riskRunPublisher);
+            new Thread(threadGroup, this.intradayRiskEventProducerThread, "IntradayRiskEvent").start();
+
+            this.marketEventProducerThread.setRun(true);
 
 
-        //TradeConfig tradeConfig, TradeStore tradeStore, BlockingQueue<Trade> tradeQueue
-        this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(), this.tradeStore, this.tradeGenerator, this.intraDayEventQueue);
-        new Thread(this.tradePopulationProducerThread).start();
+            //TradeConfig tradeConfig, TradeStore tradeStore, BlockingQueue<Trade> tradeQueue
+            this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(), this.tradeStore, this.tradeGenerator, this.intraDayEventQueue);
+            new Thread(threadGroup, this.tradePopulationProducerThread, "TradePopulationProducer").start();
 
-       // new Thread(new IgniteListner(riskRunPublisher.getCache())).start();
+            // new Thread(new IgniteListner(riskRunPublisher.getCache())).start();
 
+
+        }
+    }
+
+    public void stop() {
+        if (this.threadGroup != null && !this.threadGroup.isDestroyed()) {
+            this.threadGroup.interrupt();
+            this.threadGroup.destroy();
+        }
+    }
+
+    public void start() {
+        this.start(this.config);
+    }
+
+    public void start(PricingGroupConfig config) {
+        if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
+            if (this.config.getPricingGroupId() == config.getPricingGroupId()) {
+                this.config = config;
+
+                // initiate construction of initial trade population
+                for (int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {
+                    this.tradeStore.putTrade(this.tradeGenerator.generateOneOtc());
+                }
+
+                this.init();
+            }
+        }
     }
 }

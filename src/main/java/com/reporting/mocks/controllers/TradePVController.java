@@ -27,11 +27,23 @@ public class TradePVController {
     }
 
     @RequestMapping(method = { RequestMethod.GET }, value = { "/startprocess/{pricingGroupName}" }, produces = "application/json")
-    public Boolean runCompleteProcess(@PathVariable String pricingGroupName) {
-//        CompleteProcess completeProcess = new CompleteProcess(this.pricingGroups);
-//        new Thread(completeProcess).start();
+    public Boolean startCompleteProcess(@PathVariable String pricingGroupName) {
+        CompleteProcess completeProcess = CompleteProcess.getProcess(pricingGroupName);
 
-        if (CompleteProcess.startProcess(pricingGroupName) != null) {
+        if (completeProcess != null) {
+            completeProcess.start();
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @RequestMapping(method = { RequestMethod.GET }, value = { "/stopprocess/{pricingGroupName}" }, produces = "application/json")
+    public Boolean stopCompleteProcess(@PathVariable String pricingGroupName) {
+        CompleteProcess completeProcess = CompleteProcess.getProcess(pricingGroupName);
+        if (completeProcess != null) {
+            completeProcess.stop();
             return true;
         }
         else {
