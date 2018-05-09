@@ -107,9 +107,9 @@ public class CompleteProcess implements Runnable {
 
         RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(riskResultQueue);
         new Thread(riskRunThread).start();
-        //RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(riskResultQueue);
+        RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(riskResultQueue);
 
-        RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher();
+//        RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher();
 
 
 

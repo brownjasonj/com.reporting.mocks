@@ -1,51 +1,162 @@
 {
-  "pricingGroups": [
-    {
-      "name": "FXDesk",
-      "tradeConfig": {
-        "startingTradeCount": 100,
-        "newTradePeriodicity": 10000,
-        "modifiedTradePeriodicity": 30000,
-        "deleteTradePeriodicity": 60000,
-        "books": [
-          "Book1",
-          "Book2",
-          "Book3"
-        ],
-        "currency": [
-          "EUR",
-          "USD",
-          "CHF",
-          "GBP",
-          "JPY",
-          "MXN",
-          "RBL",
-          "AUD"
-        ]
+  "pricingGroupId": {
+    "id": "775df473-ba14-4fed-8855-5fa8b19f55c3",
+    "name": "FXDesk"
+  },
+  "tradeConfig": {
+    "startingTradeCount": 1000,
+    "newTradeStart": 0,
+    "newTradePeriodicity": 5000,
+    "modifiedTradeStart": 10000,
+    "modifiedTradePeriodicity": 30000,
+    "deleteTadeStart": 20000,
+    "deleteTradePeriodicity": 60000,
+    "books": [
+      "Book1",
+      "Book2",
+      "Book3"
+    ],
+    "otcUnderlying": [
+      {
+        "ccy1": "EUR",
+        "ccy2": "USD",
+        "accy": "USD",
+        "underlyingCurrency": {
+          "currency": "USD"
+        }
       },
-      "intradayConfig": {
-        "risks": [
-          {
-            "riskType": "PV",
-            "periodicity": 0
-          },
-          {
-            "riskType": "DELTA",
-            "periodicity": 0
-          }
-        ]
+      {
+        "ccy1": "EUR",
+        "ccy2": "CHF",
+        "accy": "CHF",
+        "underlyingCurrency": {
+          "currency": "CHF"
+        }
       },
-      "eod": true,
-      "sod": true,
-      "ind": true,
-      "marketPeriodicity": 5000,
-      "endofDayConfig": {
-        "risks": [
-          "PV",
-          "DELTA"
-        ],
-        "periodicity": 60000
+      {
+        "ccy1": "EUR",
+        "ccy2": "GBP",
+        "accy": "GBP",
+        "underlyingCurrency": {
+          "currency": "GBP"
+        }
+      },
+      {
+        "ccy1": "EUR",
+        "ccy2": "MXN",
+        "accy": "MXN",
+        "underlyingCurrency": {
+          "currency": "MXN"
+        }
+      },
+      {
+        "ccy1": "EUR",
+        "ccy2": "JPY",
+        "accy": "JPY",
+        "underlyingCurrency": {
+          "currency": "JPY"
+        }
+      },
+      {
+        "ccy1": "EUR",
+        "ccy2": "AUD",
+        "accy": "AUD",
+        "underlyingCurrency": {
+          "currency": "AUD"
+        }
+      },
+      {
+        "ccy1": "EUR",
+        "ccy2": "RBL",
+        "accy": "RBL",
+        "underlyingCurrency": {
+          "currency": "RBL"
+        }
+      },
+      {
+        "ccy1": "USD",
+        "ccy2": "CHF",
+        "accy": "CHF",
+        "underlyingCurrency": {
+          "currency": "CHF"
+        }
+      },
+      {
+        "ccy1": "USD",
+        "ccy2": "GBP",
+        "accy": "GBP",
+        "underlyingCurrency": {
+          "currency": "GBP"
+        }
+      },
+      {
+        "ccy1": "USD",
+        "ccy2": "MXN",
+        "accy": "MXN",
+        "underlyingCurrency": {
+          "currency": "MXN"
+        }
+      },
+      {
+        "ccy1": "USD",
+        "ccy2": "JPY",
+        "accy": "JPY",
+        "underlyingCurrency": {
+          "currency": "JPY"
+        }
+      },
+      {
+        "ccy1": "USD",
+        "ccy2": "AUD",
+        "accy": "AUD",
+        "underlyingCurrency": {
+          "currency": "AUD"
+        }
+      },
+      {
+        "ccy1": "USD",
+        "ccy2": "RBL",
+        "accy": "RBL",
+        "underlyingCurrency": {
+          "currency": "RBL"
+        }
       }
-    }
-  ]
+    ],
+    "tradeTypes": [
+      "Spot",
+      "Forward",
+      "Swap"
+    ],
+    "securityStatic": []
+  },
+  "intradayConfig": {
+    "risks": [
+      {
+        "riskType": "PV",
+        "periodicity": 0
+      },
+      {
+        "riskType": "DELTA",
+        "periodicity": 0
+      }
+    ]
+  },
+  "endofdayConfig": {
+    "risks": [
+      "PV",
+      "DELTA"
+    ],
+    "periodicity": 600000
+  },
+  "eod": true,
+  "sod": true,
+  "ind": true,
+  "marketPeriodicity": 60000,
+  "endofDayConfig": {
+    "risks": [
+      "PV",
+      "DELTA"
+    ],
+    "periodicity": 600000
+  }
 }
