@@ -10,6 +10,8 @@ public abstract class Trade {
     protected int version;
     protected String book;
     protected TradeType tradeType;
+    protected Double quantity;
+    protected BuySell buySell;
 
     protected Trade(TradeKind kind, TradeType tradeType, UUID tcn, int version, String book) {
         this.kind = kind;
@@ -48,6 +50,14 @@ public abstract class Trade {
 
     public TradeType getTradeType() {
         return tradeType;
+    }
+
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public BuySell getBuySell() {
+        return buySell;
     }
 
     public abstract Trade getNewVersion();

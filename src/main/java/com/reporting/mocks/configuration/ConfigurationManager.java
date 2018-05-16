@@ -50,8 +50,10 @@ public class ConfigurationManager {
             ArrayList<RiskType> eodr = new ArrayList<>(Arrays.asList(RiskType.PV, RiskType.DELTA));
             EndofDayConfig eodc = new EndofDayConfig(eodr, 10 * 60 * 1000);
 
-            ArrayList<IntradayRiskType> indr = new ArrayList<>(Arrays.asList(new IntradayRiskType(RiskType.PV, 0), new IntradayRiskType(RiskType.DELTA, 0)));
+            ArrayList<IntradayRiskType> indr = new ArrayList<>();
             IntradayConfig indc = new IntradayConfig(indr);
+            indr.add(new IntradayRiskType(RiskType.PV, 1));
+            indr.add(new IntradayRiskType(RiskType.DELTA, 3));
 
 
             PricingGroupConfig pgc = new PricingGroupConfig(new PricingGroup("FXDesk"), tradeConfig, eodc, indc);

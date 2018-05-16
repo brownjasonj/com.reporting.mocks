@@ -12,7 +12,7 @@ public class PricingGroupConfig {
     protected boolean sod = true;
     protected boolean ind = true;
 
-    protected int marketPeriodicity = 60 * 1000;   // milliseconds between change in market data.
+    protected int marketPeriodicity = 1000;   // milliseconds between change in market data.
 
     public PricingGroupConfig() {
     }
@@ -39,10 +39,6 @@ public class PricingGroupConfig {
 
     public IntradayConfig getIntradayConfig() {
         return intradayConfig;
-    }
-
-    public EndofDayConfig getEndofDayConfig() {
-        return endofdayConfig;
     }
 
     public boolean isEod() {

@@ -7,7 +7,7 @@ import com.reporting.mocks.model.underlying.SecurityStatic;
 import java.util.List;
 
 public class TradeConfig {
-    protected int startingTradeCount = 1000;
+    protected int startingTradeCount = 10;
     protected int newTradeStart = 0;
     protected int newTradePeriodicity = 5 * 1000;        // number of milliseconds between new trades (default: 10s)
 

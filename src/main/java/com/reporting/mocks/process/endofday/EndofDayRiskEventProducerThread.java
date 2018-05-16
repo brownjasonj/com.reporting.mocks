@@ -30,7 +30,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
 
     public EndofDayRiskEventProducerThread(PricingGroupConfig config, TradeStore tradeStore, RiskRunPublisher riskPublisher) {
         this.pricingGroup = config.getPricingGroupId();
-        this.config = config.getEndofDayConfig();
+        this.config = config.getEndofdayConfig();
         this.tradeStore = tradeStore;
         this.tradePopulationIdQueue = new ArrayBlockingQueue(1024);;
         this.riskPublisher = riskPublisher;

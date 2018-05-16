@@ -87,9 +87,10 @@ public class CompleteProcess {
 
             RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.riskResultQueue);
             new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
+
             RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.riskResultQueue);
 
-//        RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher();
+            // RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher();
 
 
 
@@ -132,7 +133,7 @@ public class CompleteProcess {
 
     public void stop() {
         if (this.threadGroup != null && !this.threadGroup.isDestroyed()) {
-            this.threadGroup.interrupt();
+            //this.threadGroup.interrupt();
             this.threadGroup.destroy();
         }
     }

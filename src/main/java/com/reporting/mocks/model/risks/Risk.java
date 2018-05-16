@@ -2,7 +2,7 @@ package com.reporting.mocks.model.risks;
 
 import java.util.UUID;
 
-public class Risk {
+public abstract class Risk {
     protected UUID tcn;
     protected UUID riskRun;
     protected RiskType riskType;

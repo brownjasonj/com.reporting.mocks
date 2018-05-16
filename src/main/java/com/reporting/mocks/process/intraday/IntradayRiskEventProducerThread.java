@@ -5,6 +5,7 @@ import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.generators.RiskRunGenerator;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.risks.IntradayRiskType;
+import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.process.risks.requests.MTSRRiskRunRequest;
@@ -22,6 +23,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
     protected IntradayConfig config;
     protected MarketEnv market;
     protected TradePopulation tradePopulation;
+    protected IntradayCalculationSchedule calculationSchedule;
 
     public IntradayRiskEventProducerThread(IntradayConfig config,
                                            TradeStore tradeStore,
@@ -31,6 +33,11 @@ public class IntradayRiskEventProducerThread implements Runnable {
         this.tradeStore = tradeStore;
         this.intradayEventQueue = intradayEventQueue;
         this.riskPublisher = riskPublisher;
+        this.calculationSchedule = new IntradayCalculationSchedule();
+
+        for(IntradayRiskType riskType : config.getRisks()) {
+            this.calculationSchedule.add(riskType.getPeriodicity(), riskType.getRiskType());
+        }
     }
 
     @Override
@@ -55,14 +62,17 @@ public class IntradayRiskEventProducerThread implements Runnable {
                         // this gets and creates a new trade population
                         this.tradePopulation = this.tradeStore.getTradePopulation(DataMarkerType.IND);
 
+                        // increment the risk schedule since a new market arrived
+                        this.calculationSchedule.increment();
+
+                        List<RiskType> risksToRun = this.calculationSchedule.getRisksToRun();
+
                         // RiskRunRequest(RiskRunType type, MarketEnv marketEnv, TradePopulation tradePop, List< RiskType > riskTypes, int fragmentSize)
-                        for(IntradayRiskType irt : config.getRisks()) {
-                            if (irt.getPeriodicity() == 0) {
-                                MTSRRiskRunRequest riskRunRequest = new MTSRRiskRunRequest(RiskRunType.Intraday, this.market, tradePopulation, irt.getRiskType(), 20);
-                                List<RiskRunResult> results = RiskRunGenerator.generate(this.tradePopulation, riskRunRequest);
-                                for(RiskRunResult r : results) {
-                                    riskPublisher.send(r);
-                                }
+                        for(RiskType riskType : this.calculationSchedule.getRisksToRun()) {
+                            MTSRRiskRunRequest riskRunRequest = new MTSRRiskRunRequest(RiskRunType.Intraday, this.market, tradePopulation, riskType, 20);
+                            List<RiskRunResult> results = RiskRunGenerator.generate(this.tradePopulation, riskRunRequest);
+                            for(RiskRunResult r : results) {
+                                riskPublisher.send(r);
                             }
                         }
                     }
