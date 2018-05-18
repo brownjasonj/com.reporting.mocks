@@ -9,6 +9,7 @@ import com.reporting.mocks.model.dataviews.book.TcnRiskAggregate;
 import com.reporting.mocks.model.dataviews.book.TcnRisksAll;
 import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.risks.RiskType;
+import com.reporting.mocks.model.trade.Tcn;
 import com.reporting.mocks.process.risks.response.MRRunResponse;
 import com.reporting.mocks.process.risks.response.RiskRunResult;
 import com.reporting.mocks.process.risks.response.SRRunResponse;
@@ -29,9 +30,6 @@ public class RiskRunIgnitePublisher implements RiskRunPublisher {
         this.pricingGroup = pricingGroup;
         Ignition.setClientMode(true);
         this.ignite = Ignition.start("examples/config/example-ignite.xml");
-
-//        this.cache = ignite.getOrCreateCache("myCache");
-
     }
 
     @Override
@@ -40,20 +38,19 @@ public class RiskRunIgnitePublisher implements RiskRunPublisher {
 
         String pricingGroupName = this.pricingGroup.getName();
         String marketId = riskRunResult.getRequest().getMarketEnvId().toString();
-        String bookRisks = marketId + "/Risks";
 
         try {
             switch (riskRunResult.getSetKind()) {
                 case MR: {
                     MRRunResponse mrrr = (MRRunResponse) riskRunResult;
                     for (Risk r : mrrr.getRisks()) {
-                        UUID tcn = r.getTcn();
+                        Tcn tcn = r.getTcn();
                         Double value = (new Random()).nextDouble();
 
-                        String cacheNameRoot = "/" + pricingGroupName + "/" + r.getBookName() + "/" + bookRisks;
+                        String cacheNameRoot = "/" + marketId + "/" + pricingGroupName + "/" + r.getBookName() + "/Risks";
                         String tcnCacheName = cacheNameRoot + "/" + r.getRiskType()+ "/Tcn";
                         System.out.println("Writing to cache: " + tcnCacheName);
-                        IgniteCache<UUID,Double> tcnRisk = ignite.getOrCreateCache(tcnCacheName);
+                        IgniteCache<Tcn,Double> tcnRisk = ignite.getOrCreateCache(tcnCacheName);
                         System.out.println("Writing to cache: " + cacheNameRoot);
                         IgniteCache<String,Double> riskBook = ignite.getOrCreateCache(cacheNameRoot);
 
@@ -73,14 +70,13 @@ public class RiskRunIgnitePublisher implements RiskRunPublisher {
                 case SR: {
                     SRRunResponse srrr = (SRRunResponse) riskRunResult;
                     Risk r = srrr.getRisk();
-                    UUID tcn = r.getTcn();
+                    Tcn tcn = r.getTcn();
                     Double value = (new Random()).nextDouble();
 
-
-                    String cacheNameRoot = "/" + pricingGroupName + "/" + r.getBookName() + "/" + bookRisks;
+                    String cacheNameRoot = "/" + marketId + "/" + pricingGroupName + "/" + r.getBookName() + "/Risks";
                     String tcnCacheName = cacheNameRoot + "/" + r.getRiskType()+ "/Tcn";
                     System.out.println("Writing to cache: " + tcnCacheName);
-                    IgniteCache<UUID,Double> tcnRisk = ignite.getOrCreateCache(tcnCacheName);
+                    IgniteCache<Tcn,Double> tcnRisk = ignite.getOrCreateCache(tcnCacheName);
                     System.out.println("Writing to cache: " + cacheNameRoot);
                     IgniteCache<String,Double> riskBook = ignite.getOrCreateCache(cacheNameRoot);
 

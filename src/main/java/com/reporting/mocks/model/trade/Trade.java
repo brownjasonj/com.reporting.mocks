@@ -6,28 +6,26 @@ import java.util.UUID;
 
 public abstract class Trade {
     protected TradeKind kind;
-    protected UUID tcn;
-    protected int version;
+    protected Tcn tcn;
     protected String book;
     protected TradeType tradeType;
     protected Double quantity;
     protected BuySell buySell;
 
-    protected Trade(TradeKind kind, TradeType tradeType, UUID tcn, int version, String book) {
+    protected Trade(TradeKind kind, TradeType tradeType, Tcn tcn, String book) {
         this.kind = kind;
         this.tradeType = tradeType;
         this.tcn = tcn;
-        this.version = version;
         this.book = book;
     }
 
     protected Trade(TradeKind kind, TradeType tradeType, String book) {
-        this(kind, tradeType, UUID.randomUUID(), 0, book);
+        this(kind, tradeType, new Tcn(), book);
     }
 
 
     public Trade(Trade trade) {
-        this(trade.getKind(), trade.getTradeType(), trade.getTcn(), trade.getVersion() + 1, trade.getBook());
+        this(trade.getKind(), trade.getTradeType(), trade.getTcn().getNewVersion(), trade.getBook());
     }
 
     public abstract Underlying getUnderlying();
@@ -36,12 +34,12 @@ public abstract class Trade {
         return kind;
     }
 
-    public UUID getTcn() {
+    public Tcn getTcn() {
         return tcn;
     }
 
     public int getVersion() {
-        return version;
+        return this.tcn.version;
     }
 
     public String getBook() {
@@ -64,6 +62,6 @@ public abstract class Trade {
 
     @Override
     public String toString() {
-        return "{Type: " + tradeType + ", Book: " + book + ", TCN: " + tcn + "/" + version + "}";
+        return "{Type: " + tradeType + ", Book: " + book + ", TCN: " + tcn + "}";
     }
 }

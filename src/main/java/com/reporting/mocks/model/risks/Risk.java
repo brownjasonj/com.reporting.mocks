@@ -1,10 +1,12 @@
 package com.reporting.mocks.model.risks;
 
+import com.reporting.mocks.model.trade.Tcn;
+
 import java.util.UUID;
 
 public abstract class Risk {
     protected String bookName;
-    protected UUID tcn;
+    protected Tcn tcn;
     protected UUID riskRun;
     protected RiskType riskType;
 
@@ -12,7 +14,7 @@ public abstract class Risk {
 
     }
 
-    protected Risk(UUID riskRun, String bookName, UUID tcn) {
+    protected Risk(UUID riskRun, String bookName, Tcn tcn) {
         this.bookName = bookName;
         this.riskRun = riskRun;
         this.tcn = tcn;
@@ -22,7 +24,7 @@ public abstract class Risk {
         return this.riskType;
     }
 
-    public UUID getTcn() {
+    public Tcn getTcn() {
         return tcn;
     }
 

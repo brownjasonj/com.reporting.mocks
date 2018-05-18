@@ -1,5 +1,6 @@
 package com.reporting.mocks.model.risks;
 
+import com.reporting.mocks.model.trade.Tcn;
 import com.reporting.mocks.model.underlying.Currency;
 
 import java.util.Random;
@@ -14,7 +15,7 @@ public class Pv extends Risk {
         this.riskType = RiskType.PV;
     }
 
-    public Pv(UUID riskRun, String bookName, UUID tcn, Currency currency) {
+    public Pv(UUID riskRun, String bookName, Tcn tcn, Currency currency) {
         super(riskRun, bookName, tcn);
         Random rand = new Random();
         this.currency = currency;

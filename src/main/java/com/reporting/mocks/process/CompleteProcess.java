@@ -7,6 +7,7 @@ import com.reporting.mocks.endpoints.ignite.IgniteListner;
 import com.reporting.mocks.endpoints.ignite.RiskRunIgnitePublisher;
 import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.model.*;
+import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.CalculationContextStore;
 import com.reporting.mocks.persistence.CalculationContextStoreFactory;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
@@ -63,7 +64,7 @@ public class CompleteProcess {
     public CompleteProcess(PricingGroupConfig config) {
         this.id = UUID.randomUUID();
         this.config = config;
-        this.tradeStore = TradeStoreFactory.newTradeStore(config.getPricingGroupId().getName());
+        this.tradeStore = TradeStoreFactory.get().create(config.getPricingGroupId().getName());
         this.calculationContextStore = CalculationContextStoreFactory.create(config.getPricingGroupId().getName());
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.riskResultQueue = new ArrayBlockingQueue<>(4096);
@@ -90,9 +91,9 @@ public class CompleteProcess {
             RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.riskResultQueue);
             new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
 
-            RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.riskResultQueue);
+            // RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.riskResultQueue);
 
-            //RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher(this.config.getPricingGroupId());
+            RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher(this.config.getPricingGroupId());
 
 
 
@@ -159,7 +160,8 @@ public class CompleteProcess {
 
                 // initiate construction of initial trade population
                 for (int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {
-                    this.tradeStore.putTrade(this.tradeGenerator.generateOneOtc());
+                    Trade newTrade = this.tradeGenerator.generateOneOtc();
+                    this.tradeStore.add(newTrade.getTcn(), newTrade);
                 }
 
                 this.init();

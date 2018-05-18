@@ -1,5 +1,6 @@
 package com.reporting.mocks.model;
 
+import com.reporting.mocks.model.trade.Tcn;
 import com.reporting.mocks.model.trade.Trade;
 
 import java.util.Collection;
@@ -9,11 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TradePopulation {
     protected UUID id;
-    protected ConcurrentHashMap<UUID, Trade> trades;
+    protected ConcurrentHashMap<Tcn, Trade> trades;
     protected Date asOf;
     protected DataMarkerType type;
 
-    public TradePopulation(ConcurrentHashMap<UUID, Trade> trades, DataMarkerType type) {
+    public TradePopulation(ConcurrentHashMap<Tcn, Trade> trades, DataMarkerType type) {
         this.type = type;
         this.id = UUID.randomUUID();
         this.trades = trades;
@@ -40,9 +41,9 @@ public class TradePopulation {
         return asOf;
     }
 
-    public Trade getTrade(UUID id) {
-        if (this.trades.containsKey(id)) {
-            return this.trades.get(id);
+    public Trade getTrade(Tcn tcn) {
+        if (this.trades.containsKey(tcn)) {
+            return this.trades.get(tcn);
         }
         else {
             return null;

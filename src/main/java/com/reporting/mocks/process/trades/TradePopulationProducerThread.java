@@ -51,17 +51,17 @@ public class TradePopulationProducerThread implements Runnable {
                 switch (tradeEvent) {
                     case New:
                         OtcTrade newTrade = this.tradeGenerator.generateOneOtc();
-                        this.tradeStore.putTrade(newTrade);
+                        this.tradeStore.add(newTrade.getTcn(), newTrade);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, newTrade)));
                         break;
                     case Modify:
-                        Trade tradeToModify = this.tradeStore.getTradeAtRandom();
+                        Trade tradeToModify = this.tradeStore.oneAtRandom();
                         Trade modifiedTrade = tradeToModify.getNewVersion();
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, modifiedTrade)));
                         break;
                     case Delete:
-                        Trade tradeToDelete = this.tradeStore.getTradeAtRandom();
-                        this.tradeStore.deleteTrade(tradeToDelete.getTcn());
+                        Trade tradeToDelete = this.tradeStore.oneAtRandom();
+                        this.tradeStore.delete(tradeToDelete.getTcn());
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, tradeToDelete)));
                         break;
                     default:

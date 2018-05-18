@@ -2,22 +2,40 @@ package com.reporting.mocks.persistence;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TradeStoreFactory {
-    protected static ConcurrentHashMap<String, TradeStore> tradeStores;
+public class TradeStoreFactory implements IPersistenceStoreFactory<TradeStore> {
+    protected static TradeStoreFactory singleton = null;
 
-    static {
-        TradeStoreFactory.tradeStores = new ConcurrentHashMap<>();
+    public static TradeStoreFactory get() {
+        if (TradeStoreFactory.singleton == null)
+            TradeStoreFactory.singleton = new TradeStoreFactory();
+        return TradeStoreFactory.singleton;
     }
 
-    public static TradeStore newTradeStore(String name) {
-        TradeStore store = new TradeStore();
-        TradeStoreFactory.tradeStores.put(name, store);
+    protected ConcurrentHashMap<String, TradeStore> tradeStores;
+
+    protected TradeStoreFactory() {
+        this.tradeStores = new ConcurrentHashMap<>();
+    }
+
+    @Override
+    public TradeStore create(String name) {
+        TradeStore store = new TradeStore(name);
+        this.tradeStores.put(name, store);
         return store;
     }
 
-    public static TradeStore getTradeStore(String name) {
-        if (TradeStoreFactory.tradeStores.containsKey(name))
-            return TradeStoreFactory.tradeStores.get(name);
+    @Override
+    public TradeStore get(String name) {
+        if (this.tradeStores.containsKey(name))
+            return this.tradeStores.get(name);
+        else
+            return null;
+    }
+
+    @Override
+    public TradeStore delete(String name) {
+        if (this.tradeStores.containsKey(name))
+            return this.tradeStores.remove(name);
         else
             return null;
     }

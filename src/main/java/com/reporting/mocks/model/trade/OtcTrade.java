@@ -26,6 +26,6 @@ public class OtcTrade extends Trade {
 
     @Override
     public String toString() {
-        return "{Type: " + this.tradeType + ", Book: " + book + ", TCN: " + tcn + "/" + version + "}";
+        return "{Type: " + this.tradeType + ", Book: " + book + ", TCN: " + tcn + "}";
     }
 }

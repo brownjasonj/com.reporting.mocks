@@ -51,16 +51,4 @@ public class TradeController {
             return null;
         }
     }
-
-    @RequestMapping(method = { RequestMethod.GET }, value = { "/getTrade/{pricingGroupName}/{populationId}/{tradeId}" }, produces = "application/json")
-    public Trade tradePopulations(@PathVariable String pricingGroupName, @PathVariable UUID populationId, @PathVariable UUID tradeId) {
-        CompleteProcess proc = CompleteProcess.getProcess(pricingGroupName);
-        if (proc != null) {
-            TradePopulation tradePopulation = proc.getTradePopulation(populationId);
-            if (tradePopulation != null)
-                return tradePopulation.getTrade(tradeId);
-        }
-        return null;
-    }
-
 }

@@ -1,5 +1,6 @@
 package com.reporting.mocks.model.risks;
 
+import com.reporting.mocks.model.trade.Tcn;
 import com.reporting.mocks.model.underlying.Currency;
 import com.reporting.mocks.model.underlying.Underlying;
 
@@ -15,7 +16,7 @@ public class Delta extends Risk {
         this.riskType = RiskType.DELTA;
     }
 
-    public Delta(UUID riskRun, String bookName, UUID tcn, Underlying currency) {
+    public Delta(UUID riskRun, String bookName, Tcn tcn, Underlying currency) {
         super(riskRun, bookName, tcn);
         this.underlying = currency;
         this.value = (new Random()).nextDouble();
