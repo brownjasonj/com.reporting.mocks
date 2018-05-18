@@ -15,8 +15,8 @@ public class Delta extends Risk {
         this.riskType = RiskType.DELTA;
     }
 
-    public Delta(UUID riskRun, UUID tcn, Underlying currency) {
-        super(riskRun, tcn);
+    public Delta(UUID riskRun, String bookName, UUID tcn, Underlying currency) {
+        super(riskRun, bookName, tcn);
         this.underlying = currency;
         this.value = (new Random()).nextDouble();
     }

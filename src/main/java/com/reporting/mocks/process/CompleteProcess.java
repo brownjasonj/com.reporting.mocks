@@ -6,11 +6,11 @@ import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.endpoints.ignite.IgniteListner;
 import com.reporting.mocks.endpoints.ignite.RiskRunIgnitePublisher;
 import com.reporting.mocks.generators.TradeGenerator;
-import com.reporting.mocks.model.PricingGroup;
+import com.reporting.mocks.model.*;
+import com.reporting.mocks.persistence.CalculationContextStore;
+import com.reporting.mocks.persistence.CalculationContextStoreFactory;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.response.RiskRunResult;
-import com.reporting.mocks.model.TradeLifecycle;
-import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.persistence.TradeStoreFactory;
 import com.reporting.mocks.process.intraday.IntradayEvent;
@@ -52,6 +52,7 @@ public class CompleteProcess {
     protected IntradayRiskEventProducerThread intradayRiskEventProducerThread;
 
     protected TradeStore tradeStore;
+    protected CalculationContextStore calculationContextStore;
     protected TradeGenerator tradeGenerator;
     protected BlockingQueue<TradeLifecycle> tradeQueue;
     protected TradePopulationProducerThread tradePopulationProducerThread;
@@ -63,6 +64,7 @@ public class CompleteProcess {
         this.id = UUID.randomUUID();
         this.config = config;
         this.tradeStore = TradeStoreFactory.newTradeStore(config.getPricingGroupId().getName());
+        this.calculationContextStore = CalculationContextStoreFactory.create(config.getPricingGroupId().getName());
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.riskResultQueue = new ArrayBlockingQueue<>(4096);
         this.intraDayEventQueue = new ArrayBlockingQueue(1024);
@@ -90,7 +92,7 @@ public class CompleteProcess {
 
             RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.riskResultQueue);
 
-            // RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher();
+            //RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher(this.config.getPricingGroupId());
 
 
 
@@ -115,7 +117,15 @@ public class CompleteProcess {
 
 
             // initiate intra-day risk jobs
-            this.intradayRiskEventProducerThread = new IntradayRiskEventProducerThread(this.config.getIntradayConfig(), this.tradeStore, this.intraDayEventQueue, riskRunPublisher);
+            this.intradayRiskEventProducerThread = new IntradayRiskEventProducerThread(
+                    this.config.getPricingGroupId(),
+                    this.config.getIntradayConfig(),
+                    this.tradeStore,
+                    this.calculationContextStore,
+                    this.intraDayEventQueue,
+                    riskRunPublisher,
+                    new MarketEnv(this.config.getPricingGroupId(), DataMarkerType.IND));
+
             new Thread(threadGroup, this.intradayRiskEventProducerThread, "IntradayRiskEvent").start();
 
             this.marketEventProducerThread.setRun(true);

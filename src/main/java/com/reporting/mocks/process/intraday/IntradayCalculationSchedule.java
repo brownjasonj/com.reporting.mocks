@@ -2,10 +2,7 @@ package com.reporting.mocks.process.intraday;
 
 import com.reporting.mocks.model.risks.RiskType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
     WARNING: Not thread safe

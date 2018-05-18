@@ -3,6 +3,7 @@ package com.reporting.mocks.model.risks;
 import java.util.UUID;
 
 public abstract class Risk {
+    protected String bookName;
     protected UUID tcn;
     protected UUID riskRun;
     protected RiskType riskType;
@@ -11,7 +12,8 @@ public abstract class Risk {
 
     }
 
-    protected Risk(UUID riskRun, UUID tcn) {
+    protected Risk(UUID riskRun, String bookName, UUID tcn) {
+        this.bookName = bookName;
         this.riskRun = riskRun;
         this.tcn = tcn;
     }
@@ -26,5 +28,9 @@ public abstract class Risk {
 
     public UUID getRiskRun() {
         return riskRun;
+    }
+
+    public String getBookName() {
+        return bookName;
     }
 }

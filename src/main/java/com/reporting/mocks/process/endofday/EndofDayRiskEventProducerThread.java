@@ -55,7 +55,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
                         MTSRRiskRunRequest riskRunRequest = new MTSRRiskRunRequest(RiskRunType.EndOfDay, market, tradePopulation, risk, 20);
                         List<RiskRunResult> results = RiskRunGenerator.generate(tradePopulation, riskRunRequest);
                         for(RiskRunResult r : results) {
-                            riskPublisher.send(r);
+                            riskPublisher.publish(r);
                         }
                     }
                 }

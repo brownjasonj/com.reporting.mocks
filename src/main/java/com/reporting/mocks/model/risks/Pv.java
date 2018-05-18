@@ -14,8 +14,8 @@ public class Pv extends Risk {
         this.riskType = RiskType.PV;
     }
 
-    public Pv(UUID riskRun, UUID tcn, Currency currency) {
-        super(riskRun, tcn);
+    public Pv(UUID riskRun, String bookName, UUID tcn, Currency currency) {
+        super(riskRun, bookName, tcn);
         Random rand = new Random();
         this.currency = currency;
         this.value = rand.nextDouble();
@@ -35,6 +35,6 @@ public class Pv extends Risk {
     }
 
     public Pv next(UUID riskRun) {
-        return new Pv(riskRun, this.tcn, this.currency);
+        return new Pv(riskRun, this.bookName, this.tcn, this.currency);
     }
 }
