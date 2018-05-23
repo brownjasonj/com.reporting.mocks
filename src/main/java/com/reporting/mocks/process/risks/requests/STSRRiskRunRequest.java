@@ -1,5 +1,6 @@
 package com.reporting.mocks.process.risks.requests;
 
+import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.risks.RiskType;
@@ -9,8 +10,8 @@ public class STSRRiskRunRequest extends RiskRunRequest {
     protected Trade trade;
     protected RiskType riskType;
 
-    public STSRRiskRunRequest(RiskRunType type, MarketEnv marketEnv, Trade trade, RiskType riskType) {
-        super(type, marketEnv.getId());
+    public STSRRiskRunRequest(RiskRunType type, CalculationContext calculationContext, Trade trade, RiskType riskType) {
+        super(type, calculationContext.getUri());
         this.trade = trade;
         this.riskType = riskType;
     }

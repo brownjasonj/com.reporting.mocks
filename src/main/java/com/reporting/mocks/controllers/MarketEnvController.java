@@ -12,10 +12,10 @@ public class MarketEnvController {
 
     @RequestMapping(method = { RequestMethod.GET }, value = { "/calculationcontext/pricinggroup" }, produces = "application/json")
     public Collection<CalculationContext> getCalculationContext(@RequestParam("name") String pricingGroupName) {
-        CalculationContextStore store = CalculationContextStoreFactory.get(pricingGroupName);
-        if (store != null) {
-            return store.getAll();
-        }
+//        CalculationContextStore store = CalculationContextStoreFactory.get(pricingGroupName);
+//        if (store != null) {
+//            return store.getAll();
+//        }
         return null;
     }
 

@@ -1,5 +1,6 @@
 package com.reporting.mocks.process.risks.requests;
 
+import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.risks.RiskType;
@@ -12,8 +13,8 @@ public class MTSRRiskRunRequest extends RiskRunRequest {
     protected RiskType riskType;
     protected int fragmentSize;
 
-    public MTSRRiskRunRequest(RiskRunType type, MarketEnv marketEnv, TradePopulation tradePop, RiskType riskType, int fragmentSize) {
-        super(type, marketEnv.getId());
+    public MTSRRiskRunRequest(RiskRunType type, CalculationContext calculationContext, TradePopulation tradePop, RiskType riskType, int fragmentSize) {
+        super(type, calculationContext.getUri());
         this.tradePopulationId = tradePop.getId();
         this.riskType = riskType;
         this.fragmentSize = fragmentSize;

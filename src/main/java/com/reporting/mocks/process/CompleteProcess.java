@@ -18,7 +18,11 @@ import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.RiskRunConsumerThread;
 import com.reporting.mocks.process.trades.TradePopulationProducerThread;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -65,7 +69,7 @@ public class CompleteProcess {
         this.id = UUID.randomUUID();
         this.config = config;
         this.tradeStore = TradeStoreFactory.get().create(config.getPricingGroupId().getName());
-        this.calculationContextStore = CalculationContextStoreFactory.create(config.getPricingGroupId().getName());
+        this.calculationContextStore = CalculationContextStoreFactory.create(config.getPricingGroupId());
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.riskResultQueue = new ArrayBlockingQueue<>(4096);
         this.intraDayEventQueue = new ArrayBlockingQueue(1024);
@@ -104,14 +108,23 @@ public class CompleteProcess {
 
             // kick-off end-of-day
 
-            EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(this.config, tradeStore, riskRunPublisher);
+            EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(
+                    this.config.getPricingGroupId(),
+                    this.config.getEndofdayConfig(),
+                    tradeStore,
+                    this.calculationContextStore,
+                    riskRunPublisher);
             new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
 
             // kick-off start-of-day
 
             // start intra-day process
             // initiate market environment change process
-            this.marketEventProducerThread = new MarketEventProducerThread(this.config.getPricingGroupId(), this.config.getMarketPeriodicity(), this.intraDayEventQueue);
+            this.marketEventProducerThread = new MarketEventProducerThread(
+                    this.config.getPricingGroupId(),
+                    riskRunPublisher,
+                    this.config.getMarketPeriodicity(),
+                    this.intraDayEventQueue);
             // start the market event thread
             new Thread(threadGroup, this.marketEventProducerThread, "MarketEventProducer").start();
 
@@ -128,9 +141,6 @@ public class CompleteProcess {
                     new MarketEnv(this.config.getPricingGroupId(), DataMarkerType.IND));
 
             new Thread(threadGroup, this.intradayRiskEventProducerThread, "IntradayRiskEvent").start();
-
-            this.marketEventProducerThread.setRun(true);
-
 
             //TradeConfig tradeConfig, TradeStore tradeStore, BlockingQueue<Trade> tradeQueue
             this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(), this.tradeStore, this.tradeGenerator, this.intraDayEventQueue);

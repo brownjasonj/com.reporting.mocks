@@ -4,10 +4,13 @@ import com.reporting.mocks.configuration.EndofDayConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.generators.RiskRunGenerator;
+import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.TradePopulation;
+import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
+import com.reporting.mocks.persistence.CalculationContextStore;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.process.risks.RiskRunType;
 import com.reporting.mocks.process.risks.requests.MTSRRiskRunRequest;
@@ -27,13 +30,21 @@ public class EndofDayRiskEventProducerThread implements Runnable {
     protected TradeStore tradeStore;
     protected EndofDayConfig config;
     protected PricingGroup pricingGroup;
+    protected CalculationContext currentCalculationContext;
+    protected CalculationContextStore calculationContextStore;
 
-    public EndofDayRiskEventProducerThread(PricingGroupConfig config, TradeStore tradeStore, RiskRunPublisher riskPublisher) {
-        this.pricingGroup = config.getPricingGroupId();
-        this.config = config.getEndofdayConfig();
+    public EndofDayRiskEventProducerThread(
+            PricingGroup pricingGroup,
+            EndofDayConfig eodConfig,
+            TradeStore tradeStore,
+            CalculationContextStore calculationContextStore,
+            RiskRunPublisher riskPublisher) {
+        this.pricingGroup = pricingGroup;
+        this.config = eodConfig;
         this.tradeStore = tradeStore;
         this.tradePopulationIdQueue = new ArrayBlockingQueue(1024);;
         this.riskPublisher = riskPublisher;
+        this.calculationContextStore = calculationContextStore;
     }
 
     @Override
@@ -51,8 +62,20 @@ public class EndofDayRiskEventProducerThread implements Runnable {
 
                 if (tradePopulation != null) {
                     MarketEnv market = new MarketEnv(this.pricingGroup, tradePopulation.getType());
+                    this.currentCalculationContext = this.calculationContextStore.create();
+                    for(RiskType riskType : this.config.getRisks()) {
+                        this.currentCalculationContext.add(riskType, market);
+                    }
+
+                    riskPublisher.publish(market);
+                    riskPublisher.publish(this.currentCalculationContext);
+
                     for (RiskType risk : this.config.getRisks()) {
-                        MTSRRiskRunRequest riskRunRequest = new MTSRRiskRunRequest(RiskRunType.EndOfDay, market, tradePopulation, risk, 20);
+                        MTSRRiskRunRequest riskRunRequest = new MTSRRiskRunRequest(
+                                RiskRunType.EndOfDay,
+                                this.currentCalculationContext,
+                                tradePopulation, risk,
+                                20);
                         List<RiskRunResult> results = RiskRunGenerator.generate(tradePopulation, riskRunRequest);
                         for(RiskRunResult r : results) {
                             riskPublisher.publish(r);

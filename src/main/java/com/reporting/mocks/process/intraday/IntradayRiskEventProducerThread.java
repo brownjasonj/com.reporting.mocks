@@ -40,7 +40,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
         this.riskPublisher = riskPublisher;
         this.calculationSchedule = new IntradayCalculationSchedule();
         this.calculationContextStore = calculationContextStore;
-        this.currentCalculationContext = calculationContextStore.add(new CalculationContext(pricingGroup));
+        this.currentCalculationContext = calculationContextStore.create();
         for(IntradayRiskType riskType : config.getRisks()) {
             this.calculationSchedule.add(riskType.getPeriodicity(), riskType.getRiskType());
             this.currentCalculationContext.add(riskType.getRiskType(), market);
@@ -65,6 +65,8 @@ public class IntradayRiskEventProducerThread implements Runnable {
                         // 3. chunk the risks into fragments
                         // 4. send to risk queue
 
+                        riskPublisher.publish(marketEvent.getEvent());
+
                         // this gets and creates a new trade population
                         this.tradePopulation = this.tradeStore.getTradePopulation(DataMarkerType.IND);
 
@@ -73,13 +75,21 @@ public class IntradayRiskEventProducerThread implements Runnable {
 
                         List<RiskType> risksToRun = this.calculationSchedule.getRisksToRun();
 
+
                         // set the markets for each of the risks to run with given market
-                        this.currentCalculationContext = this.calculationContextStore.add(new CalculationContext(this.currentCalculationContext));
+                        this.currentCalculationContext = this.calculationContextStore.createCopy(this.currentCalculationContext);
                         this.currentCalculationContext.update(risksToRun, marketEvent.getEvent());
+
+                        this.riskPublisher.publish(this.currentCalculationContext);
 
                         // RiskRunRequest(RiskRunType type, MarketEnv marketEnv, TradePopulation tradePop, List< RiskType > riskTypes, int fragmentSize)
                         for(RiskType riskType : risksToRun) {
-                            MTSRRiskRunRequest riskRunRequest = new MTSRRiskRunRequest(RiskRunType.Intraday, marketEvent.getEvent(), tradePopulation, riskType, 20);
+                            MTSRRiskRunRequest riskRunRequest = new MTSRRiskRunRequest(
+                                    RiskRunType.Intraday,
+                                    this.currentCalculationContext,
+                                    tradePopulation,
+                                    riskType,
+                                    20);
                             List<RiskRunResult> results = RiskRunGenerator.generate(this.tradePopulation, riskRunRequest);
                             for(RiskRunResult r : results) {
                                 riskPublisher.publish(r);
@@ -104,7 +114,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                         for(IntradayRiskType irt : config.getRisks()) {
                                             STSRRiskRunRequest riskRunRequest = new STSRRiskRunRequest(
                                                     RiskRunType.Intraday,
-                                                    this.currentCalculationContext.get(irt.getRiskType()),
+                                                    this.currentCalculationContext,
                                                     trade,
                                                     irt.getRiskType());
                                             List<RiskRunResult> results = RiskRunGenerator.generate(riskRunRequest);
@@ -125,7 +135,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                         for(IntradayRiskType irt : config.getRisks()) {
                                             STSRRiskRunRequest riskRunRequest = new STSRRiskRunRequest(
                                                     RiskRunType.Intraday,
-                                                    this.currentCalculationContext.get(irt.getRiskType()),
+                                                    this.currentCalculationContext,
                                                     trade,
                                                     irt.getRiskType());
                                             List<RiskRunResult> results = RiskRunGenerator.generate(riskRunRequest);

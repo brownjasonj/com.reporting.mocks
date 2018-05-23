@@ -1,7 +1,10 @@
 package com.reporting.mocks.model;
 
 import com.reporting.mocks.model.risks.RiskType;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.*;
 
 /*
@@ -11,12 +14,25 @@ import java.util.*;
  */
 public class CalculationContext {
     UUID id;
+    URI uri;
     Date timeStamp;
     PricingGroup pricingGroup;
     Map<RiskType, MarketEnv> markets;
 
+    public static UUID getIdFromURI(URI uri) {
+        MultiValueMap<String, String> parameters =
+                UriComponentsBuilder.fromUri(uri).build().getQueryParams();
+        if (parameters.containsKey("id")) {
+            List<String> values = parameters.get("id");
+            if (values.size() == 1)
+                return UUID.fromString(values.get(0));
+        }
+        return null;
+    }
+
     public CalculationContext(PricingGroup pricingGroup) {
         this.id = UUID.randomUUID();
+        this.uri = ModelObjectUriGenerator.getCalculationContextURI(pricingGroup, this.id);
         this.timeStamp = new Date();
         this.pricingGroup = pricingGroup;
         this.markets = new HashMap<>();
@@ -42,8 +58,9 @@ public class CalculationContext {
 
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getId() { return this.id; }
+    public URI getUri() {
+        return this.uri;
     }
 
     public Date getTimeStamp() {
