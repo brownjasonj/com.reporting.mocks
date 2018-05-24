@@ -1,26 +1,27 @@
 package com.reporting.mocks.process.risks;
 
-import com.reporting.mocks.endpoints.kafka.MRRiskResultKafkaProducer;
-import com.reporting.mocks.process.risks.response.MRRunResponse;
-import com.reporting.mocks.process.risks.response.RiskRunResult;
+import com.google.gson.Gson;
 
 import java.util.concurrent.BlockingQueue;
 
 public class RiskRunConsumerThread implements Runnable {
-    protected BlockingQueue<RiskRunResult> riskResultQueue;
+    protected BlockingQueue<RiskResult> riskResultQueue;
 
-    public RiskRunConsumerThread(BlockingQueue<RiskRunResult> riskResultQueue) {
+    public RiskRunConsumerThread(BlockingQueue<RiskResult> riskResultQueue) {
         this.riskResultQueue = riskResultQueue;
     }
 
     @Override
     public void run() {
-
+        Gson gson = new Gson();
         while(true) {
             try {
-                RiskRunResult result = this.riskResultQueue.take();
+                RiskResult result = this.riskResultQueue.take();
 
-                System.out.println("{Risk Result: (" + result.getRequest().getType() + "): " + result.getId() + " Risk: " + result.getRequest() + " fragment: " + result.getFragmentNo() + "/" + result.getFragmentCount() + "}") ;
+                String resultString = gson.toJson(result);
+
+                System.out.println(resultString);
+                //System.out.println("{Risk Result: (" + result.getRequest().getType() + "): " + result.getId() + " Risk: " + result.getRequest() + " fragment: " + result.getFragmentNo() + "/" + result.getFragmentCount() + "}") ;
             }
             catch (InterruptedException e) {
                 e.printStackTrace();

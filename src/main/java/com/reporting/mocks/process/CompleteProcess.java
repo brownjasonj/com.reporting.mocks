@@ -3,26 +3,21 @@ package com.reporting.mocks.process;
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.JavaQueue.RiskRunResultQueuePublisher;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
-import com.reporting.mocks.endpoints.ignite.IgniteListner;
-import com.reporting.mocks.endpoints.ignite.RiskRunIgnitePublisher;
 import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.model.*;
+import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.CalculationContextStore;
 import com.reporting.mocks.persistence.CalculationContextStoreFactory;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
-import com.reporting.mocks.process.risks.response.RiskRunResult;
+import com.reporting.mocks.process.risks.RiskResult;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.persistence.TradeStoreFactory;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.RiskRunConsumerThread;
 import com.reporting.mocks.process.trades.TradePopulationProducerThread;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -61,7 +56,7 @@ public class CompleteProcess {
     protected TradeGenerator tradeGenerator;
     protected BlockingQueue<TradeLifecycle> tradeQueue;
     protected TradePopulationProducerThread tradePopulationProducerThread;
-    protected BlockingQueue<RiskRunResult> riskResultQueue;
+    protected BlockingQueue<RiskResult> riskResultQueue;
 
     protected ThreadGroup threadGroup;
 
@@ -79,7 +74,7 @@ public class CompleteProcess {
         return this.tradeStore.getAllTradePopulation();
     }
 
-    public TradePopulation getTradePopulation(UUID tradePopulationId) {
+    public TradePopulation getTradePopulation(TradePopulationId tradePopulationId) {
         return this.tradeStore.getTradePopulation(tradePopulationId);
     }
 
@@ -95,9 +90,9 @@ public class CompleteProcess {
             RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.riskResultQueue);
             new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
 
-            // RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.riskResultQueue);
+            RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.riskResultQueue);
 
-            RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher(this.config.getPricingGroupId());
+            // RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher(this.config.getPricingGroupId());
 
 
 
@@ -145,8 +140,6 @@ public class CompleteProcess {
             //TradeConfig tradeConfig, TradeStore tradeStore, BlockingQueue<Trade> tradeQueue
             this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(), this.tradeStore, this.tradeGenerator, this.intraDayEventQueue);
             new Thread(threadGroup, this.tradePopulationProducerThread, "TradePopulationProducer").start();
-
-            // new Thread(new IgniteListner(riskRunPublisher.getCache())).start();
 
 
         }

@@ -1,19 +1,18 @@
 package com.reporting.mocks.persistence;
 
 import com.reporting.mocks.model.*;
+import com.reporting.mocks.model.id.MarketEnvId;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MarketStore {
-    protected URI storeUri;
+    protected UUID storeId;
     protected PricingGroup pricingGroup;
-    protected ConcurrentHashMap<UUID, MarketEnv> marketEnv;
+    protected ConcurrentHashMap<MarketEnvId, MarketEnv> marketEnv;
 
     public MarketStore(PricingGroup pricingGroup) {
-        this.storeUri = ModelObjectUriGenerator.getMarketEnvStoreURI(pricingGroup);
         this.pricingGroup = pricingGroup;
         this.marketEnv = new ConcurrentHashMap<>();
     }
@@ -24,17 +23,12 @@ public class MarketStore {
         return marketEnv;
     }
 
-    public MarketEnv get(UUID id) {
+    public MarketEnv get(MarketEnvId id) {
         return this.marketEnv.get(id);
     }
 
-    public MarketEnv get(URI uri) {
-        UUID id = CalculationContext.getIdFromURI(uri);
-        return this.get(id);
-    }
-
-    public URI getStoreUri() {
-        return storeUri;
+    public UUID getStoreId() {
+        return storeId;
     }
 
     public PricingGroup getPricingGroup() {

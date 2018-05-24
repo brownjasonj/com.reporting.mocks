@@ -1,7 +1,9 @@
 package com.reporting.mocks.persistence;
 
 import com.reporting.mocks.model.DataMarkerType;
+import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.TradePopulation;
+import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Tcn;
 import com.reporting.mocks.model.trade.Trade;
 
@@ -13,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TradeStore implements IPersistenceStore<Tcn, Trade> {
     protected String name;
     protected ConcurrentHashMap<Tcn, Trade> trades;
-    protected ConcurrentHashMap<UUID, TradePopulation> tradePopulation;
+    protected ConcurrentHashMap<TradePopulationId, TradePopulation> tradePopulation;
 
     public TradeStore(String name) {
         this.name = name;
@@ -69,12 +71,12 @@ public class TradeStore implements IPersistenceStore<Tcn, Trade> {
     }
 
     public TradePopulation getTradePopulation(DataMarkerType type) {
-        TradePopulation tp = new TradePopulation(new ConcurrentHashMap<>(this.trades), type);
+        TradePopulation tp = new TradePopulation(this.getName(), new ConcurrentHashMap<>(this.trades), type);
         this.tradePopulation.put(tp.getId(), tp);
         return tp;
     }
 
-    public TradePopulation getTradePopulation(UUID id) {
+    public TradePopulation getTradePopulation(TradePopulationId id) {
         if (this.tradePopulation.containsKey(id)) {
             return this.tradePopulation.get(id);
         }

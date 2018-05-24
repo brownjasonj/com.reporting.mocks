@@ -1,5 +1,7 @@
 package com.reporting.mocks.persistence;
 
+import com.reporting.mocks.model.PricingGroup;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TradeStoreFactory implements IPersistenceStoreFactory<TradeStore> {
@@ -20,7 +22,7 @@ public class TradeStoreFactory implements IPersistenceStoreFactory<TradeStore> {
     @Override
     public TradeStore create(String name) {
         TradeStore store = new TradeStore(name);
-        this.tradeStores.put(name, store);
+        this.tradeStores.put(store.getName(), store);
         return store;
     }
 

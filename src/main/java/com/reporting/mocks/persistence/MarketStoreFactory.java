@@ -2,11 +2,11 @@ package com.reporting.mocks.persistence;
 
 import com.reporting.mocks.model.PricingGroup;
 
-import java.net.URI;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MarketStoreFactory {
-    protected static ConcurrentHashMap<URI, MarketStore> stores;
+    protected static ConcurrentHashMap<UUID, MarketStore> stores;
 
     static {
         stores = new ConcurrentHashMap<>();
@@ -14,7 +14,7 @@ public class MarketStoreFactory {
 
     public static MarketStore create(PricingGroup pricingGroup) {
         MarketStore store = new MarketStore(pricingGroup);
-        stores.put(store.getStoreUri(), store);
+        stores.put(store.getStoreId(), store);
         return store;
     }
 

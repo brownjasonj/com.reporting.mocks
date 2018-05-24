@@ -9,13 +9,11 @@ import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.CalculationContextStore;
 import com.reporting.mocks.persistence.TradeStore;
-import com.reporting.mocks.process.risks.requests.MTSRRiskRunRequest;
-import com.reporting.mocks.process.risks.requests.STSRRiskRunRequest;
-import com.reporting.mocks.process.risks.response.RiskRunResult;
-import com.reporting.mocks.process.risks.RiskRunType;
+import com.reporting.mocks.process.risks.RiskResult;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.stream.Collectors;
 
 public class IntradayRiskEventProducerThread implements Runnable {
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
@@ -83,17 +81,14 @@ public class IntradayRiskEventProducerThread implements Runnable {
                         this.riskPublisher.publish(this.currentCalculationContext);
 
                         // RiskRunRequest(RiskRunType type, MarketEnv marketEnv, TradePopulation tradePop, List< RiskType > riskTypes, int fragmentSize)
-                        for(RiskType riskType : risksToRun) {
-                            MTSRRiskRunRequest riskRunRequest = new MTSRRiskRunRequest(
-                                    RiskRunType.Intraday,
-                                    this.currentCalculationContext,
-                                    tradePopulation,
-                                    riskType,
-                                    20);
-                            List<RiskRunResult> results = RiskRunGenerator.generate(this.tradePopulation, riskRunRequest);
-                            for(RiskRunResult r : results) {
-                                riskPublisher.publish(r);
-                            }
+                        List<RiskResult> results = RiskRunGenerator.generate(
+                                currentCalculationContext,
+                                tradePopulation,
+                                risksToRun,
+                                20);
+
+                        for(RiskResult r : results) {
+                            riskPublisher.publish(r);
                         }
                     }
                     break;
@@ -111,16 +106,14 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                     Trade existingTrade = this.tradePopulation.getTrade(trade.getTcn());
                                     if (existingTrade == null)  {
                                         // caclulate all the risks for this trade, since it is not in current population or has a different version
-                                        for(IntradayRiskType irt : config.getRisks()) {
-                                            STSRRiskRunRequest riskRunRequest = new STSRRiskRunRequest(
-                                                    RiskRunType.Intraday,
-                                                    this.currentCalculationContext,
-                                                    trade,
-                                                    irt.getRiskType());
-                                            List<RiskRunResult> results = RiskRunGenerator.generate(riskRunRequest);
-                                            for(RiskRunResult r : results) {
-                                                riskPublisher.publish(r);
-                                            }
+                                        List<RiskResult> results = RiskRunGenerator.generate(
+                                                currentCalculationContext,
+                                                tradePopulation,
+                                                config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
+                                                20);
+
+                                        for(RiskResult r : results) {
+                                            riskPublisher.publish(r);
                                         }
                                     }
                                 }
@@ -132,16 +125,14 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                     Trade existingTrade = this.tradePopulation.getTrade(trade.getTcn());
                                     if (existingTrade == null || trade.getVersion() != existingTrade.getVersion())  {
                                         // caclulate all the risks for this trade, since it is not in current population or has a different version
-                                        for(IntradayRiskType irt : config.getRisks()) {
-                                            STSRRiskRunRequest riskRunRequest = new STSRRiskRunRequest(
-                                                    RiskRunType.Intraday,
-                                                    this.currentCalculationContext,
-                                                    trade,
-                                                    irt.getRiskType());
-                                            List<RiskRunResult> results = RiskRunGenerator.generate(riskRunRequest);
-                                            for(RiskRunResult r : results) {
-                                                riskPublisher.publish(r);
-                                            }
+                                        List<RiskResult> results = RiskRunGenerator.generate(
+                                                currentCalculationContext,
+                                                tradePopulation,
+                                                config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
+                                                20);
+
+                                        for(RiskResult r : results) {
+                                            riskPublisher.publish(r);
                                         }
                                     }
                                 }

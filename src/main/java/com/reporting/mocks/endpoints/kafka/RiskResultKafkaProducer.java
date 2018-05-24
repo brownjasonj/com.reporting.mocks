@@ -1,8 +1,7 @@
 package com.reporting.mocks.endpoints.kafka;
 
-import com.reporting.mocks.process.risks.response.MRRunResponse;
-import com.reporting.mocks.process.risks.response.RiskRunResult;
-import com.reporting.mocks.process.risks.response.SRRunResponse;
+import com.google.gson.Gson;
+import com.reporting.mocks.process.risks.RiskResult;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -10,24 +9,25 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import java.util.Properties;
 import java.util.UUID;
 
-public class SRRiskResultKafkaProducer {
+public class RiskResultKafkaProducer {
     private final String BOOTSTRAPSERVER =  "localhost:9092";
-    private final String RISKRESULT = "srriskresult";
+    private final String RISKRESULT = "RiskResult";
     private Properties kafkaProperties;
     private Producer producer;
 
-    public SRRiskResultKafkaProducer() {
+    public RiskResultKafkaProducer() {
         this.kafkaProperties = new Properties();
 
         this.kafkaProperties.put("bootstrap.servers", this.BOOTSTRAPSERVER);
         this.kafkaProperties.put("key.serializer", "com.reporting.mocks.endpoints.kafka.UUIDSerializer");
-        this.kafkaProperties.put("value.serializer", "com.reporting.mocks.endpoints.kafka.SRRiskRunResultSerializer");
+        this.kafkaProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-        this.producer = new KafkaProducer<UUID,RiskRunResult>(this.kafkaProperties);
+        this.producer = new KafkaProducer<UUID,String>(this.kafkaProperties);
     }
 
-    public void send(SRRunResponse riskResult) {
-        ProducerRecord<UUID, SRRunResponse> record = new ProducerRecord<>(this.RISKRESULT, riskResult.getId(), riskResult);
+    public void send(RiskResult riskResult) {
+        Gson gson = new Gson();
+        ProducerRecord<UUID, String> record = new ProducerRecord<>(this.RISKRESULT, riskResult.getRiskRunId().getId(), gson.toJson(riskResult));
         try {
             this.producer.send(record).get();
         }
@@ -35,4 +35,5 @@ public class SRRiskResultKafkaProducer {
             e.printStackTrace();
         }
     }
+
 }

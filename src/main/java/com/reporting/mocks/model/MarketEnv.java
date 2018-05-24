@@ -1,36 +1,31 @@
 package com.reporting.mocks.model;
 
-import java.net.URI;
+import com.reporting.mocks.model.id.MarketEnvId;
+
 import java.util.Date;
-import java.util.UUID;
 
 public class MarketEnv {
-    protected UUID id;
-    protected URI uri;
+    protected MarketEnvId marketEnvId;
     protected Date asOf;
-    protected PricingGroup pricingGroup;
+//    protected PricingGroup pricingGroup;
     protected DataMarkerType type;
 
     public MarketEnv(PricingGroup pricingGroup, DataMarkerType type) {
-        this.id = UUID.randomUUID();
-        this.uri = ModelObjectUriGenerator.getMarketEnvURI(pricingGroup, type, id);
+        this.marketEnvId= new MarketEnvId(pricingGroup.getName());
         this.asOf = new Date();
-        this.pricingGroup = pricingGroup;
+//        this.pricingGroup = pricingGroup;
         this.type = type;
     }
 
-    public UUID getId() { return this.id; }
-    public URI getUri() {
-        return uri;
-    }
+    public MarketEnvId getId() { return this.marketEnvId; }
 
     public Date getAsOf() {
         return asOf;
     }
 
-    public PricingGroup getPricingGroup() {
-        return pricingGroup;
-    }
+//    public PricingGroup getPricingGroup() {
+//        return pricingGroup;
+//    }
 
     public DataMarkerType getType() {
         return type;

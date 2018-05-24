@@ -28,18 +28,6 @@ public class CalculationContextStoreFactory {
             return null;
     }
 
-    public static CalculationContext get(URI ccUri) {
-        try {
-            URI path = new URI(ccUri.getPath());
-            CalculationContextStore store = stores.get(path);
-            CalculationContext cc = store.get(ccUri);
-            return cc;
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
     public static Enumeration<URI> getStoreNames() {
         return stores.keys();
     }

@@ -3,6 +3,7 @@ package com.reporting.mocks.persistence;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.ModelObjectUriGenerator;
 import com.reporting.mocks.model.PricingGroup;
+import com.reporting.mocks.model.id.CalculationContextId;
 
 import java.net.URI;
 import java.util.Collection;
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CalculationContextStore {
     protected URI storeUri;
     protected PricingGroup pricingGroup;
-    protected ConcurrentHashMap<UUID, CalculationContext> calculationContexts;
+    protected ConcurrentHashMap<CalculationContextId, CalculationContext> calculationContexts;
 
     public CalculationContextStore(PricingGroup pricingGroup) {
         this.pricingGroup = pricingGroup;
@@ -25,7 +26,7 @@ public class CalculationContextStore {
     }
 
     public CalculationContext create() {
-        CalculationContext newCC = new CalculationContext(this.pricingGroup);
+        CalculationContext newCC = new CalculationContext(this.pricingGroup.getName());
         this.calculationContexts.put(newCC.getId(), newCC);
         return newCC;
     }
@@ -38,10 +39,6 @@ public class CalculationContextStore {
 
     public CalculationContext get(UUID id) {
         return calculationContexts.get(id);
-    }
-
-    public CalculationContext get(URI uri) {
-        return this.calculationContexts.get(CalculationContext.getIdFromURI(uri));
     }
 
     public URI getStoreUri() {

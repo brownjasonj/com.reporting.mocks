@@ -1,10 +1,9 @@
 package com.reporting.mocks.model;
 
+import com.reporting.mocks.model.id.CalculationContextId;
+import com.reporting.mocks.model.id.MarketEnvId;
 import com.reporting.mocks.model.risks.RiskType;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.*;
 
 /*
@@ -13,65 +12,43 @@ import java.util.*;
     risk.
  */
 public class CalculationContext {
-    UUID id;
-    URI uri;
-    Date timeStamp;
-    PricingGroup pricingGroup;
-    Map<RiskType, MarketEnv> markets;
+    protected CalculationContextId calculationContextId;
+    protected Date timeStamp;
+    protected Map<RiskType, MarketEnvId> markets;
 
-    public static UUID getIdFromURI(URI uri) {
-        MultiValueMap<String, String> parameters =
-                UriComponentsBuilder.fromUri(uri).build().getQueryParams();
-        if (parameters.containsKey("id")) {
-            List<String> values = parameters.get("id");
-            if (values.size() == 1)
-                return UUID.fromString(values.get(0));
-        }
-        return null;
-    }
-
-    public CalculationContext(PricingGroup pricingGroup) {
-        this.id = UUID.randomUUID();
-        this.uri = ModelObjectUriGenerator.getCalculationContextURI(pricingGroup, this.id);
+    public CalculationContext(String pricingGroupName) {
+        this.calculationContextId = new CalculationContextId(pricingGroupName);
         this.timeStamp = new Date();
-        this.pricingGroup = pricingGroup;
         this.markets = new HashMap<>();
     }
 
     public CalculationContext(CalculationContext calcContext) {
-        this(calcContext.pricingGroup);
+        this(calcContext.calculationContextId.getPricingGroupName());
         this.markets = new HashMap<>(calcContext.markets);
     }
 
     public void update(List<RiskType> riskTypes, MarketEnv marketEnv) {
         for(RiskType riskType : riskTypes) {
-            markets.put(riskType, marketEnv);
+            markets.put(riskType, marketEnv.getId());
         }
     }
 
     public void add(RiskType riskType, MarketEnv marketEnv) {
-        this.markets.put(riskType, marketEnv);
+        this.markets.put(riskType, marketEnv.getId());
     }
 
-    public MarketEnv get(RiskType riskType) {
+    public MarketEnvId get(RiskType riskType) {
         return markets.get(riskType);
 
     }
 
-    public UUID getId() { return this.id; }
-    public URI getUri() {
-        return this.uri;
-    }
+    public CalculationContextId getId() { return this.calculationContextId; }
 
     public Date getTimeStamp() {
         return timeStamp;
     }
 
-    public PricingGroup getPricingGroup() {
-        return pricingGroup;
-    }
-
-    public Map<RiskType, MarketEnv> getMarkets() {
+    public Map<RiskType, MarketEnvId> getMarkets() {
         return markets;
     }
 }
