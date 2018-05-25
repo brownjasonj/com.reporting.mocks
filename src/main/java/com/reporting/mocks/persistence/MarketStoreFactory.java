@@ -6,7 +6,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MarketStoreFactory {
-    protected static ConcurrentHashMap<UUID, MarketStore> stores;
+    protected static ConcurrentHashMap<String, MarketStore> stores;
 
     static {
         stores = new ConcurrentHashMap<>();
@@ -14,7 +14,7 @@ public class MarketStoreFactory {
 
     public static MarketStore create(PricingGroup pricingGroup) {
         MarketStore store = new MarketStore(pricingGroup);
-        stores.put(store.getStoreId(), store);
+        stores.put(pricingGroup.getName(), store);
         return store;
     }
 

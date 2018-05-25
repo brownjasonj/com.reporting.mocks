@@ -7,12 +7,9 @@ import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
-import com.reporting.mocks.persistence.CalculationContextStore;
-import com.reporting.mocks.persistence.CalculationContextStoreFactory;
+import com.reporting.mocks.persistence.*;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.RiskResult;
-import com.reporting.mocks.persistence.TradeStore;
-import com.reporting.mocks.persistence.TradeStoreFactory;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.RiskRunConsumerThread;
@@ -53,6 +50,7 @@ public class CompleteProcess {
 
     protected TradeStore tradeStore;
     protected CalculationContextStore calculationContextStore;
+    protected MarketStore marketStore;
     protected TradeGenerator tradeGenerator;
     protected BlockingQueue<TradeLifecycle> tradeQueue;
     protected TradePopulationProducerThread tradePopulationProducerThread;
@@ -65,6 +63,7 @@ public class CompleteProcess {
         this.config = config;
         this.tradeStore = TradeStoreFactory.get().create(config.getPricingGroupId().getName());
         this.calculationContextStore = CalculationContextStoreFactory.create(config.getPricingGroupId());
+        this.marketStore = MarketStoreFactory.create(config.getPricingGroupId());
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.riskResultQueue = new ArrayBlockingQueue<>(4096);
         this.intraDayEventQueue = new ArrayBlockingQueue(1024);
@@ -75,7 +74,7 @@ public class CompleteProcess {
     }
 
     public TradePopulation getTradePopulation(TradePopulationId tradePopulationId) {
-        return this.tradeStore.getTradePopulation(tradePopulationId);
+        return this.tradeStore.get(tradePopulationId.getId());
     }
 
     public PricingGroup getPricingGroupId() {
@@ -107,6 +106,7 @@ public class CompleteProcess {
                     this.config.getPricingGroupId(),
                     this.config.getEndofdayConfig(),
                     tradeStore,
+                    marketStore,
                     this.calculationContextStore,
                     riskRunPublisher);
             new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
@@ -117,6 +117,7 @@ public class CompleteProcess {
             // initiate market environment change process
             this.marketEventProducerThread = new MarketEventProducerThread(
                     this.config.getPricingGroupId(),
+                    this.marketStore,
                     riskRunPublisher,
                     this.config.getMarketPeriodicity(),
                     this.intraDayEventQueue);
@@ -130,6 +131,7 @@ public class CompleteProcess {
                     this.config.getPricingGroupId(),
                     this.config.getIntradayConfig(),
                     this.tradeStore,
+                    this.marketStore,
                     this.calculationContextStore,
                     this.intraDayEventQueue,
                     riskRunPublisher,

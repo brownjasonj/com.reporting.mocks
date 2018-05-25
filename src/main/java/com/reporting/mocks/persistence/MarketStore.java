@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MarketStore {
     protected UUID storeId;
     protected PricingGroup pricingGroup;
-    protected ConcurrentHashMap<MarketEnvId, MarketEnv> marketEnv;
+    protected ConcurrentHashMap<UUID, MarketEnv> marketEnv;
 
     public MarketStore(PricingGroup pricingGroup) {
         this.pricingGroup = pricingGroup;
@@ -19,11 +19,11 @@ public class MarketStore {
 
     public MarketEnv create(DataMarkerType type) {
         MarketEnv marketEnv = new MarketEnv(this.pricingGroup, type);
-        this.marketEnv.put(marketEnv.getId(), marketEnv);
+        this.marketEnv.put(marketEnv.getId().getId(), marketEnv);
         return marketEnv;
     }
 
-    public MarketEnv get(MarketEnvId id) {
+    public MarketEnv get(UUID id) {
         return this.marketEnv.get(id);
     }
 

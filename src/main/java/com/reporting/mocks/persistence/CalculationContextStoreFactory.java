@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CalculationContextStoreFactory {
-    protected static ConcurrentHashMap<URI, CalculationContextStore> stores;
+    protected static ConcurrentHashMap<String, CalculationContextStore> stores;
 
     static {
         stores = new ConcurrentHashMap<>();
@@ -17,18 +17,18 @@ public class CalculationContextStoreFactory {
 
     public static CalculationContextStore create(PricingGroup pricingGroup) {
         CalculationContextStore store = new CalculationContextStore(pricingGroup);
-        stores.put(store.getStoreUri(), store);
+        stores.put(pricingGroup.getName(), store);
         return store;
     }
 
-    public static CalculationContextStore get(UUID id) {
-        if (stores.containsKey(id))
-            return stores.get(id);
+    public static CalculationContextStore get(String pricingGroupName) {
+        if (stores.containsKey(pricingGroupName))
+            return stores.get(pricingGroupName);
         else
             return null;
     }
 
-    public static Enumeration<URI> getStoreNames() {
+    public static Enumeration<String> getStoreNames() {
         return stores.keys();
     }
 }

@@ -10,6 +10,7 @@ import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.persistence.CalculationContextStore;
+import com.reporting.mocks.persistence.MarketStore;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.process.risks.RiskResult;
 
@@ -23,6 +24,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
     protected BlockingQueue<TradePopulationId> tradePopulationIdQueue;
     protected RiskRunPublisher riskPublisher;
     protected TradeStore tradeStore;
+    protected MarketStore marketStore;
     protected EndofDayConfig config;
     protected PricingGroup pricingGroup;
     protected CalculationContext currentCalculationContext;
@@ -32,9 +34,11 @@ public class EndofDayRiskEventProducerThread implements Runnable {
             PricingGroup pricingGroup,
             EndofDayConfig eodConfig,
             TradeStore tradeStore,
+            MarketStore marketStore,
             CalculationContextStore calculationContextStore,
             RiskRunPublisher riskPublisher) {
         this.pricingGroup = pricingGroup;
+        this.marketStore = marketStore;
         this.config = eodConfig;
         this.tradeStore = tradeStore;
         this.tradePopulationIdQueue = new ArrayBlockingQueue(1024);;
@@ -53,10 +57,10 @@ public class EndofDayRiskEventProducerThread implements Runnable {
         try {
             while(true) {
                 TradePopulationId tradePopId = this.tradePopulationIdQueue.take();
-                TradePopulation tradePopulation = this.tradeStore.getTradePopulation(tradePopId);
+                TradePopulation tradePopulation = this.tradeStore.get(tradePopId.getId());
 
                 if (tradePopulation != null) {
-                    MarketEnv market = new MarketEnv(this.pricingGroup, tradePopulation.getType());
+                    MarketEnv market = this.marketStore.create(tradePopulation.getType());
                     this.currentCalculationContext = this.calculationContextStore.create();
                     for(RiskType riskType : this.config.getRisks()) {
                         this.currentCalculationContext.add(riskType, market);

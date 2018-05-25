@@ -20,8 +20,8 @@ public class TradeStoreFactory implements IPersistenceStoreFactory<TradeStore> {
     }
 
     @Override
-    public TradeStore create(String name) {
-        TradeStore store = new TradeStore(name);
+    public TradeStore create(String pricingGroupName) {
+        TradeStore store = new TradeStore(pricingGroupName);
         this.tradeStores.put(store.getName(), store);
         return store;
     }

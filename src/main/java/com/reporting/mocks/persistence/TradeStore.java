@@ -15,12 +15,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TradeStore implements IPersistenceStore<Tcn, Trade> {
     protected String name;
     protected ConcurrentHashMap<Tcn, Trade> trades;
-    protected ConcurrentHashMap<TradePopulationId, TradePopulation> tradePopulation;
+    protected TradePopulationStore tradePopulation;
+
 
     public TradeStore(String name) {
         this.name = name;
         this.trades = new ConcurrentHashMap<>();
-        this.tradePopulation = new ConcurrentHashMap<>();
+        this.tradePopulation = new TradePopulationStore(name);
     }
 
     @Override
@@ -66,22 +67,17 @@ public class TradeStore implements IPersistenceStore<Tcn, Trade> {
             return null;
     }
 
-    public Collection<TradePopulation> getAllTradePopulation() {
-        return this.tradePopulation.values();
-    }
-
-    public TradePopulation getTradePopulation(DataMarkerType type) {
+    public TradePopulation create(DataMarkerType type) {
         TradePopulation tp = new TradePopulation(this.getName(), new ConcurrentHashMap<>(this.trades), type);
-        this.tradePopulation.put(tp.getId(), tp);
+        this.tradePopulation.add(tp.getId().getId(), tp);
         return tp;
     }
 
-    public TradePopulation getTradePopulation(TradePopulationId id) {
-        if (this.tradePopulation.containsKey(id)) {
-            return this.tradePopulation.get(id);
-        }
-        else {
-            return null;
-        }
+    public TradePopulation get(UUID id) {
+        return this.tradePopulation.get(id);
+    }
+
+    public Collection<TradePopulation> getAllTradePopulation() {
+        return this.tradePopulation.getAllTradePopulation();
     }
 }

@@ -8,6 +8,7 @@ import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.CalculationContextStore;
+import com.reporting.mocks.persistence.MarketStore;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.process.risks.RiskResult;
 
@@ -19,6 +20,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected RiskRunPublisher riskPublisher;
     protected TradeStore tradeStore;
+    protected MarketStore marketStore;
     protected IntradayConfig config;
     protected TradePopulation tradePopulation;
     protected IntradayCalculationSchedule calculationSchedule;
@@ -28,12 +30,14 @@ public class IntradayRiskEventProducerThread implements Runnable {
     public IntradayRiskEventProducerThread(PricingGroup pricingGroup,
                                            IntradayConfig config,
                                            TradeStore tradeStore,
+                                           MarketStore marketStore,
                                            CalculationContextStore calculationContextStore,
                                            BlockingQueue<IntradayEvent<?>> intradayEventQueue,
                                            RiskRunPublisher riskPublisher,
                                            MarketEnv market) {
         this.config = config;
         this.tradeStore = tradeStore;
+        this.marketStore = marketStore;
         this.intradayEventQueue = intradayEventQueue;
         this.riskPublisher = riskPublisher;
         this.calculationSchedule = new IntradayCalculationSchedule();
@@ -63,10 +67,11 @@ public class IntradayRiskEventProducerThread implements Runnable {
                         // 3. chunk the risks into fragments
                         // 4. send to risk queue
 
+
                         riskPublisher.publish(marketEvent.getEvent());
 
                         // this gets and creates a new trade population
-                        this.tradePopulation = this.tradeStore.getTradePopulation(DataMarkerType.IND);
+                        this.tradePopulation = this.tradeStore.create(DataMarkerType.IND);
 
                         // increment the risk schedule since a new market arrived
                         this.calculationSchedule.increment();

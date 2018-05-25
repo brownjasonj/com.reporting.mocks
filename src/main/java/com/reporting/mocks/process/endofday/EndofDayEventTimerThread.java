@@ -20,7 +20,7 @@ public class EndofDayEventTimerThread extends TimerTask {
 
     @Override
     public void run() {
-        TradePopulation tradePop = this.tradeStore.getTradePopulation(DataMarkerType.EOD);
+        TradePopulation tradePop = this.tradeStore.create(DataMarkerType.EOD);
         try {
             this.tradePopulationIdQueue.put(tradePop.getId());
         }
