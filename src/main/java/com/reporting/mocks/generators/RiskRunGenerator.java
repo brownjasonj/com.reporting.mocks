@@ -5,7 +5,7 @@ import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.process.risks.RiskRequest;
-import com.reporting.mocks.process.risks.RiskResult;
+import com.reporting.mocks.model.RiskResult;
 
 import java.util.ArrayList;
 import java.util.Collection;

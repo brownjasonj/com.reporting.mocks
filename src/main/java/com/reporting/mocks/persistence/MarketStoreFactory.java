@@ -1,6 +1,7 @@
 package com.reporting.mocks.persistence;
 
 import com.reporting.mocks.model.PricingGroup;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;

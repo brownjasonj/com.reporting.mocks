@@ -1,6 +1,5 @@
 package com.reporting.mocks.persistence;
 
-import com.reporting.mocks.model.PricingGroup;
 
 import java.util.concurrent.ConcurrentHashMap;
 

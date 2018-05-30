@@ -1,4 +1,4 @@
-package com.reporting.mocks.process.risks;
+package com.reporting.mocks.model;
 
 import com.reporting.mocks.model.id.CalculationContextId;
 import com.reporting.mocks.model.id.RiskRunId;

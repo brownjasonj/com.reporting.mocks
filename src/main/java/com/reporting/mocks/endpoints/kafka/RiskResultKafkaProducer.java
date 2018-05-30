@@ -1,7 +1,7 @@
 package com.reporting.mocks.endpoints.kafka;
 
 import com.google.gson.Gson;
-import com.reporting.mocks.process.risks.RiskResult;
+import com.reporting.mocks.model.RiskResult;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;

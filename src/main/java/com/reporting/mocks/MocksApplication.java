@@ -10,9 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MocksApplication {
 
 	public static void main(String[] args) {
-
-		PricingGroupConfig pgc = ConfigurationManager.getConfigurationManager().getPriceingGroupConfig("FXDesk");
-		CompleteProcess.addProcess(new CompleteProcess(pgc));
+		for (PricingGroupConfig config : ConfigurationManager.getConfigurationManager().getConfig().getPricingGroups()) {
+			CompleteProcess.addProcess(new CompleteProcess(config));
+		}
 
 		SpringApplication.run(MocksApplication.class, args);
 	}

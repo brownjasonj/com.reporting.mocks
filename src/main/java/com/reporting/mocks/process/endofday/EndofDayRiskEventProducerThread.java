@@ -12,7 +12,7 @@ import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.persistence.CalculationContextStore;
 import com.reporting.mocks.persistence.MarketStore;
 import com.reporting.mocks.persistence.TradeStore;
-import com.reporting.mocks.process.risks.RiskResult;
+import com.reporting.mocks.model.RiskResult;
 
 import java.util.List;
 import java.util.Timer;

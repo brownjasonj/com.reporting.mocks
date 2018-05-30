@@ -1,6 +1,7 @@
 package com.reporting.mocks.process.risks;
 
 import com.google.gson.Gson;
+import com.reporting.mocks.model.RiskResult;
 
 import java.util.concurrent.BlockingQueue;
 

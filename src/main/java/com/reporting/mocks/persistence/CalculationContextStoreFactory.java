@@ -2,6 +2,7 @@ package com.reporting.mocks.persistence;
 
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.PricingGroup;
+import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.util.Enumeration;

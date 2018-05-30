@@ -1,6 +1,6 @@
 package com.reporting.mocks.controllers;
 
-import com.reporting.mocks.process.risks.RiskResult;
+import com.reporting.mocks.model.RiskResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

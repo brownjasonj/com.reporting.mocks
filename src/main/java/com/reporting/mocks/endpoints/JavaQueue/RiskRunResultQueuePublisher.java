@@ -3,9 +3,8 @@ package com.reporting.mocks.endpoints.JavaQueue;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
-import com.reporting.mocks.process.risks.RiskResult;
+import com.reporting.mocks.model.RiskResult;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class RiskRunResultQueuePublisher implements RiskRunPublisher {

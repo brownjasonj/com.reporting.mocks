@@ -1,29 +1,14 @@
 package com.reporting.mocks.endpoints.ignite;
 
-import com.google.gson.Gson;
-import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.PricingGroup;
-import com.reporting.mocks.model.dataviews.book.TcnRiskAggregate;
-import com.reporting.mocks.model.dataviews.book.TcnRisksAll;
-import com.reporting.mocks.model.risks.Risk;
-import com.reporting.mocks.model.risks.RiskType;
-import com.reporting.mocks.model.trade.Tcn;
-import com.reporting.mocks.persistence.CalculationContextStoreFactory;
-import com.reporting.mocks.process.risks.RiskResult;
+import com.reporting.mocks.model.RiskResult;
 
 import org.apache.ignite.Ignite;
-import org.apache.ignite.IgniteCache;
-import org.apache.ignite.IgniteSet;
 import org.apache.ignite.Ignition;
-import org.apache.ignite.cache.query.ContinuousQuery;
 import org.apache.ignite.configuration.CollectionConfiguration;
-
-import javax.cache.event.CacheEntryEvent;
-import java.util.Random;
-import java.util.UUID;
 
 public class RiskRunIgnitePublisher implements RiskRunPublisher {
     protected PricingGroup pricingGroup;

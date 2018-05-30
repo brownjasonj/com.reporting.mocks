@@ -3,7 +3,7 @@ package com.reporting.mocks.endpoints.kafka;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
-import com.reporting.mocks.process.risks.RiskResult;
+import com.reporting.mocks.model.RiskResult;
 
 public class RiskRunResultKafkaPublisher implements RiskRunPublisher {
     protected RiskResultKafkaProducer riskResultProducer;
