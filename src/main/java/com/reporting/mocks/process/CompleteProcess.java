@@ -84,12 +84,12 @@ public class CompleteProcess {
             RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.processEventQueues.getRiskResultQueue());
             new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
 
-            RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.processEventQueues.getRiskResultQueue());
+            // RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.processEventQueues.getRiskResultQueue());
 
             // RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher(this.config.getPricingGroupId());
 
 
-            // RiskRunResultKafkaPublisher riskRunPublisher = new RiskRunResultKafkaPublisher();
+            RiskRunResultKafkaPublisher riskRunPublisher = new RiskRunResultKafkaPublisher();
 
 
             // kick-off end-of-day

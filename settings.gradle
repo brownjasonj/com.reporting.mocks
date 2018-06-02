@@ -1,1 +1,8 @@
-rootProject.name = 'mocks'
+rootProject.name = 'com.reporting.mocks'
+
+includeBuild('../com.reporting.mocks.model')
+//        {
+//    dependencySubstitution {
+//        substitute module('com.reporting.mocks:model') with project(':')
+//    }
+//}

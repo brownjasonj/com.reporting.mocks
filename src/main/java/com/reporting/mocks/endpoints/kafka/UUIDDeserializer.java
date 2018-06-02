@@ -1,7 +1,6 @@
 package com.reporting.mocks.endpoints.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reporting.mocks.process.risks.response.RiskRunResult;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.util.Map;
