@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class TradePopulationKafkaProducer {
     private final String BOOTSTRAPSERVER =  "localhost:9092";
-    private final String TRADEPOPULATUONTOPIC = "tradepopulation";
+    private final String TRADEPOPULATUONTOPIC = "TradePopulation";
     private Properties kafkaProperties;
     private Producer producer;
 
@@ -18,7 +18,7 @@ public class TradePopulationKafkaProducer {
         this.kafkaProperties = new Properties();
 
         this.kafkaProperties.put("bootstrap.servers", this.BOOTSTRAPSERVER);
-        this.kafkaProperties.put("key.serializer", "com.reporting.mocks.endpoints.kafka.UUIDSerializer");
+        this.kafkaProperties.put("key.serializer", "com.reporting.kafka.serialization.UUIDSerializer");
         this.kafkaProperties.put("value.serializer", "com.reporting.mocks.endpoints.kafka.RiskRunResult");
 
         this.producer = new KafkaProducer<UUID,String>(this.kafkaProperties);

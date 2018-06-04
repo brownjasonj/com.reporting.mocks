@@ -7,5 +7,7 @@ import com.reporting.mocks.model.RiskResult;
 public interface RiskRunPublisher {
     void publish(CalculationContext calculationContext);
     void publish(MarketEnv marketEnv);
-    void publish(RiskResult riskResult);
+    void publishIntradayRiskRun(RiskResult riskResult);
+    void publishIntradayTick(RiskResult riskResult);
+    void publishEndofDayRiskRun(RiskResult riskResult);
 }

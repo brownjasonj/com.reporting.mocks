@@ -1,5 +1,6 @@
 package com.reporting.mocks.process;
 
+import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.JavaQueue.RiskRunResultQueuePublisher;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
@@ -13,6 +14,8 @@ import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.RiskRunConsumerThread;
 import com.reporting.mocks.process.trades.TradePopulationProducerThread;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -50,11 +53,13 @@ public class CompleteProcess {
     protected TradeGenerator tradeGenerator;
     protected TradePopulationProducerThread tradePopulationProducerThread;
 
+    protected RiskRunResultKafkaPublisher riskRunPublisher;
+
     ProcessEventQueues processEventQueues;
 
     protected ThreadGroup threadGroup;
 
-    public CompleteProcess(PricingGroupConfig config) {
+    public CompleteProcess(PricingGroupConfig config, ApplicationConfig appConfig) {
         this.id = UUID.randomUUID();
         this.config = config;
         this.tradeStore = TradeStoreFactory.get().create(config.getPricingGroupId().getName());
@@ -62,6 +67,7 @@ public class CompleteProcess {
         this.marketStore = MarketStoreFactory.create(config.getPricingGroupId());
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.processEventQueues = new JavaProcessEventQueues();
+        this.riskRunPublisher = new RiskRunResultKafkaPublisher(appConfig);
     }
 
     public Collection<TradePopulation> getTradePopulations() {
@@ -89,7 +95,7 @@ public class CompleteProcess {
             // RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher(this.config.getPricingGroupId());
 
 
-            RiskRunResultKafkaPublisher riskRunPublisher = new RiskRunResultKafkaPublisher();
+            //RiskRunResultKafkaPublisher riskRunPublisher = new RiskRunResultKafkaPublisher();
 
 
             // kick-off end-of-day
@@ -100,7 +106,7 @@ public class CompleteProcess {
                     tradeStore,
                     marketStore,
                     this.calculationContextStore,
-                    riskRunPublisher);
+                    this.riskRunPublisher);
             new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
 
             // kick-off start-of-day
@@ -110,7 +116,7 @@ public class CompleteProcess {
             this.marketEventProducerThread = new MarketEventProducerThread(
                     this.config.getPricingGroupId(),
                     this.marketStore,
-                    riskRunPublisher,
+                    this.riskRunPublisher,
                     this.config.getMarketPeriodicity(),
                     this.processEventQueues.getIntradayEventQueue());
             // start the market event thread
@@ -126,13 +132,16 @@ public class CompleteProcess {
                     this.marketStore,
                     this.calculationContextStore,
                     this.processEventQueues.getIntradayEventQueue(),
-                    riskRunPublisher,
+                    this.riskRunPublisher,
                     new MarketEnv(this.config.getPricingGroupId(), DataMarkerType.IND));
 
             new Thread(threadGroup, this.intradayRiskEventProducerThread, "IntradayRiskEvent").start();
 
             //TradeConfig tradeConfig, TradeStore tradeStore, BlockingQueue<Trade> tradeQueue
-            this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(), this.tradeStore, this.tradeGenerator, this.processEventQueues.getIntradayEventQueue());
+            this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(),
+                    this.tradeStore,
+                    this.tradeGenerator,
+                    this.processEventQueues.getIntradayEventQueue());
             new Thread(threadGroup, this.tradePopulationProducerThread, "TradePopulationProducer").start();
 
 

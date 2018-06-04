@@ -93,7 +93,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                 20);
 
                         for(RiskResult r : results) {
-                            riskPublisher.publish(r);
+                            riskPublisher.publishIntradayRiskRun(r);
                         }
                     }
                     break;
@@ -118,7 +118,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                                 20);
 
                                         for(RiskResult r : results) {
-                                            riskPublisher.publish(r);
+                                            riskPublisher.publishIntradayTick(r);
                                         }
                                     }
                                 }
@@ -137,7 +137,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                                 20);
 
                                         for(RiskResult r : results) {
-                                            riskPublisher.publish(r);
+                                            riskPublisher.publishIntradayTick(r);
                                         }
                                     }
                                 }

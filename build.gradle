@@ -11,7 +11,7 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -31,27 +31,22 @@ ext {
 }
 
 dependencies {
+//    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor
+    compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.0.2.RELEASE'
+
 	compile(':com.reporting.mocks.model')
+	compile(':com.reporting.kafka.serialization')
 	//compile project: ':com.reporting.mocks.model'
 	// https://mvnrepository.com/artifact/com.google.code.gson/gson
 	compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
-	// https://mvnrepository.com/artifact/javax.cache/cache-api
-	compile group: 'javax.cache', name: 'cache-api', version: '1.1.0'
-	// https://mvnrepository.com/artifact/org.apache.ignite/ignite-core
-	compile group: 'org.apache.ignite', name: 'ignite-core', version: '2.4.0'
-    // https://mvnrepository.com/artifact/org.apache.ignite/ignite-spring
-    compile group: 'org.apache.ignite', name: 'ignite-indexing', version: '2.4.0'
-	// https://mvnrepository.com/artifact/org.apache.ignite/ignite-spring
-	compile group: 'org.apache.ignite', name: 'ignite-spring', version: '2.4.0'
-	// https://mvnrepository.com/artifact/org.apache.ignite/ignite-spring
-	compile group: 'org.apache.ignite', name: 'ignite-spring-data', version: '2.4.0'
-	// https://mvnrepository.com/artifact/com.h2database/h2
-	compile group: 'com.h2database', name: 'h2', version: '1.4.196'
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-websocket')
 	compile('org.springframework.cloud:spring-cloud-starter-openfeign')
 	compile('org.springframework.kafka:spring-kafka')
-	// runtime('org.springframework.boot:spring-boot-devtools')
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    // runtime('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

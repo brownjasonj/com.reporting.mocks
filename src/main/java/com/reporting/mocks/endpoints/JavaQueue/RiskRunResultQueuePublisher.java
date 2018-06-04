@@ -31,12 +31,27 @@ public class RiskRunResultQueuePublisher implements RiskRunPublisher {
     }
 
     @Override
-    public void publish(RiskResult riskResult) {
+    public void publishIntradayRiskRun(RiskResult riskResult) {
         try {
             riskQueue.put(riskResult);
         }
         catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void publishIntradayTick(RiskResult riskResult) {
+        try {
+            riskQueue.put(riskResult);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void publishEndofDayRiskRun(RiskResult riskResult) {
+
     }
 }

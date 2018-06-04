@@ -16,6 +16,7 @@ public class PvGenerator implements IRiskGenerator {
         return new Pv(riskRequest.getCalculationId(), riskRequest.getMarketEnvId(), riskRequest.getTradePopulationId(), riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(), trade.getUnderlying().getUnderlyingCurrency());
     }
 
+
     @Override
     public RiskType getRiskType() {
         return PV;

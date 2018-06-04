@@ -76,7 +76,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
                             20);
 
                     for(RiskResult r : results) {
-                        riskPublisher.publish(r);
+                        riskPublisher.publishEndofDayRiskRun(r);
                     }
                 }
             }

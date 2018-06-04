@@ -5,12 +5,9 @@ server:
   #port: ${PORT:${SERVER_PORT:0}}
 version: 0.0.1
 kafka:
-  mrresults:
-    bootstrapserver: localhost:9092
-    topic: mrriskresult
-  srresults:
-    bootstrapserver: localhost:9092
-    topic: srriskresults
-  tradepopulation:
-    bootstrapserver: localhost:9092
-    topic: tradepopulation
+  server: localhost:9092
+  topic:
+    intradayriskset: IntraDayRiskSet
+    intradayrisktick: IntraDayRiskTick
+    calccontext: CalculationContext
+    market: Market

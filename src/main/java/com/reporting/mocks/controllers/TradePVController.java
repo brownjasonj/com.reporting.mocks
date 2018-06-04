@@ -1,11 +1,12 @@
 package com.reporting.mocks.controllers;
 
+import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.process.CompleteProcess;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class TradePVController {
-
 //    @RequestMapping(method = { RequestMethod.GET }, value = { "/riskrun/{riskRunType}" }, produces = "application/json")
 //    public RiskRunResult solver2(@PathVariable RiskRunType riskRunType, @RequestParam("tradePopulationId") UUID tradePopulationId) {
 //        List<RiskType> risks = new ArrayList<>();

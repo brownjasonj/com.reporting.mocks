@@ -1,7 +1,9 @@
 package com.reporting.mocks.configuration;
 
 import com.reporting.mocks.model.PricingGroup;
+import org.springframework.stereotype.Component;
 
+@Component("PricingGroupConfig")
 public class PricingGroupConfig {
     protected PricingGroup pricingGroupId;
     protected TradeConfig tradeConfig;
