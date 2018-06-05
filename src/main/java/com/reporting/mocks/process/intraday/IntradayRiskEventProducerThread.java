@@ -9,6 +9,7 @@ import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.CalculationContextStore;
 import com.reporting.mocks.persistence.MarketStore;
+import com.reporting.mocks.persistence.TradePopulationMutable;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.model.RiskResult;
 
@@ -22,7 +23,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
     protected TradeStore tradeStore;
     protected MarketStore marketStore;
     protected IntradayConfig config;
-    protected TradePopulation tradePopulation;
+    protected TradePopulationMutable tradePopulation;
     protected IntradayCalculationSchedule calculationSchedule;
     protected CalculationContext currentCalculationContext;
     protected CalculationContextStore calculationContextStore;
@@ -110,10 +111,13 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                 if (trade != null) {
                                     Trade existingTrade = this.tradePopulation.getTrade(trade.getTcn());
                                     if (existingTrade == null)  {
+                                        // add the trade to the current tradepopulation
+                                        this.tradePopulation.add(trade);
                                         // caclulate all the risks for this trade, since it is not in current population or has a different version
                                         List<RiskResult> results = RiskRunGenerator.generate(
                                                 currentCalculationContext,
                                                 tradePopulation,
+                                                trade,
                                                 config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
                                                 20);
 
@@ -129,10 +133,14 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                 if (trade != null) {
                                     Trade existingTrade = this.tradePopulation.getTrade(trade.getTcn());
                                     if (existingTrade == null || trade.getVersion() != existingTrade.getVersion())  {
+                                        // modify trade in the current trade population
+                                        this.tradePopulation.delete(existingTrade.getTcn());
+                                        this.tradePopulation.add(trade);
                                         // caclulate all the risks for this trade, since it is not in current population or has a different version
                                         List<RiskResult> results = RiskRunGenerator.generate(
                                                 currentCalculationContext,
                                                 tradePopulation,
+                                                trade,
                                                 config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
                                                 20);
 

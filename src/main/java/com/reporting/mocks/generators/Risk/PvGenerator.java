@@ -13,7 +13,13 @@ import static com.reporting.mocks.model.risks.RiskType.PV;
 public class PvGenerator implements IRiskGenerator {
     @Override
     public Risk generate(RiskRequest riskRequest, Trade trade) {
-        return new Pv(riskRequest.getCalculationId(), riskRequest.getMarketEnvId(), riskRequest.getTradePopulationId(), riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(), trade.getUnderlying().getUnderlyingCurrency());
+        return new Pv(riskRequest.getCalculationId(),
+                riskRequest.getMarketEnvId(),
+                riskRequest.getTradePopulationId(),
+                riskRequest.getRiskRunId(),
+                trade.getBook(),
+                trade.getTcn(),
+                trade.getUnderlying().getUnderlyingCurrency());
     }
 
 

@@ -33,7 +33,7 @@ public class TradeStore  {
         return this.currentTradePopulation.getTrade(tcn);
     }
 
-    public Set<Trade> getByTradeType(TradeType tradeType) { return this.currentTradePopulation.getByTradeType(tradeType);}
+    public List<Trade> getByTradeType(TradeType tradeType) { return this.currentTradePopulation.getByTradeType(tradeType);}
 
     public Trade oneAtRandom() {
         return this.currentTradePopulation.oneAtRandom();
@@ -43,8 +43,8 @@ public class TradeStore  {
         return this.currentTradePopulation.delete(tcn);
     }
 
-    public TradePopulation create(DataMarkerType type) {
-        TradePopulation tpm = new TradePopulationMutable(this.currentTradePopulation, type);
+    public TradePopulationMutable create(DataMarkerType type) {
+        TradePopulationMutable tpm = new TradePopulationMutable(this.currentTradePopulation, type);
         this.tradePopulationStore.add(tpm);
         return tpm;
     }

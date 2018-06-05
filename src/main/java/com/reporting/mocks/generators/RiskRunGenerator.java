@@ -33,7 +33,10 @@ public class RiskRunGenerator {
         return results;
     }
 
-    public static List<RiskResult> generate(CalculationContext calculationContext, TradePopulation tradePopulation, List<RiskType> riskTypes, int fragmentSize) {
+    public static List<RiskResult> generate(CalculationContext calculationContext,
+                                            TradePopulation tradePopulation,
+                                            List<RiskType> riskTypes,
+                                            int fragmentSize) {
         List<RiskResult> results = new ArrayList<>();
         Collection<Trade> trades = tradePopulation.getAllTrades();
         for(RiskType riskType : riskTypes) {
@@ -49,6 +52,24 @@ public class RiskRunGenerator {
             results.addAll(RiskRunGenerator.fragmentResults(risks, fragmentSize, riskRequest));
         }
 
+        return results;
+    }
+
+    public static List<RiskResult> generate(CalculationContext calculationContext,
+                                            TradePopulation tradePopulation,
+                                            Trade trade,
+                                            List<RiskType> riskTypes,
+                                            int fragmentSize) {
+        List<RiskResult> results = new ArrayList<>();
+        for(RiskType riskType : riskTypes) {
+            List<Risk> risks = new ArrayList<>();
+            IRiskGenerator riskGenerator = RiskGeneratorFactory.getGenerator(riskType);
+            RiskRequest riskRequest = new RiskRequest(calculationContext.getId(), calculationContext.get(riskType), tradePopulation.getId());
+            if (riskGenerator != null) {
+                risks.add(riskGenerator.generate(riskRequest, trade));
+            }
+            results.addAll(RiskRunGenerator.fragmentResults(risks, fragmentSize, riskRequest));
+        }
         return results;
     }
 }

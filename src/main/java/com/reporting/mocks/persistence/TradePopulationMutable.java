@@ -26,21 +26,23 @@ public class TradePopulationMutable extends TradePopulation {
         this.tcnTrades = new ConcurrentHashMap<>(tradePopulation.tcnTrades);
         this.tradeTypeTrades = new ConcurrentHashMap<>();
         for(TradeType tradeType : tradePopulation.tradeTypeTrades.keySet()) {
-            this.tradeTypeTrades.put(tradeType, new HashSet<>(tradePopulation.tradeTypeTrades.get(tradeType)));
+            this.tradeTypeTrades.put(tradeType, new ArrayList<>(tradePopulation.tradeTypeTrades.get(tradeType)));
         }
         this.asOf = new Date();
         this.type = type;
     }
 
     public Trade add(Trade trade) {
-        Set<Trade> trades;
-        if (!tradeTypeTrades.contains(trade.getTradeType())) {
-            trades = new HashSet<>();
+        ArrayList<Trade> trades;
+        TradeType tradeType = trade.getTradeType();
+        if (!tradeTypeTrades.containsKey(tradeType)) {
+            trades = new ArrayList<>();
+            tradeTypeTrades.put(tradeType, trades);
         }
         else {
             trades = tradeTypeTrades.get(trade.getTradeType());
         }
-        tcnTrades.put(trade.getTcn(), trade);
+        tcnTrades.put(trade.getTcn().getId(), trade);
         trades.add(trade);
         return trade;
     }
@@ -54,15 +56,15 @@ public class TradePopulationMutable extends TradePopulation {
     }
 
     public Trade delete(Tcn tcn) {
-        if (this.tcnTrades.containsKey(tcn)) {
-            Trade trade = this.tcnTrades.get(tcn);
-            Set<Trade> trades = this.tradeTypeTrades.get(trade.getTradeType());
-            if (trades.remove(trade))
-                return this.tcnTrades.remove(tcn);
-            else
-                return null;
+        if (this.tcnTrades.containsKey(tcn.getId())) {
+            Trade trade = this.tcnTrades.get(tcn.getId());
+            // check that the version of the given tcn is the same as the trade
+            if (trade.getTcn().getVersion() == tcn.getVersion()) {
+                List<Trade> trades = this.tradeTypeTrades.get(trade.getTradeType());
+                if (trades.remove(trade))
+                    return this.tcnTrades.remove(tcn);
+            }
         }
-        else
-            return null;
+        return null;
     }
 }
