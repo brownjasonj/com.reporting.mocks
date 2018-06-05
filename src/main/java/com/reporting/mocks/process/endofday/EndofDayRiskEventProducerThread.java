@@ -57,7 +57,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
         try {
             while(true) {
                 TradePopulationId tradePopId = this.tradePopulationIdQueue.take();
-                TradePopulation tradePopulation = this.tradeStore.get(tradePopId.getId());
+                TradePopulation tradePopulation = this.tradeStore.getTradePopulation(tradePopId.getId());
 
                 if (tradePopulation != null) {
                     MarketEnv market = this.marketStore.create(tradePopulation.getType());

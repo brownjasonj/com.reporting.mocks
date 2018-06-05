@@ -6,7 +6,6 @@ import com.reporting.mocks.model.trade.OtcTrade;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.model.TradeLifecycleType;
-import com.reporting.mocks.model.trade.TradeKind;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
@@ -51,12 +50,12 @@ public class TradePopulationProducerThread implements Runnable {
                 switch (tradeEvent) {
                     case New:
                         OtcTrade newTrade = this.tradeGenerator.generateOneOtc();
-                        this.tradeStore.add(newTrade.getTcn(), newTrade);
+                        this.tradeStore.add(newTrade);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, newTrade)));
                         break;
                     case Modify:
                         Trade tradeToModify = this.tradeStore.oneAtRandom();
-                        Trade modifiedTrade = tradeToModify.getNewVersion();
+                        Trade modifiedTrade = tradeToModify.createNewVersion();
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, modifiedTrade)));
                         break;
                     case Delete:

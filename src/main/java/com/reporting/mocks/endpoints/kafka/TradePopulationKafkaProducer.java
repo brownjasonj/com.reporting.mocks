@@ -25,9 +25,9 @@ public class TradePopulationKafkaProducer {
     }
 
     public void sendMessage(TradePopulation tradePopulation) {
-//        ProducerRecord<UUID, TradePopulation> record = new ProducerRecord<>(this.TRADEPOPULATUONTOPIC, tradePopulation.getId(), tradePopulation);
+//        ProducerRecord<UUID, TradePopulation> record = new ProducerRecord<>(this.TRADEPOPULATUONTOPIC, tradePopulationStore.getId(), tradePopulationStore);
 //        try {
-//            this.producer.send(record).get();
+//            this.producer.send(record).getTradeByTcn();
 //        }
 //        catch (Exception e) {
 //            e.printStackTrace();

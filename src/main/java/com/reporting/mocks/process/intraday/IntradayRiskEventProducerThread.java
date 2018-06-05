@@ -62,7 +62,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
 
                         System.out.println("New Market " + marketEvent.getEvent().getId() + " asOf: " + marketEvent.getEvent().getAsOf().toString());
                         // run all appropriate risks for the new trade population
-                        // 1. get a new trade population snapshot
+                        // 1. getTradeByTcn a new trade population snapshot
                         // 2. run each risk on the trade population
                         // 3. chunk the risks into fragments
                         // 4. send to risk queue

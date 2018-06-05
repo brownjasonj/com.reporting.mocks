@@ -2,9 +2,9 @@ package com.reporting.mocks.persistence;
 
 import com.reporting.mocks.model.DataMarkerType;
 import com.reporting.mocks.model.TradePopulation;
+import com.reporting.mocks.model.id.TradePopulationId;
 
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TradePopulationStore {
@@ -12,6 +12,7 @@ public class TradePopulationStore {
     protected ConcurrentHashMap<UUID, TradePopulation> tradePopulation;
 
     public TradePopulationStore(String name) {
+        this.name = name;
         this.tradePopulation = new ConcurrentHashMap<>();
     }
 
@@ -20,8 +21,8 @@ public class TradePopulationStore {
     }
 
 
-    public TradePopulation add(UUID id, TradePopulation tradePopulation) {
-        this.tradePopulation.put(id, tradePopulation);
+    public TradePopulation add(TradePopulation tradePopulation) {
+        this.tradePopulation.put(tradePopulation.getId().getId(), tradePopulation);
         return tradePopulation;
     }
 
@@ -32,5 +33,14 @@ public class TradePopulationStore {
         else {
             return null;
         }
+    }
+
+    public List<TradePopulationId> getTradePopulationIds() {
+        ArrayList<TradePopulationId> tradePopulationIds = new ArrayList<>();
+        Enumeration<UUID> ids = this.tradePopulation.keys();
+        while(ids.hasMoreElements()) {
+            tradePopulationIds.add(new TradePopulationId(this.name, ids.nextElement()));
+        }
+        return tradePopulationIds;
     }
 }

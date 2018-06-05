@@ -2,8 +2,6 @@ package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
-import com.reporting.mocks.endpoints.JavaQueue.RiskRunResultQueuePublisher;
-import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.endpoints.kafka.RiskRunResultKafkaPublisher;
 import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.model.*;
@@ -14,8 +12,6 @@ import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.RiskRunConsumerThread;
 import com.reporting.mocks.process.trades.TradePopulationProducerThread;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -75,7 +71,7 @@ public class CompleteProcess {
     }
 
     public TradePopulation getTradePopulation(TradePopulationId tradePopulationId) {
-        return this.tradeStore.get(tradePopulationId.getId());
+        return this.tradeStore.getTradePopulation(tradePopulationId.getId());
     }
 
     public PricingGroup getPricingGroupId() {
@@ -167,7 +163,7 @@ public class CompleteProcess {
                 // initiate construction of initial trade population
                 for (int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {
                     Trade newTrade = this.tradeGenerator.generateOneOtc();
-                    this.tradeStore.add(newTrade.getTcn(), newTrade);
+                    this.tradeStore.add(newTrade);
                 }
 
                 this.init();

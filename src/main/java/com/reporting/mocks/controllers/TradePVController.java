@@ -12,10 +12,10 @@ public class TradePVController {
 //        List<RiskType> risks = new ArrayList<>();
 //        risks.add(RiskType.PV);
 //        risks.add(RiskType.DELTA);
-//        TradePopulation tradePop = TradeStore.getStore().getTradePopulation(tradePopulationId);
+//        TradePopulation tradePop = TradeStore.getStore().getTradeByTcn(tradePopulationId);
 //        MarketEnv marketEnv = new MarketEnv();
 //
-//        // RiskRunType type, Collection<Trade> trades, List<RiskType> risks
+//        // RiskRunType type, Collection<Trade> tcnTrades, List<RiskType> risks
 //        RiskRunRequest riskRun = new RiskRunRequest(riskRunType, marketEnv, tradePop, risks);
 //        return RiskRunGenerator.generate(riskRun);
 //        return null;

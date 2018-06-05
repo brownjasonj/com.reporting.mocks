@@ -19,7 +19,7 @@ public class MarketEnvController {
 
 //    @RequestMapping(method = { RequestMethod.GET }, value = { "/CalculationContextId/{pricingGroupName}" }, produces = "application/json")
 //    public Collection<CalculationContext> getCalculationContexts(@PathVariable String pricingGroupName) {
-//        CalculationContextStore store = CalculationContextStoreFactory.get(pricingGroupName);
+//        CalculationContextStore store = CalculationContextStoreFactory.getTradeByTcn(pricingGroupName);
 //        if (store != null) {
 //            return store.getAll();
 //        }

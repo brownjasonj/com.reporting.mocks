@@ -35,7 +35,7 @@ public class RiskRunGenerator {
 
     public static List<RiskResult> generate(CalculationContext calculationContext, TradePopulation tradePopulation, List<RiskType> riskTypes, int fragmentSize) {
         List<RiskResult> results = new ArrayList<>();
-        Collection<Trade> trades = tradePopulation.getTrades();
+        Collection<Trade> trades = tradePopulation.getAllTrades();
         for(RiskType riskType : riskTypes) {
             List<Risk> risks = new ArrayList<>();
             IRiskGenerator riskGenerator = RiskGeneratorFactory.getGenerator(riskType);

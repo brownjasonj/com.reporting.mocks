@@ -1,83 +1,63 @@
 package com.reporting.mocks.persistence;
 
 import com.reporting.mocks.model.DataMarkerType;
-import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Tcn;
 import com.reporting.mocks.model.trade.Trade;
+import com.reporting.mocks.model.trade.TradeType;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
-public class TradeStore implements IPersistenceStore<Tcn, Trade> {
+public class TradeStore  {
     protected String name;
-    protected ConcurrentHashMap<Tcn, Trade> trades;
-    protected TradePopulationStore tradePopulation;
+    protected TradePopulationMutable currentTradePopulation;
+    protected TradePopulationStore tradePopulationStore;
 
 
     public TradeStore(String name) {
         this.name = name;
-        this.trades = new ConcurrentHashMap<>();
-        this.tradePopulation = new TradePopulationStore(name);
+        this.currentTradePopulation = new TradePopulationMutable(name, DataMarkerType.LIVE);
+        this.tradePopulationStore = new TradePopulationStore(name);
     }
 
-    @Override
     public String getName() {
         return this.name;
     }
 
-    @Override
-    public Trade add(Tcn tcn, Trade trade) {
-        return this.trades.put(tcn, trade);
+    public Trade add(Trade trade) {
+        return this.currentTradePopulation.add(trade);
     }
 
-    @Override
-    public Trade get(Tcn tcn) {
-        return this.trades.get(tcn);
+    public Trade getTradeByTcn(Tcn tcn) {
+        return this.currentTradePopulation.getTrade(tcn);
     }
 
-    @Override
+    public Set<Trade> getByTradeType(TradeType tradeType) { return this.currentTradePopulation.getByTradeType(tradeType);}
+
     public Trade oneAtRandom() {
-        Collection<Trade> tradeCollection = trades.values();
-        Optional<Trade> optionalTrade = tradeCollection.stream()
-                .skip((int) (tradeCollection.size() * Math.random()))
-                .findFirst();
-        return optionalTrade.get();
+        return this.currentTradePopulation.oneAtRandom();
     }
 
-    @Override
-    public Collection<Trade> getAll() {
-        return null;
-    }
-
-    @Override
-    public Collection<Tcn> getKeys() {
-        return null;
-    }
-
-    @Override
     public Trade delete(Tcn tcn) {
-        if (this.trades.containsKey(tcn)) {
-            return this.trades.remove(tcn);
-        }
-        else
-            return null;
+        return this.currentTradePopulation.delete(tcn);
     }
 
     public TradePopulation create(DataMarkerType type) {
-        TradePopulation tp = new TradePopulation(this.getName(), new ConcurrentHashMap<>(this.trades), type);
-        this.tradePopulation.add(tp.getId().getId(), tp);
-        return tp;
+        TradePopulation tpm = new TradePopulationMutable(this.currentTradePopulation, type);
+        this.tradePopulationStore.add(tpm);
+        return tpm;
     }
 
-    public TradePopulation get(UUID id) {
-        return this.tradePopulation.get(id);
+    public TradePopulation getTradePopulation(UUID id) {
+        return this.tradePopulationStore.get(id);
     }
 
     public Collection<TradePopulation> getAllTradePopulation() {
-        return this.tradePopulation.getAllTradePopulation();
+        return this.tradePopulationStore.getAllTradePopulation();
+    }
+
+    public List<TradePopulationId> getTradePopulationsIds() {
+        return this.tradePopulationStore.getTradePopulationIds();
     }
 }
