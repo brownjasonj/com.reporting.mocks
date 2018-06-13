@@ -2,7 +2,9 @@ package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.endpoints.kafka.RiskRunResultKafkaPublisher;
+import com.reporting.mocks.generators.RiskRunGeneratorThread;
 import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.id.TradePopulationId;
@@ -11,6 +13,7 @@ import com.reporting.mocks.persistence.*;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.RiskRunConsumerThread;
+import com.reporting.mocks.process.risks.RiskRunRequest;
 import com.reporting.mocks.process.trades.TradePopulationProducerThread;
 
 import java.util.Collection;
@@ -42,6 +45,8 @@ public class CompleteProcess {
     protected PricingGroupConfig config;
     protected MarketEventProducerThread marketEventProducerThread;
     protected IntradayRiskEventProducerThread intradayRiskEventProducerThread;
+    protected RiskRunGeneratorThread riskRunGeneratorThread;
+
 
     protected TradeStore tradeStore;
     protected CalculationContextStore calculationContextStore;
@@ -102,6 +107,7 @@ public class CompleteProcess {
                     tradeStore,
                     marketStore,
                     this.calculationContextStore,
+                    this.processEventQueues.getRiskRunRequestQueue(),
                     this.riskRunPublisher);
             new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
 
@@ -128,6 +134,7 @@ public class CompleteProcess {
                     this.marketStore,
                     this.calculationContextStore,
                     this.processEventQueues.getIntradayEventQueue(),
+                    this.processEventQueues.getRiskRunRequestQueue(),
                     this.riskRunPublisher,
                     new MarketEnv(this.config.getPricingGroupId(), DataMarkerType.IND));
 
@@ -140,6 +147,13 @@ public class CompleteProcess {
                     this.processEventQueues.getIntradayEventQueue());
             new Thread(threadGroup, this.tradePopulationProducerThread, "TradePopulationProducer").start();
 
+
+            this.riskRunGeneratorThread = new RiskRunGeneratorThread(
+                    this.processEventQueues.getRiskRunRequestQueue(),
+                    this.calculationContextStore,
+                    this.tradeStore,
+                    this.riskRunPublisher
+            );
 
         }
     }

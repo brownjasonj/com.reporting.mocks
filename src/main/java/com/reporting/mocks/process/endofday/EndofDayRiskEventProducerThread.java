@@ -13,6 +13,7 @@ import com.reporting.mocks.persistence.CalculationContextStore;
 import com.reporting.mocks.persistence.MarketStore;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.model.RiskResult;
+import com.reporting.mocks.process.risks.RiskRunRequest;
 
 import java.util.List;
 import java.util.Timer;
@@ -22,6 +23,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class EndofDayRiskEventProducerThread implements Runnable {
     protected BlockingQueue<TradePopulationId> tradePopulationIdQueue;
+    protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
     protected RiskRunPublisher riskPublisher;
     protected TradeStore tradeStore;
     protected MarketStore marketStore;
@@ -36,12 +38,14 @@ public class EndofDayRiskEventProducerThread implements Runnable {
             TradeStore tradeStore,
             MarketStore marketStore,
             CalculationContextStore calculationContextStore,
+            BlockingQueue<RiskRunRequest> riskRunRequestQueue,
             RiskRunPublisher riskPublisher) {
         this.pricingGroup = pricingGroup;
         this.marketStore = marketStore;
         this.config = eodConfig;
         this.tradeStore = tradeStore;
-        this.tradePopulationIdQueue = new ArrayBlockingQueue(1024);;
+        this.tradePopulationIdQueue = new ArrayBlockingQueue(1024);
+        this.riskRunRequestQueue = riskRunRequestQueue;
         this.riskPublisher = riskPublisher;
         this.calculationContextStore = calculationContextStore;
     }
