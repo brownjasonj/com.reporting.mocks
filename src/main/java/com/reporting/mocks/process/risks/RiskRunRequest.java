@@ -58,7 +58,7 @@ public class RiskRunRequest {
     }
 
     public boolean isSingleTrade() {
-        return this.trade == null;
+        return this.trade != null;
     }
 
     public Trade getTrade() {

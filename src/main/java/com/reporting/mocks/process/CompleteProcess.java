@@ -98,6 +98,15 @@ public class CompleteProcess {
 
             //RiskRunResultKafkaPublisher riskRunPublisher = new RiskRunResultKafkaPublisher();
 
+            this.riskRunGeneratorThread = new RiskRunGeneratorThread(
+                    this.processEventQueues.getRiskRunRequestQueue(),
+                    this.calculationContextStore,
+                    this.tradeStore,
+                    this.riskRunPublisher
+            );
+
+            new Thread(threadGroup, this.riskRunGeneratorThread, "RiskRunGeneratorThread").start();
+
 
             // kick-off end-of-day
 
@@ -147,13 +156,6 @@ public class CompleteProcess {
                     this.processEventQueues.getIntradayEventQueue());
             new Thread(threadGroup, this.tradePopulationProducerThread, "TradePopulationProducer").start();
 
-
-            this.riskRunGeneratorThread = new RiskRunGeneratorThread(
-                    this.processEventQueues.getRiskRunRequestQueue(),
-                    this.calculationContextStore,
-                    this.tradeStore,
-                    this.riskRunPublisher
-            );
 
         }
     }
