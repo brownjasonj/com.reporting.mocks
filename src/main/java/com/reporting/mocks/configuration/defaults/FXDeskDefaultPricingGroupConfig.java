@@ -15,7 +15,7 @@ import java.util.List;
 
 public class FXDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     public FXDeskDefaultPricingGroupConfig() {
-        ArrayList<String> books = new ArrayList<>(Arrays.asList("Book1", "Book2", "Book3"));
+        ArrayList<String> books = new ArrayList<>(Arrays.asList("book:tms:ref:Book1", "book:tms:ref:Book2", "book:tms:ref:Book3"));
         List<OtcUnderlying> otcUnderlying = new ArrayList<>();
         List<TradeType> otcTradeTypes = new ArrayList<>();
         List<SecurityStatic> securityStatic = new ArrayList<>();

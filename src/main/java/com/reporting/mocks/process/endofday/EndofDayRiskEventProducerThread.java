@@ -2,7 +2,6 @@ package com.reporting.mocks.process.endofday;
 
 import com.reporting.mocks.configuration.EndofDayConfig;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
-import com.reporting.mocks.generators.RiskRunGenerator;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.PricingGroup;
@@ -14,6 +13,7 @@ import com.reporting.mocks.persistence.MarketStore;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.model.RiskResult;
 import com.reporting.mocks.process.risks.RiskRunRequest;
+import com.reporting.mocks.process.risks.RiskRunType;
 
 import java.util.List;
 import java.util.Timer;
@@ -73,15 +73,15 @@ public class EndofDayRiskEventProducerThread implements Runnable {
                     riskPublisher.publish(market);
                     riskPublisher.publish(this.currentCalculationContext);
 
-                    List<RiskResult> results = RiskRunGenerator.generate(
-                            currentCalculationContext,
-                            tradePopulation,
+                    this.riskRunRequestQueue.add(new RiskRunRequest(
+                            RiskRunType.Intraday,
+                            this.currentCalculationContext.getId(),
+                            null,
+                            tradePopulation.getId(),
                             this.config.getRisks(),
-                            20);
-
-                    for(RiskResult r : results) {
-                        riskPublisher.publishEndofDayRiskRun(r);
-                    }
+                            null,
+                            false // this is NOT a delete event
+                    ));
                 }
             }
         }

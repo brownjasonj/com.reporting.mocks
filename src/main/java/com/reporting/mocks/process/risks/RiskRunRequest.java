@@ -17,13 +17,15 @@ public class RiskRunRequest {
     protected TradePopulationId tradePopulationId;
     protected List<RiskType> risksToRun;
     protected Trade trade;
+    protected boolean isDeleteEvent;
 
     public RiskRunRequest(RiskRunType riskRunType,
                           CalculationContextId calculationId,
                           MarketEnvId marketEnvId,
                           TradePopulationId tradePopulationId,
                           List<RiskType> risksToRun,
-                          Trade trade) {
+                          Trade trade,
+                          boolean isDeleteEvent) {
         this.riskRunId = new RiskRunId(calculationId.getPricingGroupName());
         this.riskRunType = riskRunType;
         this.calculationId = calculationId;
@@ -31,6 +33,7 @@ public class RiskRunRequest {
         this.tradePopulationId = tradePopulationId;
         this.risksToRun = risksToRun;
         this.trade = trade;
+        this.isDeleteEvent = isDeleteEvent;
     }
 
     public CalculationContextId getCalculationId() {
@@ -63,5 +66,9 @@ public class RiskRunRequest {
 
     public Trade getTrade() {
         return trade;
+    }
+
+    public boolean isDeleteEvent() {
+        return isDeleteEvent;
     }
 }

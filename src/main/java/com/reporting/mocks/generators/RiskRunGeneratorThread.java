@@ -73,7 +73,8 @@ public class RiskRunGeneratorThread implements Runnable {
                             riskRunRequest.getRiskRunId(),
                             fragmentCount,
                             fragment,
-                            risks);
+                            risks,
+                            riskRunRequest.isDeleteEvent());
 
                     switch (riskRunRequest.getRiskRunType()) {
                         case EndOfDay:

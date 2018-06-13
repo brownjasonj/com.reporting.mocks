@@ -2,7 +2,6 @@ package com.reporting.mocks.process.intraday;
 
 import com.reporting.mocks.configuration.IntradayConfig;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
-import com.reporting.mocks.generators.RiskRunGenerator;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
@@ -92,32 +91,15 @@ public class IntradayRiskEventProducerThread implements Runnable {
 
                         this.riskPublisher.publish(this.currentCalculationContext);
 
-
-                        //     public RiskRunRequest(RiskRunType riskRunType,
-                        //                          CalculationContextId calculationId,
-                        //                          MarketEnvId marketEnvId,
-                        //                          TradePopulationId tradePopulationId,
-                        //                          List<RiskType> risksToRun,
-                        //                          Trade trade) {
                         this.riskRunRequestQueue.add(new RiskRunRequest(
                                 RiskRunType.Intraday,
                                 this.currentCalculationContext.getId(),
                                 null,
                                 this.tradePopulation.getId(),
                                 risksToRun,
-                                null
+                                null,
+                                false // this is NOT a delete event
                         ));
-
-//                        // RiskRunRequest(RiskRunType type, MarketEnv marketEnv, TradePopulation tradePop, List< RiskType > riskTypes, int fragmentSize)
-//                        List<RiskResult> results = RiskRunGenerator.generate(
-//                                currentCalculationContext,
-//                                tradePopulation,
-//                                risksToRun,
-//                                20);
-//
-//                        for(RiskResult r : results) {
-//                            riskPublisher.publishIntradayRiskRun(r);
-//                        }
                     }
                     break;
                     case Trade: {
@@ -143,20 +125,9 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                                 null,
                                                 this.tradePopulation.getId(),
                                                 config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
-                                                trade
+                                                trade,
+                                                false // this is NOT a delete event
                                         ));
-
-//                                        List<RiskResult> results = RiskRunGenerator.generate(
-//                                                currentCalculationContext,
-//                                                tradePopulation,
-//                                                trade,
-//                                                config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
-//                                                20);
-//
-//
-//                                        for(RiskResult r : results) {
-//                                            riskPublisher.publishIntradayTick(r);
-//                                        }
                                     }
                                 }
                             }
@@ -168,6 +139,15 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                     if (existingTrade == null || trade.getVersion() != existingTrade.getVersion())  {
                                         // modify trade in the current trade population
                                         this.tradePopulation.delete(existingTrade.getTcn());
+                                        this.riskRunRequestQueue.add(new RiskRunRequest(
+                                                RiskRunType.Intraday,
+                                                this.currentCalculationContext.getId(),
+                                                null,
+                                                this.tradePopulation.getId(),
+                                                config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
+                                                existingTrade,
+                                                true  // this IS a delete event
+                                        ));
                                         this.tradePopulation.add(trade);
                                         // caclulate all the risks for this trade, since it is not in current population or has a different version
                                         this.riskRunRequestQueue.add(new RiskRunRequest(
@@ -176,26 +156,32 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                                 null,
                                                 this.tradePopulation.getId(),
                                                 config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
-                                                trade
+                                                trade,
+                                                false  // this is NOT a delete event
                                         ));
 
-//                                        List<RiskResult> results = RiskRunGenerator.generate(
-//                                                currentCalculationContext,
-//                                                tradePopulation,
-//                                                trade,
-//                                                config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
-//                                                20);
-//
-//
-//                                        for(RiskResult r : results) {
-//                                            riskPublisher.publishIntradayTick(r);
-//                                        }
                                     }
                                 }
                             }
                             break;
                             case Delete: {
                                 // send something????
+                                Trade trade = tradeLifecycleEvent.getTrade();
+                                if (trade != null) {
+                                    Trade existingTrade = this.tradePopulation.getTrade(trade.getTcn());
+                                    if (existingTrade != null) {
+                                        this.tradePopulation.delete(existingTrade.getTcn());
+                                        this.riskRunRequestQueue.add(new RiskRunRequest(
+                                                RiskRunType.Intraday,
+                                                this.currentCalculationContext.getId(),
+                                                null,
+                                                this.tradePopulation.getId(),
+                                                config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
+                                                existingTrade,
+                                                true  // this IS a delete event
+                                        ));
+                                    }
+                                }
                             }
                             break;
                             default:
