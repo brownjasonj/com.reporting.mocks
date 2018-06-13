@@ -11,6 +11,12 @@ above activities.  This includes calculating the valuations and risks for tradin
 3) Persistence and publication - this part simulates the data storaging, indexing and publishing of the 
 consequences of the activity and business processes.
 
+#Additional Packages
+Before you can build the project you need to fork the additional github project 
+
+https://github.com/brownjasonj/com.reporting.mocks.model
+
+This is a set of classes that model the set of business objects such as risks, trades and markets.
 
 #Using the simulator
 To start the simulator run the following
@@ -32,11 +38,11 @@ There are several other uris that provide a way to looking up trade populations 
 
 
 <h2> Structure of the code </h2>
-There are seven packages
+There are six packages
 
 <h3>com.reporting.mocks.configuration</h3>
-This contains closs models to hold the application configuration and is broken down into
-three main pairts
+This contains class models to hold the application configuration and is broken down into
+three main parts
 
 <h4>TradeConfig</h4>
 Defines the trade types, underlyings and the rate at which new, modify and delete trade events occur.
@@ -44,7 +50,7 @@ Defines the trade types, underlyings and the rate at which new, modify and delet
 <h4>IntradayConfig</h4>
 Defines the preiodicity at which intraday market events occur.  These market events trigger subsequent risk calculations.
 
-<h4>EndofDayConfig<h4>
+<h4>EndofDayConfig</h4>
 Defines the periodicity at which end of day market events occur.
 
 <h3>com.reporting.mocks.Controllers</h3>
@@ -58,11 +64,28 @@ provided for publishing to Java Queues, Apache Kafka and to Apache Ignite.
 <h3>com.reporting.mocks.generators</h3>
 This package contains the a set of classes to generate different events and risk results.
 
-<h3>com.reporting.mocks.model</h3>
-This is a set of classes that model the set of business objects such as risks, trades and markets.
-
 <h3>com.reporting.mocks.peristence</h3>
 This is a simple mock persitence layer.
 
 <h3>com.reporting.mocks.process</h3>
 The main set of classes that create the threads for generating all the events, be that market or trade events.
+
+#Description of the Simulator
+There are six main business objects 
+
+<ul>
+<li><b>Trade</b> a trade consisting of a trade type (e.g., Spot, Forward, Swap)</li>
+<li><b>TradePopulation</b> a set of trades plus a label (e.g., EOD, Intraday). </li>
+<li><b>Risk</b> has a type (e.g., PV, Delta, Gamma) and value which the simulator assigns a random value.</li>
+<li><b>Market</b> represents market data.  No actual market data is represented, this object has an id and timestamp (the time the market was notionally created).  All risk values created by the simulator have an associated <b>Market</b> to represent the fact that the risk was calculated in the context of that market</li>
+<li><b>CalculationContext</b> a set of <b>Market</b> objects and a map from <b>RiskType</b> (e.g., PV, Delta, Gamma) to one of the <b>Market</b> objects in the set.</li>
+<li><b>RiskResult</b> consists of a set of <b>Risk</b> values, a reference to a <b>CalculationContext</b>, a <b>TradePopulation</b>, a <b>RiskRunId</b> signifying which risk run the result pertains to, a <b>fragment count</b> and <b>fragment number</b>.  If there are a large number of risk results for a risk run then a set of </b>RiskResult</b> objects will be generated each with the same <b>RiskRunId</b> but different fragment numbers. </li>
+</ul>
+
+The simulator simulates the following set of events
+
+<ul>
+<li><b>Trade Event</b> - at random intervals the simulator will create a <b>New</b> trade , <b>Modify</b> a trade in the <b>TradePopulation</b> or <b>Delete</b> a trade from the </b>TradePopulation</b>.  This trade event will trigger one or more <b>Risk</b> values to be generated and thus one or more <b>RiskResult</b> objects to be generated.</li>
+<li><b>Market Event</b> - a market event is a configurably timed trigger that generates a new <b>Market</b> object.</li>
+<li><b>End-of-Day Event</b></li>
+<ul>
