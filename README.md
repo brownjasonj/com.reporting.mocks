@@ -1,4 +1,4 @@
-# MockRiskGenerator
+<h1>MockRiskGenerator</h1>
 This is a very simplistic simulation of events that one might expect from a trading risk system.  There are
 three parts to the simulator:
 
@@ -11,14 +11,14 @@ above activities.  This includes calculating the valuations and risks for tradin
 3) Persistence and publication - this part simulates the data storaging, indexing and publishing of the 
 consequences of the activity and business processes.
 
-#Additional Packages
+<h1>Additional Packages</h1>
 Before you can build the project you need to fork the additional github project 
 
 https://github.com/brownjasonj/com.reporting.mocks.model
 
 This is a set of classes that model the set of business objects such as risks, trades and markets.
 
-#Using the simulator
+<h1>Using the simulator</h1>
 To start the simulator run the following
 
 gradle bootRun
@@ -70,7 +70,7 @@ This is a simple mock persitence layer.
 <h3>com.reporting.mocks.process</h3>
 The main set of classes that create the threads for generating all the events, be that market or trade events.
 
-#Description of the Simulator
+<h1>Description of the Simulator</h1>
 There are six main business objects 
 
 <ul>

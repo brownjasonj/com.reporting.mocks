@@ -15,10 +15,16 @@ import java.util.List;
 
 public class FXDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     public FXDeskDefaultPricingGroupConfig() {
-        ArrayList<String> books = new ArrayList<>(Arrays.asList("book:tms:ref:Book1", "book:tms:ref:Book2", "book:tms:ref:Book3"));
+        ArrayList<String> books = new ArrayList<>();
         List<OtcUnderlying> otcUnderlying = new ArrayList<>();
         List<TradeType> otcTradeTypes = new ArrayList<>();
         List<SecurityStatic> securityStatic = new ArrayList<>();
+
+        // - URN: bank:fxdesk:fxspots:bookname
+        books.add("bank:fxdesk:fxspots:Book1");
+        books.add("bank:fxdesk:fxspots:Book2");
+        books.add("bank:fxdesk:fxspots:Book3");
+
 
         otcUnderlying.add(new CurrencyPair("EUR", "USD"));
         otcUnderlying.add(new CurrencyPair("EUR", "CHF"));

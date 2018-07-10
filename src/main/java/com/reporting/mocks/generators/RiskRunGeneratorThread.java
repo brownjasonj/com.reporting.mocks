@@ -3,13 +3,11 @@ package com.reporting.mocks.generators;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.RiskResult;
-import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.CalculationContextStore;
-import com.reporting.mocks.persistence.MarketStore;
 import com.reporting.mocks.persistence.TradeStore;
 import com.reporting.mocks.process.risks.RiskRequest;
 import com.reporting.mocks.process.risks.RiskRunRequest;
@@ -58,7 +56,7 @@ public class RiskRunGeneratorThread implements Runnable {
                 for(int fragment = 0; fragment < fragmentCount; fragment++) {
                     List<Risk> risks = new ArrayList<>();
                     RiskType riskType = riskTypes.get(fragment);
-                    IRiskGenerator riskGenerator = RiskGeneratorFactory.getGenerator(riskType);
+                    IRiskGenerator<? extends Risk> riskGenerator = RiskGeneratorFactory.getGenerator(riskType);
                     RiskRequest riskRequest = new RiskRequest(calculationContext.getId(), calculationContext.get(riskType), tradePopulationId);
 
                     if (riskGenerator != null) {
