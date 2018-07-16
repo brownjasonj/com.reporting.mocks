@@ -20,10 +20,12 @@ public class FXDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         List<TradeType> otcTradeTypes = new ArrayList<>();
         List<SecurityStatic> securityStatic = new ArrayList<>();
 
-        // - URN: bank:fxdesk:fxspots:bookname
-        books.add("bank:fxdesk:fxspots:Book1");
-        books.add("bank:fxdesk:fxspots:Book2");
-        books.add("bank:fxdesk:fxspots:Book3");
+        // - URN: book:<department name>:<desk name>:<book name>
+        //   e.g., book:fxdesk:fxspots:bookname
+
+        books.add("book:fxdesk:fxspots:Book1");
+        books.add("book:fxdesk:fxspots:Book2");
+        books.add("book:fxdesk:fxspots:Book3");
 
 
         otcUnderlying.add(new CurrencyPair("EUR", "USD"));
@@ -55,6 +57,6 @@ public class FXDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         indr.add(new IntradayRiskType(RiskType.DELTA, 3));
 
 
-        this.pricingGroupId = new PricingGroup("FXDesk");
+        this.pricingGroupId = new PricingGroup("fxdesk");
     }
 }

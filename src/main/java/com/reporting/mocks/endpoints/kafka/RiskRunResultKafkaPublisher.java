@@ -10,14 +10,16 @@ import org.springframework.stereotype.Component;
 
 public class RiskRunResultKafkaPublisher implements RiskRunPublisher {
     protected RiskResultKafkaProducer riskResultProducer;
+    protected CalculationContextKafkaProducer calculationContextProducer;
 
     public RiskRunResultKafkaPublisher(ApplicationConfig appConfig) {
         this.riskResultProducer = new RiskResultKafkaProducer(appConfig);
+        this.calculationContextProducer = new CalculationContextKafkaProducer(appConfig);
     }
 
     @Override
     public void publish(CalculationContext calculationContext) {
-
+        this.calculationContextProducer.send(calculationContext);
     }
 
     @Override

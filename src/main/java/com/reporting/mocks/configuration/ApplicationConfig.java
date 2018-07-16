@@ -25,4 +25,14 @@ kafka:
     public String getIntradayRiskSetTopic() {
         return environment.getProperty("kafka.topic.intradayriskset");
     }
+
+
+    public String getIntradayRiskTickTopic() {
+        return environment.getProperty("kafka.topic.intradayrisktick");
+    }
+
+    public String getCalculationContextTopic() {
+        return environment.getProperty("kafka.topic.calccontext");
+    }
+
 }

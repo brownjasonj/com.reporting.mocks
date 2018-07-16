@@ -74,7 +74,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
                     riskPublisher.publish(this.currentCalculationContext);
 
                     this.riskRunRequestQueue.add(new RiskRunRequest(
-                            RiskRunType.Intraday,
+                            RiskRunType.EndOfDay,
                             this.currentCalculationContext.getId(),
                             null,
                             tradePopulation.getId(),
