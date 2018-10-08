@@ -6,9 +6,9 @@ three parts to the simulator:
 the activities are:  market data changes, trading activity and business event activity (e.g., end of day)
 
 2) Business process simulation - this simulates the processes that are undertaken as a consequence of the 
-above activities.  This includes calculating the valuations and risks for trading activity and husiness events.
+above activities.  This includes calculating the valuations and risks for trading activity and business events.
 
-3) Persistence and publication - this part simulates the data storaging, indexing and publishing of the 
+3) Persistence and publication - this part simulates the data storage, indexing and publishing of the 
 consequences of the activity and business processes.
 
 <h1>Additional Packages</h1>
@@ -51,7 +51,7 @@ Use the swagger ui to see all available endpoints (<a href="http://localhost:300
 
 The behaviour of the emulator is defined by a configuration. There is one predefined configuration, but it is possible
 to create an setup new configurations.  To see all configurations available got to
-<a href="http://localhost:30001/getConfig">http://localhost:30001/getConfig</a>.
+<a href="http://localhost:30001/getpricinggroups">http://localhost:30001/getpricinggroups</a>.
 
 To start the emulator you need to got to the process start endpoint and start it for a specific configuration.  As 
 seen above the predefined configuration is 'fxdesk'.  Start the emulator using
