@@ -19,7 +19,7 @@ public class PvGenerator implements IRiskGenerator {
     public Risk generate(RiskRequest riskRequest, Trade trade) {
         try {
             return new Pv(riskRequest.getCalculationId(),
-                    riskRequest.getMarketEnvId(),
+                    riskRequest.getCalculationContext().get(this.getRiskType()),
                     riskRequest.getTradePopulationId(),
                     riskRequest.getRiskRunId(),
                     trade.getBook(),

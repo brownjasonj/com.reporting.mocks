@@ -1,29 +1,28 @@
 package com.reporting.mocks.process.risks;
 
+import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.id.CalculationContextId;
 import com.reporting.mocks.model.id.MarketEnvId;
 import com.reporting.mocks.model.id.RiskRunId;
 import com.reporting.mocks.model.id.TradePopulationId;
 
 public class RiskRequest {
-    protected CalculationContextId calculationId;
-    protected MarketEnvId marketEnvId;
+    protected CalculationContext calculationContext;
     protected TradePopulationId tradePopulationId;
     protected RiskRunId riskRunId;
 
-    public RiskRequest(CalculationContextId calculationId, MarketEnvId marketEnvId, TradePopulationId tradePopulationId) {
-        this.calculationId = calculationId;
-        this.marketEnvId = marketEnvId;
+    public RiskRequest(CalculationContext calculationContext, TradePopulationId tradePopulationId) {
+        this.calculationContext = calculationContext;
         this.tradePopulationId = tradePopulationId;
-        this.riskRunId = new RiskRunId(calculationId.getPricingGroupName());
+        this.riskRunId = new RiskRunId(this.calculationContext.getId().getPricingGroupName());
     }
 
     public CalculationContextId getCalculationId() {
-        return calculationId;
+        return this.calculationContext.getId();
     }
 
-    public MarketEnvId getMarketEnvId() {
-        return marketEnvId;
+    public CalculationContext getCalculationContext() {
+        return this.calculationContext;
     }
 
     public TradePopulationId getTradePopulationId() {

@@ -48,13 +48,17 @@ public class FXDeskDefaultPricingGroupConfig extends PricingGroupConfig {
 
         this.tradeConfig = new TradeConfig(books, otcUnderlying, otcTradeTypes, securityStatic);
 
-        ArrayList<RiskType> eodr = new ArrayList<>(Arrays.asList(RiskType.PV, RiskType.DELTA));
+        ArrayList<RiskType> eodr = new ArrayList<>();
+        eodr.add(RiskType.PV);
+        eodr.add(RiskType.DELTA);
+        eodr.add(RiskType.VEGA);
         this.endofdayConfig = new EndofDayConfig(eodr, 10 * 60 * 1000);
 
         ArrayList<IntradayRiskType> indr = new ArrayList<>();
-        this.intradayConfig = new IntradayConfig(indr);
         indr.add(new IntradayRiskType(RiskType.PV, 1));
         indr.add(new IntradayRiskType(RiskType.DELTA, 3));
+        indr.add(new IntradayRiskType(RiskType.VEGA, 3));
+        this.intradayConfig = new IntradayConfig(indr);
 
 
         this.pricingGroupId = new PricingGroup("fxdesk");

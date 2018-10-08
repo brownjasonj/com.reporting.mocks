@@ -2,6 +2,7 @@ package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.endpoints.JavaQueue.RiskRunResultQueuePublisher;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.endpoints.kafka.RiskRunResultKafkaPublisher;
 import com.reporting.mocks.generators.RiskRunGeneratorThread;
@@ -54,7 +55,7 @@ public class CompleteProcess {
     protected TradeGenerator tradeGenerator;
     protected TradePopulationProducerThread tradePopulationProducerThread;
 
-    protected RiskRunResultKafkaPublisher riskRunPublisher;
+    protected RiskRunPublisher riskRunPublisher;
 
     ProcessEventQueues processEventQueues;
 
@@ -69,6 +70,7 @@ public class CompleteProcess {
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.processEventQueues = new JavaProcessEventQueues();
         this.riskRunPublisher = new RiskRunResultKafkaPublisher(appConfig);
+        //this.riskRunPublisher = new RiskRunResultQueuePublisher(this.processEventQueues.getRiskResultQueue());
     }
 
     public Collection<TradePopulation> getTradePopulations() {

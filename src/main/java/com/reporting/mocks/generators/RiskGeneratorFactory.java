@@ -2,6 +2,7 @@ package com.reporting.mocks.generators;
 
 import com.reporting.mocks.generators.Risk.DeltaGenerator;
 import com.reporting.mocks.generators.Risk.PvGenerator;
+import com.reporting.mocks.generators.Risk.VegaGenerator;
 import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.risks.RiskType;
 
@@ -13,6 +14,7 @@ public class RiskGeneratorFactory {
     static {
         RiskGeneratorFactory.register(new PvGenerator());
         RiskGeneratorFactory.register(new DeltaGenerator());
+        RiskGeneratorFactory.register(new VegaGenerator());
     }
 
     private static void register(IRiskGenerator<? extends Risk> riskGenerator) {
