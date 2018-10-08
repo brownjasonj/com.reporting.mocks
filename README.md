@@ -73,7 +73,180 @@ There are six packages
 <h3>com.reporting.mocks.configuration</h3>
 This contains class models to hold the application configuration and is broken down into
 three main parts
-
+<pre>
+{
+      "pricingGroupId": {
+        "name": "fxdesk"
+      },
+      "tradeConfig": {
+        "startingTradeCount": 1000,
+        "newTradeStart": 0,
+        "newTradePeriodicity": 1000,
+        "modifiedTradeStart": 60000,
+        "modifiedTradePeriodicity": 60000,
+        "deleteTadeStart": 120000,
+        "deleteTradePeriodicity": 120000,
+        "books": [
+          "book:fxdesk:fxspots:Book1",
+          "book:fxdesk:fxspots:Book2",
+          "book:fxdesk:fxspots:Book3"
+        ],
+        "otcUnderlying": [
+          {
+            "ccy1": "EUR",
+            "ccy2": "USD",
+            "accy": "USD",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "USD"
+            }
+          },
+          {
+            "ccy1": "EUR",
+            "ccy2": "CHF",
+            "accy": "CHF",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "CHF"
+            }
+          },
+          {
+            "ccy1": "EUR",
+            "ccy2": "GBP",
+            "accy": "GBP",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "GBP"
+            }
+          },
+          {
+            "ccy1": "EUR",
+            "ccy2": "MXN",
+            "accy": "MXN",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "MXN"
+            }
+          },
+          {
+            "ccy1": "EUR",
+            "ccy2": "JPY",
+            "accy": "JPY",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "JPY"
+            }
+          },
+          {
+            "ccy1": "EUR",
+            "ccy2": "AUD",
+            "accy": "AUD",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "AUD"
+            }
+          },
+          {
+            "ccy1": "EUR",
+            "ccy2": "RBL",
+            "accy": "RBL",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "RBL"
+            }
+          },
+          {
+            "ccy1": "USD",
+            "ccy2": "CHF",
+            "accy": "CHF",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "CHF"
+            }
+          },
+          {
+            "ccy1": "USD",
+            "ccy2": "GBP",
+            "accy": "GBP",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "GBP"
+            }
+          },
+          {
+            "ccy1": "USD",
+            "ccy2": "MXN",
+            "accy": "MXN",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "MXN"
+            }
+          },
+          {
+            "ccy1": "USD",
+            "ccy2": "JPY",
+            "accy": "JPY",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "JPY"
+            }
+          },
+          {
+            "ccy1": "USD",
+            "ccy2": "AUD",
+            "accy": "AUD",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "AUD"
+            }
+          },
+          {
+            "ccy1": "USD",
+            "ccy2": "RBL",
+            "accy": "RBL",
+            "componenetCount": 2,
+            "underlyingCurrency": {
+              "currency": "RBL"
+            }
+          }
+        ],
+        "tradeTypes": [
+          "Spot",
+          "Forward",
+          "Swap"
+        ],
+        "securityStatic": []
+      },
+      "intradayConfig": {
+        "risks": [
+          {
+            "riskType": "PV",
+            "periodicity": 1
+          },
+          {
+            "riskType": "DELTA",
+            "periodicity": 3
+          },
+          {
+            "riskType": "VEGA",
+            "periodicity": 3
+          }
+        ]
+      },
+      "endofdayConfig": {
+        "risks": [
+          "PV",
+          "DELTA",
+          "VEGA"
+        ],
+        "periodicity": 600000
+      },
+      "eod": true,
+      "sod": true,
+      "ind": true,
+      "marketPeriodicity": 600000
+    }
+</pre>
 <h4>TradeConfig</h4>
 Defines the trade types, underlyings and the rate at which new, modify and delete trade events occur.
 
@@ -131,9 +304,71 @@ There are six main business objects
     </li>
 <li><b>TradePopulation</b> a set of trades plus a label (e.g., EOD, Intraday).
     <pre>
+    [
+      {
+        "kind": "Otc",
+        "tcn": {
+          "id": "536e07e5-bf88-469d-b462-3d4d891143ac",
+          "version": 0
+        },
+        "book": "book:fxdesk:fxspots:Book2",
+        "tradeType": "Forward",
+        "quantity": null,
+        "buySell": null,
+        "underlying": {
+          "ccy1": "EUR",
+          "ccy2": "MXN",
+          "accy": "MXN",
+          "componenetCount": 2,
+          "underlyingCurrency": {
+            "currency": "MXN"
+          }
+        },
+        "version": 0
+      },
+      ...
+    ]
     </pre> 
 </li>
-<li><b>Risk</b> has a type (e.g., PV, Delta, Gamma) and value which the simulator assigns a random value.</li>
+<li><b>Risk</b> has a type (e.g., PV, Delta, Gamma) and value which the simulator assigns a random value.
+<pre>
+{
+                "nameValue":"value",
+                "nameCurrency":"currency",
+                "calculationContextId":{
+                    "pricingGroupName":"fxdesk",
+                    "locator":"/calculationcontext/fxdesk",
+                    "uri":"/calculationcontext/fxdesk/2f3e4641-3a73-46d5-8ab3-3073afbc6a34",
+                    "id":"2f3e4641-3a73-46d5-8ab3-3073afbc6a34"
+                },
+                "marketEnvId":{
+                    "locator":"/calculationcontext/market/fxdesk",
+                    "uri":"/calculationcontext/market/fxdesk/287e3617-e015-4382-9e75-07c418a51c1e",
+                    "id":"287e3617-e015-4382-9e75-07c418a51c1e"
+                },
+                "tradePopulationId":{
+                    "locator":"/tradepopulation/fxdesk",
+                    "uri":"/tradepopulation/fxdesk/7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96",
+                    "id":"7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96"
+                },
+                "riskRunId":{
+                    "locator":"/RiskRun/fxdesk",
+                    "uri":"/RiskRun/fxdesk/262ba5b2-2357-4dee-a72f-33e1d56debaf",
+                    "id":"262ba5b2-2357-4dee-a72f-33e1d56debaf"
+                },
+                "bookName":"book:fxdesk:fxspots:Book1",
+                "tcn":{
+                    "id":"5d19fb54-b414-48cf-85d6-0ef5898eff26",
+                    "version":0
+                },
+                "riskType":"PV",
+                "kvp":{
+                    "currency":{"currency":"GBP"},
+                    "value":0.0077574439267200646
+                }
+            }
+</pre>
+</li>
 <li><b>CalculationContext</b> a set of <b>Market</b> objects and a map from <b>RiskType</b> (e.g., PV, Delta, Gamma) to one of the <b>Market</b> objects in the set.
 <pre>
 {
@@ -222,18 +457,75 @@ should be updated whenever the market changes, Delta and Vega markets are update
 <pre>
 {
   "id": {
-     "locator": "/MarketEnvironment/fxdesk",
-     "uri": "/MarketEnvironment/fxdesk?id=4ed89b3c-c40a-444a-9e9a-46464d091047",
+     "locator": "/calculationcontext/market/fxdesk",
+     "uri": "/calculationcontext/market/fxdesk/4ed89b3c-c40a-444a-9e9a-46464d091047",
      "id": "4ed89b3c-c40a-444a-9e9a-46464d091047"
   },
   "asOf": "2018-10-08T11:48:16.690+0000",
-  "type": "EOD",
-
+  "type": "EOD"
 }
 </pre>
 </li>
 
 <li><b>RiskResult</b> consists of a set of <b>Risk</b> values, a reference to a <b>CalculationContext</b>, a <b>TradePopulation</b>, a <b>RiskRunId</b> signifying which risk run the result pertains to, a <b>fragment count</b> and <b>fragment number</b>.  If there are a large number of risk results for a risk run then a set of </b>RiskResult</b> objects will be generated each with the same <b>RiskRunId</b> but different fragment numbers. </li>
+<pre>
+{
+    "calculationContextId":{
+        "pricingGroupName":"fxdesk",
+        "locator":"/calculationcontext/fxdesk",
+        "uri":"/calculationcontext/fxdesk/2f3e4641-3a73-46d5-8ab3-3073afbc6a34",
+        "id":"2f3e4641-3a73-46d5-8ab3-3073afbc6a34"
+        },
+    "tradePopulationId":{
+        "locator":"/tradepopulation/fxdesk",
+        "uri":"/tradepopulation/fxdesk/7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96",
+        "id":"7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96"
+    },
+    "riskRunId":{
+        "locator":"/RiskRun/fxdesk",
+        "uri":"/RiskRun/fxdesk/8e8eb591-cf61-43b7-8434-cfc79d8dddc0",
+        "id":"8e8eb591-cf61-43b7-8434-cfc79d8dddc0"},
+        "fragmentCount":3,
+        "fragmentNo":0,
+        "results":[
+            {
+                "nameValue":"value",
+                "nameCurrency":"currency",
+                "calculationContextId":{
+                    "pricingGroupName":"fxdesk",
+                    "locator":"/calculationcontext/fxdesk",
+                    "uri":"/calculationcontext/fxdesk/2f3e4641-3a73-46d5-8ab3-3073afbc6a34",
+                    "id":"2f3e4641-3a73-46d5-8ab3-3073afbc6a34"
+                },
+                "marketEnvId":{
+                    "locator":"/calculationcontext/market/fxdesk",
+                    "uri":"/calculationcontext/market/fxdesk/287e3617-e015-4382-9e75-07c418a51c1e",
+                    "id":"287e3617-e015-4382-9e75-07c418a51c1e"
+                },
+                "tradePopulationId":{
+                    "locator":"/tradepopulation/fxdesk",
+                    "uri":"/tradepopulation/fxdesk/7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96",
+                    "id":"7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96"
+                },
+                "riskRunId":{
+                    "locator":"/riskrun/fxdesk",
+                    "uri":"/riskrun/fxdesk/262ba5b2-2357-4dee-a72f-33e1d56debaf",
+                    "id":"262ba5b2-2357-4dee-a72f-33e1d56debaf"
+                },
+                "bookName":"book:fxdesk:fxspots:Book1",
+                "tcn":{
+                    "id":"5d19fb54-b414-48cf-85d6-0ef5898eff26",
+                    "version":0
+                },
+                "riskType":"PV",
+                "kvp":{
+                    "currency":{"currency":"GBP"},
+                    "value":0.0077574439267200646
+                }
+            }],
+        "isDeleteEvent":false}
+}
+</pre>
 </ul>
 
 The simulator simulates the following set of events

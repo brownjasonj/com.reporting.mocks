@@ -52,7 +52,7 @@ public class FXDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         eodr.add(RiskType.PV);
         eodr.add(RiskType.DELTA);
         eodr.add(RiskType.VEGA);
-        this.endofdayConfig = new EndofDayConfig(eodr, 10 * 60 * 1000);
+        this.endofdayConfig = new EndofDayConfig(eodr, 5 * 60 * 1000);
 
         ArrayList<IntradayRiskType> indr = new ArrayList<>();
         indr.add(new IntradayRiskType(RiskType.PV, 1));

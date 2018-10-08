@@ -1,0 +1,59 @@
+{
+  "calculationContextId": {
+    "pricingGroupName":"fxdesk",
+    "locator":"calculationcontext:fxdesk",
+    "uri":"calculationcontext:fxdesk?id\u003d8380e805-30f3-426d-9a2c-734973eb9ab0",
+    "id":"8380e805-30f3-426d-9a2c-734973eb9ab0"
+  },
+  "tradePopulationId": {
+    "locator":"/TradePopulation/fxdesk",
+    "uri":"/TradePopulation/fxdesk?id\u003ddadc1d88-964c-4dd1-a26b-9d5d4012e9e3",
+    "id":"dadc1d88-964c-4dd1-a26b-9d5d4012e9e3"
+  },
+  "riskRunId": {
+    "locator":"/RiskRun/fxdesk",
+    "uri":"/RiskRun/fxdesk?id\u003d4619c8a3-02b7-4b8c-8f66-dbe9b75798b3",
+    "id":"4619c8a3-02b7-4b8c-8f66-dbe9b75798b3"},
+  "fragmentCount":3,
+  "fragmentNo":0,
+  "results":[
+    {
+      "nameValue":"value",
+      "nameCurrency":"currency",
+      "calculationContextId": {
+        "pricingGroupName":"fxdesk",
+        "locator":"calculationcontext:fxdesk",
+        "uri":"calculationcontext:fxdesk?id\u003d8380e805-30f3-426d-9a2c-734973eb9ab0",
+        "id":"8380e805-30f3-426d-9a2c-734973eb9ab0"
+      },
+      "marketEnvId": {
+        "locator":"/MarketEnvironment/fxdesk",
+        "uri":"/MarketEnvironment/fxdesk?id\u003d932682c7-cdaa-4541-a5e3-dc0b0a687864",
+        "id":"932682c7-cdaa-4541-a5e3-dc0b0a687864"
+      },
+      "tradePopulationId":{
+        "locator":"/TradePopulation/fxdesk",
+        "uri":"/TradePopulation/fxdesk?id\u003ddadc1d88-964c-4dd1-a26b-9d5d4012e9e3",
+        "id":"dadc1d88-964c-4dd1-a26b-9d5d4012e9e3"
+      },
+      "riskRunId": {
+        "locator":"/RiskRun/fxdesk",
+        "uri":"/RiskRun/fxdesk?id\u003da4619d60-0975-4cb2-9930-003e4bf7a505",
+        "id":"a4619d60-0975-4cb2-9930-003e4bf7a505"
+      },
+      "bookName":"book:fxdesk:fxspots:Book3",
+      "tcn": {
+        "id":"69217d84-532e-4e85-993a-9a9849c49e1f",
+        "version":0
+      },
+      "riskType":"PV",
+      "kvp":{
+        "currency":{
+          "currency":"MXN"
+        },
+        "value":0.6372328379247962
+      }
+    }
+  ],
+  "isDeleteEvent":false
+}
