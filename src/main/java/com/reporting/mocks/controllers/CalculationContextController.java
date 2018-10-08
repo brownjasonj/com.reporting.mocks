@@ -15,19 +15,19 @@ import java.util.Collection;
 import java.util.UUID;
 
 @RestController
-public class MarketEnvController {
+public class CalculationContextController {
+    @GetMapping("/calculationcontext/{pricingGroupName}")
+    public Collection<CalculationContext> getCalculationContexts(@PathVariable String pricingGroupName) {
+        CalculationContextStore store = CalculationContextStoreFactory.get(pricingGroupName);
+        if (store != null) {
+            return store.getAll();
+        }
+        return null;
+    }
 
-//    @RequestMapping(method = { RequestMethod.GET }, value = { "/CalculationContextId/{pricingGroupName}" }, produces = "application/json")
-//    public Collection<CalculationContext> getCalculationContexts(@PathVariable String pricingGroupName) {
-//        CalculationContextStore store = CalculationContextStoreFactory.getTradeByTcn(pricingGroupName);
-//        if (store != null) {
-//            return store.getAll();
-//        }
-//        return null;
-//    }
 
-    @RequestMapping(method = { RequestMethod.GET }, value = { "/CalculationContext/{pricingGroupName}" }, produces = "application/json")
-    public Collection<CalculationContext> getCalculationContext(@PathVariable String pricingGroupName, @RequestParam("id") UUID id) {
+    @GetMapping("/calculationcontext/{pricingGroupName}/{id}")
+    public Collection<CalculationContext> getCalculationContext(@PathVariable String pricingGroupName, @PathVariable UUID id) {
         CalculationContextStore store = CalculationContextStoreFactory.get(pricingGroupName);
         if (store != null) {
             if (id == null)
@@ -38,7 +38,7 @@ public class MarketEnvController {
         return null;
     }
 
-    @RequestMapping(method = { RequestMethod.GET }, value = { "/MarketEnvironment/{pricingGroupName}" }, produces = "application/json")
+    @GetMapping("/calculationcontext/market/{pricingGroupName}/{id}")
     public MarketEnv getMarketEnvironment(@PathVariable String pricingGroupName, @RequestParam("id") UUID id) {
         MarketStore store = MarketStoreFactory.get(pricingGroupName);
         if (store != null) {

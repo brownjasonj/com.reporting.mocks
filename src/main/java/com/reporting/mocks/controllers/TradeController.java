@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @RestController
 public class TradeController {
-    @RequestMapping(method = { RequestMethod.GET }, value = { "/TradePopulations/{pricingGroupName}" }, produces = "application/json")
+    @GetMapping("/tradepopulations/{pricingGroupName}")
     public List<TradePopulationId> tradePopulations(@PathVariable String pricingGroupName) {
         TradeStore store = TradeStoreFactory.get().get(pricingGroupName);
         if (store != null) {
@@ -23,8 +23,9 @@ public class TradeController {
             return null;
         }
     }
-    @RequestMapping(method = { RequestMethod.GET }, value = { "/TradePopulation/{pricingGroupName}" }, produces = "application/json")
-    public Collection<Trade> tradePopulation(@PathVariable String pricingGroupName, @RequestParam("id") UUID id) {
+
+    @GetMapping("/tradepopulation/{pricingGroupName}/{id}")
+    public Collection<Trade> tradePopulation(@PathVariable String pricingGroupName, @PathVariable UUID id) {
         TradeStore store = TradeStoreFactory.get().get(pricingGroupName);
         if (store != null) {
             TradePopulation tradePopulation = store.getTradePopulation(id);

@@ -12,29 +12,59 @@ above activities.  This includes calculating the valuations and risks for tradin
 consequences of the activity and business processes.
 
 <h1>Additional Packages</h1>
-Before you can build the project you need to fork the additional github project 
+Before you can build the project you need to fork the additional github projects:
+<p> 
+    <ul>
+    <li>https://github.com/brownjasonj/com.reporting.mocks.model</li>
+    <li>https://github.com/brownjasonj/com.reporting.kafka.serialization</li>
+    </ul>
+</p>
+This is a set of classes that model the set of business objects such as risks, trades and markets and their associated kafka serilaizers.
 
-https://github.com/brownjasonj/com.reporting.mocks.model
-
-This is a set of classes that model the set of business objects such as risks, trades and markets.
 
 <h1>Using the simulator</h1>
+The simulator automatically publishes to Kafka, so you will need to install both Zookeeper and Kafka and have those
+running.  Take a look at the application.yml file to understand which ports and topics are defined, these can be
+changed to whatever you want.
+
+<pre>
+spring:
+  profiles: default
+server:
+  port: 30001
+  #port: ${PORT:${SERVER_PORT:0}}
+version: 0.0.1
+kafka:
+  server: localhost:9092
+  topic:
+    intradayriskset: IntraDayRiskSet
+    intradayrisktick: IntraDayRiskTick
+    calccontext: CalculationContext
+    market: Market
+</pre>
+
 To start the simulator run the following
 
 gradle bootRun
 
-There is one predefined configuration which includes a single pricing group called "FXDesk".  To see the configuration
-go to the following URL
+Use the swagger ui to see all available endpoints (<a href="http://localhost:30001/swagger-ui.html">http://localhost:30001/swagger-ui.html</a>)
 
+The behaviour of the emulator is defined by a configuration. There is one predefined configuration, but it is possible
+to create an setup new configurations.  To see all configurations available got to
+<a href="http://localhost:30001/getConfig">http://localhost:30001/getConfig</a>.
 
-http://localhost:30001/getPricingGroupConfig?name=fxdesk
-
-
-then to start all the processes go to the following URL
-
-localhost:30001/startprocess/fxdesk
-
-There are several other uris that provide a way to looking up trade populations etc.
+To start the emulator you need to got to the process start endpoint and start it for a specific configuration.  As 
+seen above the predefined configuration is 'fxdesk'.  Start the emulator using
+<a href="http://localhost:30001/controlprocess/start/fxdesk">http://localhost:30001/controlprocess/start/fxdesk</a>.
+This will start all the emulator processes and you should see some output to the console, something like:
+<pre>
+TradeEvent New
+Trade Event New trade: {Type: Forward, Book: book:fxdesk:fxspots:Book3, TCN: 883967d8-c974-41c4-9272-79c92e9692f0.0}
+TradeEvent New
+Trade Event New trade: {Type: Forward, Book: book:fxdesk:fxspots:Book2, TCN: 263a1b9d-3944-46aa-95f5-dc67261e68e2.0}
+TradeEvent New
+Trade Event New trade: {Type: Forward, Book: book:fxdesk:fxspots:Book2, TCN: eb76ae06-bd31-4f69-aa1b-2caa164307c8.0}
+</pre>
 
 
 <h2> Structure of the code </h2>
@@ -70,7 +100,7 @@ This is a simple mock persitence layer.
 <h3>com.reporting.mocks.process</h3>
 The main set of classes that create the threads for generating all the events, be that market or trade events.
 
-<h1>Description of the Simulator</h1>
+<h1>Description of the Emulator</h1>
 There are six main business objects 
 
 <ul>
@@ -104,8 +134,105 @@ There are six main business objects
     </pre> 
 </li>
 <li><b>Risk</b> has a type (e.g., PV, Delta, Gamma) and value which the simulator assigns a random value.</li>
-<li><b>Market</b> represents market data.  No actual market data is represented, this object has an id and timestamp (the time the market was notionally created).  All risk values created by the simulator have an associated <b>Market</b> to represent the fact that the risk was calculated in the context of that market</li>
-<li><b>CalculationContext</b> a set of <b>Market</b> objects and a map from <b>RiskType</b> (e.g., PV, Delta, Gamma) to one of the <b>Market</b> objects in the set.</li>
+<li><b>CalculationContext</b> a set of <b>Market</b> objects and a map from <b>RiskType</b> (e.g., PV, Delta, Gamma) to one of the <b>Market</b> objects in the set.
+<pre>
+{
+    "id": {
+       "locator": "calculationcontext:fxdesk",
+       "uri": "calculationcontext:fxdesk?id=3014a121-37f8-4f99-8c86-dfc66b2fb973",
+       "id": "3014a121-37f8-4f99-8c86-dfc66b2fb973",
+       "pricingGroupName": "fxdesk"
+    },
+    "timeStamp": "2018-10-08T11:48:16.690+0000",
+    "markets": {
+      "PV": {
+        "locator": "/MarketEnvironment/fxdesk",
+        "uri": "/MarketEnvironment/fxdesk?id=4ed89b3c-c40a-444a-9e9a-46464d091047",
+        "id": "4ed89b3c-c40a-444a-9e9a-46464d091047"
+      },
+      "DELTA": {
+        "locator": "/MarketEnvironment/fxdesk",
+        "uri": "/MarketEnvironment/fxdesk?id=4ed89b3c-c40a-444a-9e9a-46464d091047",
+        "id": "4ed89b3c-c40a-444a-9e9a-46464d091047"
+      },
+      "VEGA": {
+        "locator": "/MarketEnvironment/fxdesk",
+        "uri": "/MarketEnvironment/fxdesk?id=4ed89b3c-c40a-444a-9e9a-46464d091047",
+        "id": "4ed89b3c-c40a-444a-9e9a-46464d091047"
+      }
+    }
+  }
+</pre>
+In the above example the market context is for the pricing group "fxdesk".  There are three markets, one for each
+of the risk types PV, DELTA and VEGA.  In the above example all three markets have the same id and are therefore 
+refer to the same market.
+
+Later there is a market change and a new context is created as below:
+<pre>
+{
+    "id": {
+      "locator": "calculationcontext:fxdesk",
+      "uri": "calculationcontext:fxdesk?id=c3c09478-31df-4506-beba-8d650f5edc59",
+      "id": "c3c09478-31df-4506-beba-8d650f5edc59",
+      "pricingGroupName": "fxdesk"
+    },
+    "timeStamp": "2018-10-08T11:48:16.695+0000",
+    "markets": {
+      "PV": {
+        "locator": "/MarketEnvironment/fxdesk",
+        "uri": "/MarketEnvironment/fxdesk?id=8ebcd97a-f518-45f3-a6ff-a330dda87e8c",
+        "id": "8ebcd97a-f518-45f3-a6ff-a330dda87e8c"
+      },
+      "DELTA": {
+        "locator": "/MarketEnvironment/fxdesk",
+        "uri": "/MarketEnvironment/fxdesk?id=ebb36bd3-9b33-4c3c-871a-3c74e5677883",
+        "id": "ebb36bd3-9b33-4c3c-871a-3c74e5677883"
+      },
+      "VEGA": {
+        "locator": "/MarketEnvironment/fxdesk",
+        "uri": "/MarketEnvironment/fxdesk?id=ebb36bd3-9b33-4c3c-871a-3c74e5677883",
+        "id": "ebb36bd3-9b33-4c3c-871a-3c74e5677883"
+      }
+    }
+  }
+</pre>
+Note that only the market for PV has changed.  If you look at the configuration above you will see in the section
+<pre>
+"intradayConfig": {
+    "risks": [
+      {
+        "riskType": "PV",
+        "periodicity": 1
+      },
+      {
+        "riskType": "DELTA",
+        "periodicity": 3
+      },
+      {
+        "riskType": "VEGA",
+        "periodicity": 3
+      }
+    ]
+  }
+</pre>
+The "periodicity" value determines when the markets for each of the risks should be updated.  In this case the PV market
+should be updated whenever the market changes, Delta and Vega markets are updated when there are 3 market changes.
+</li>
+<li><b>Market</b> represents market data.  No actual market data is represented, this object has an id and timestamp (the time the market was notionally created).  All risk values created by the simulator have an associated <b>Market</b> to represent the fact that the risk was calculated in the context of that market
+<pre>
+{
+  "id": {
+     "locator": "/MarketEnvironment/fxdesk",
+     "uri": "/MarketEnvironment/fxdesk?id=4ed89b3c-c40a-444a-9e9a-46464d091047",
+     "id": "4ed89b3c-c40a-444a-9e9a-46464d091047"
+  },
+  "asOf": "2018-10-08T11:48:16.690+0000",
+  "type": "EOD",
+
+}
+</pre>
+</li>
+
 <li><b>RiskResult</b> consists of a set of <b>Risk</b> values, a reference to a <b>CalculationContext</b>, a <b>TradePopulation</b>, a <b>RiskRunId</b> signifying which risk run the result pertains to, a <b>fragment count</b> and <b>fragment number</b>.  If there are a large number of risk results for a risk run then a set of </b>RiskResult</b> objects will be generated each with the same <b>RiskRunId</b> but different fragment numbers. </li>
 </ul>
 
