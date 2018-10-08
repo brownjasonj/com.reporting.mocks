@@ -27,12 +27,12 @@ There is one predefined configuration which includes a single pricing group call
 go to the following URL
 
 
-http://localhost:30001/getPricingGroupConfig?name=FXDesk
+http://localhost:30001/getPricingGroupConfig?name=fxdesk
 
 
 then to start all the processes go to the following URL
 
-localhost:30001/startprocess/FXDesk
+localhost:30001/startprocess/fxdesk
 
 There are several other uris that provide a way to looking up trade populations etc.
 
@@ -48,7 +48,7 @@ three main parts
 Defines the trade types, underlyings and the rate at which new, modify and delete trade events occur.
 
 <h4>IntradayConfig</h4>
-Defines the preiodicity at which intraday market events occur.  These market events trigger subsequent risk calculations.
+Defines the periodicity at which intraday market events occur.  These market events trigger subsequent risk calculations.
 
 <h4>EndofDayConfig</h4>
 Defines the periodicity at which end of day market events occur.
@@ -74,8 +74,35 @@ The main set of classes that create the threads for generating all the events, b
 There are six main business objects 
 
 <ul>
-<li><b>Trade</b> a trade consisting of a trade type (e.g., Spot, Forward, Swap)</li>
-<li><b>TradePopulation</b> a set of trades plus a label (e.g., EOD, Intraday). </li>
+<li><b>Trade</b> a trade consisting of a trade type (e.g., Spot, Forward, Swap)
+    <pre>
+{
+    "kind": "Otc",
+    "tcn": {
+      "id": "45362f65-c63a-4bf8-9618-2b056efa547f",
+      "version": 0
+    },
+    "book": "book:fxdesk:fxspots:Book1",
+    "tradeType": "Forward",
+    "quantity": null,
+    "buySell": null,
+    "underlying": {
+      "ccy1": "USD",
+      "ccy2": "MXN",
+      "underlyingCurrency": {
+        "currency": "MXN"
+      },
+      "componenetCount": 2,
+      "accy": "MXN"
+    },
+    "version": 0
+  }
+        </pre>
+    </li>
+<li><b>TradePopulation</b> a set of trades plus a label (e.g., EOD, Intraday).
+    <pre>
+    </pre> 
+</li>
 <li><b>Risk</b> has a type (e.g., PV, Delta, Gamma) and value which the simulator assigns a random value.</li>
 <li><b>Market</b> represents market data.  No actual market data is represented, this object has an id and timestamp (the time the market was notionally created).  All risk values created by the simulator have an associated <b>Market</b> to represent the fact that the risk was calculated in the context of that market</li>
 <li><b>CalculationContext</b> a set of <b>Market</b> objects and a map from <b>RiskType</b> (e.g., PV, Delta, Gamma) to one of the <b>Market</b> objects in the set.</li>

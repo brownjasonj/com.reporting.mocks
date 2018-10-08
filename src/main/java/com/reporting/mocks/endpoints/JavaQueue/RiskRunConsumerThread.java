@@ -1,4 +1,4 @@
-package com.reporting.mocks.process.risks;
+package com.reporting.mocks.endpoints.JavaQueue;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
