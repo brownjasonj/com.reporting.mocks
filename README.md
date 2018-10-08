@@ -110,105 +110,7 @@ three main parts
               "currency": "CHF"
             }
           },
-          {
-            "ccy1": "EUR",
-            "ccy2": "GBP",
-            "accy": "GBP",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "GBP"
-            }
-          },
-          {
-            "ccy1": "EUR",
-            "ccy2": "MXN",
-            "accy": "MXN",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "MXN"
-            }
-          },
-          {
-            "ccy1": "EUR",
-            "ccy2": "JPY",
-            "accy": "JPY",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "JPY"
-            }
-          },
-          {
-            "ccy1": "EUR",
-            "ccy2": "AUD",
-            "accy": "AUD",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "AUD"
-            }
-          },
-          {
-            "ccy1": "EUR",
-            "ccy2": "RBL",
-            "accy": "RBL",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "RBL"
-            }
-          },
-          {
-            "ccy1": "USD",
-            "ccy2": "CHF",
-            "accy": "CHF",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "CHF"
-            }
-          },
-          {
-            "ccy1": "USD",
-            "ccy2": "GBP",
-            "accy": "GBP",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "GBP"
-            }
-          },
-          {
-            "ccy1": "USD",
-            "ccy2": "MXN",
-            "accy": "MXN",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "MXN"
-            }
-          },
-          {
-            "ccy1": "USD",
-            "ccy2": "JPY",
-            "accy": "JPY",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "JPY"
-            }
-          },
-          {
-            "ccy1": "USD",
-            "ccy2": "AUD",
-            "accy": "AUD",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "AUD"
-            }
-          },
-          {
-            "ccy1": "USD",
-            "ccy2": "RBL",
-            "accy": "RBL",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "RBL"
-            }
-          }
+        ...
         ],
         "tradeTypes": [
           "Spot",
@@ -352,8 +254,8 @@ There are six main business objects
                     "id":"7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96"
                 },
                 "riskRunId":{
-                    "locator":"/RiskRun/fxdesk",
-                    "uri":"/RiskRun/fxdesk/262ba5b2-2357-4dee-a72f-33e1d56debaf",
+                    "locator":"/riskrun/fxdesk",
+                    "uri":"/riskrun/fxdesk/262ba5b2-2357-4dee-a72f-33e1d56debaf",
                     "id":"262ba5b2-2357-4dee-a72f-33e1d56debaf"
                 },
                 "bookName":"book:fxdesk:fxspots:Book1",
@@ -373,26 +275,26 @@ There are six main business objects
 <pre>
 {
     "id": {
-       "locator": "calculationcontext:fxdesk",
-       "uri": "calculationcontext:fxdesk?id=3014a121-37f8-4f99-8c86-dfc66b2fb973",
+       "locator": "/calculationcontext/fxdesk",
+       "uri": "/calculationcontext/fxdesk/3014a121-37f8-4f99-8c86-dfc66b2fb973",
        "id": "3014a121-37f8-4f99-8c86-dfc66b2fb973",
        "pricingGroupName": "fxdesk"
     },
     "timeStamp": "2018-10-08T11:48:16.690+0000",
     "markets": {
       "PV": {
-        "locator": "/MarketEnvironment/fxdesk",
-        "uri": "/MarketEnvironment/fxdesk?id=4ed89b3c-c40a-444a-9e9a-46464d091047",
+        "locator": "/calculationcontext/market/fxdesk",
+        "uri": "/calculationcontext/market/fxdesk/4ed89b3c-c40a-444a-9e9a-46464d091047",
         "id": "4ed89b3c-c40a-444a-9e9a-46464d091047"
       },
       "DELTA": {
-        "locator": "/MarketEnvironment/fxdesk",
-        "uri": "/MarketEnvironment/fxdesk?id=4ed89b3c-c40a-444a-9e9a-46464d091047",
+        "locator": "/calculationcontext/market/fxdesk",
+        "uri": "/calculationcontext/market/fxdesk/4ed89b3c-c40a-444a-9e9a-46464d091047",
         "id": "4ed89b3c-c40a-444a-9e9a-46464d091047"
       },
       "VEGA": {
-        "locator": "/MarketEnvironment/fxdesk",
-        "uri": "/MarketEnvironment/fxdesk?id=4ed89b3c-c40a-444a-9e9a-46464d091047",
+        "locator": "/calculationcontext/market/fxdesk",
+        "uri": "/calculationcontext/market/fxdesk/4ed89b3c-c40a-444a-9e9a-46464d091047",
         "id": "4ed89b3c-c40a-444a-9e9a-46464d091047"
       }
     }
@@ -406,26 +308,26 @@ Later there is a market change and a new context is created as below:
 <pre>
 {
     "id": {
-      "locator": "calculationcontext:fxdesk",
-      "uri": "calculationcontext:fxdesk?id=c3c09478-31df-4506-beba-8d650f5edc59",
+      "locator": "/calculationcontext/fxdesk",
+      "uri": "/calculationcontext/fxdesk/c3c09478-31df-4506-beba-8d650f5edc59",
       "id": "c3c09478-31df-4506-beba-8d650f5edc59",
       "pricingGroupName": "fxdesk"
     },
     "timeStamp": "2018-10-08T11:48:16.695+0000",
     "markets": {
       "PV": {
-        "locator": "/MarketEnvironment/fxdesk",
-        "uri": "/MarketEnvironment/fxdesk?id=8ebcd97a-f518-45f3-a6ff-a330dda87e8c",
+        "locator": "/calculationcontext/market/fxdesk",
+        "uri": "/calculationcontext/market/fxdesk/8ebcd97a-f518-45f3-a6ff-a330dda87e8c",
         "id": "8ebcd97a-f518-45f3-a6ff-a330dda87e8c"
       },
       "DELTA": {
-        "locator": "/MarketEnvironment/fxdesk",
-        "uri": "/MarketEnvironment/fxdesk?id=ebb36bd3-9b33-4c3c-871a-3c74e5677883",
+        "locator": "/calculationcontext/market/fxdesk",
+        "uri": "/calculationcontext/market/fxdesk/ebb36bd3-9b33-4c3c-871a-3c74e5677883",
         "id": "ebb36bd3-9b33-4c3c-871a-3c74e5677883"
       },
       "VEGA": {
-        "locator": "/MarketEnvironment/fxdesk",
-        "uri": "/MarketEnvironment/fxdesk?id=ebb36bd3-9b33-4c3c-871a-3c74e5677883",
+        "locator": "/calculationcontext/market/fxdesk",
+        "uri": "/calculationcontext/market/fxdesk/ebb36bd3-9b33-4c3c-871a-3c74e5677883",
         "id": "ebb36bd3-9b33-4c3c-871a-3c74e5677883"
       }
     }
