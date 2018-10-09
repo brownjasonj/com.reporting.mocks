@@ -1,6 +1,7 @@
 package com.reporting.mocks.generators;
 
 import com.reporting.mocks.configuration.TradeConfig;
+import com.reporting.mocks.model.trade.BuySell;
 import com.reporting.mocks.model.trade.OtcTrade;
 import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.model.trade.OtcTradeTypes.*;
@@ -26,6 +27,11 @@ public class TradeGenerator {
         try {
             Constructor constructor = otcClass.getConstructor(new Class[]{OtcUnderlying.class, String.class});
             OtcTrade otcTrade = (OtcTrade) constructor.newInstance(new Object[]{underlying, book});
+            otcTrade.setQuantity(new Random().nextDouble() * 1000000);
+            if (new Random().nextBoolean())
+                otcTrade.setBuySell(BuySell.Sell);
+            else
+                otcTrade.setBuySell(BuySell.Buy);
             return otcTrade;
         }
         catch (Exception e) {

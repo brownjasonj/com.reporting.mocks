@@ -11,6 +11,8 @@ import com.reporting.mocks.process.risks.RiskRunRequest;
 
 import javax.validation.constraints.Null;
 
+import java.util.Random;
+
 import static com.reporting.mocks.model.risks.RiskType.PV;
 
 
@@ -24,7 +26,8 @@ public class PvGenerator implements IRiskGenerator {
                     riskRequest.getRiskRunId(),
                     trade.getBook(),
                     trade.getTcn(),
-                    trade.getUnderlying().getUnderlyingCurrency());
+                    trade.getUnderlying().getUnderlyingCurrency(),
+                    new Random().nextDouble() * trade.getQuantity());
         }
         catch (NullPointerException npe) {
             return null;

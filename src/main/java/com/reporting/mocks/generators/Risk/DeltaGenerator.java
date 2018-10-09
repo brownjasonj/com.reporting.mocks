@@ -8,6 +8,8 @@ import com.reporting.mocks.model.risks.Delta;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 
+import java.util.Random;
+
 public class DeltaGenerator implements IRiskGenerator<Delta>{
     @Override
     public RiskType getRiskType() {
@@ -19,7 +21,8 @@ public class DeltaGenerator implements IRiskGenerator<Delta>{
         return new Delta(riskRequest.getCalculationId(),
                 riskRequest.getCalculationContext().get(this.getRiskType()),
                 riskRequest.getTradePopulationId(),
-                riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(), trade.getUnderlying());
+                riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(), trade.getUnderlying(),
+                new Random().nextDouble() * trade.getQuantity());
     }
 
     public int calcTimeEstimate(TradeType tradeType) {
