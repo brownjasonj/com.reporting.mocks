@@ -386,46 +386,51 @@ should be updated whenever the market changes, Delta and Vega markets are update
     "riskRunId":{
         "locator":"/RiskRun/fxdesk",
         "uri":"/RiskRun/fxdesk/8e8eb591-cf61-43b7-8434-cfc79d8dddc0",
-        "id":"8e8eb591-cf61-43b7-8434-cfc79d8dddc0"},
-        "fragmentCount":3,
-        "fragmentNo":0,
-        "results":[
-            {
-                "nameValue":"value",
-                "nameCurrency":"currency",
-                "calculationContextId":{
-                    "pricingGroupName":"fxdesk",
-                    "locator":"/calculationcontext/fxdesk",
-                    "uri":"/calculationcontext/fxdesk/2f3e4641-3a73-46d5-8ab3-3073afbc6a34",
-                    "id":"2f3e4641-3a73-46d5-8ab3-3073afbc6a34"
+        "id":"8e8eb591-cf61-43b7-8434-cfc79d8dddc0"
+    },
+    "fragmentCount":3,
+    "fragmentNo":0,
+    "results":[
+        {
+            "nameValue":"value",
+            "nameCurrency":"currency",
+            "calculationContextId": {
+                "pricingGroupName":"fxdesk",
+                "locator":"/calculationcontext/fxdesk",
+                "uri":"/calculationcontext/fxdesk/2f3e4641-3a73-46d5-8ab3-3073afbc6a34",
+                "id":"2f3e4641-3a73-46d5-8ab3-3073afbc6a34"
+            },
+            "marketEnvId":{
+                "locator":"/calculationcontext/market/fxdesk",
+                "uri":"/calculationcontext/market/fxdesk/287e3617-e015-4382-9e75-07c418a51c1e",
+                "id":"287e3617-e015-4382-9e75-07c418a51c1e"
+            },
+            "tradePopulationId":{
+                "locator":"/tradepopulation/fxdesk",
+                "uri":"/tradepopulation/fxdesk/7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96",
+                "id":"7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96"
+            },
+            "riskRunId":{
+                "locator":"/riskrun/fxdesk",
+                "uri":"/riskrun/fxdesk/262ba5b2-2357-4dee-a72f-33e1d56debaf",
+                "id":"262ba5b2-2357-4dee-a72f-33e1d56debaf"
+            },
+            "bookName":"book:fxdesk:fxspots:Book1",
+            "tcn":{
+                "id":"5d19fb54-b414-48cf-85d6-0ef5898eff26",
+                "version":0
+            },
+            "riskType":"PV",
+            "kvp":{
+                "currency":{
+                    "currency":"GBP"
                 },
-                "marketEnvId":{
-                    "locator":"/calculationcontext/market/fxdesk",
-                    "uri":"/calculationcontext/market/fxdesk/287e3617-e015-4382-9e75-07c418a51c1e",
-                    "id":"287e3617-e015-4382-9e75-07c418a51c1e"
-                },
-                "tradePopulationId":{
-                    "locator":"/tradepopulation/fxdesk",
-                    "uri":"/tradepopulation/fxdesk/7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96",
-                    "id":"7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96"
-                },
-                "riskRunId":{
-                    "locator":"/riskrun/fxdesk",
-                    "uri":"/riskrun/fxdesk/262ba5b2-2357-4dee-a72f-33e1d56debaf",
-                    "id":"262ba5b2-2357-4dee-a72f-33e1d56debaf"
-                },
-                "bookName":"book:fxdesk:fxspots:Book1",
-                "tcn":{
-                    "id":"5d19fb54-b414-48cf-85d6-0ef5898eff26",
-                    "version":0
-                },
-                "riskType":"PV",
-                "kvp":{
-                    "currency":{"currency":"GBP"},
-                    "value":0.0077574439267200646
-                }
-            }],
-        "isDeleteEvent":false}
+                "value":0.0077574439267200646
+            }
+        }
+    ],
+    "isDeleteEvent":false
+   }
 }
 </pre>
 </ul>
