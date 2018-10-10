@@ -80,7 +80,7 @@ three main parts
 <pre>
 {
       "pricingGroupId": {
-        "name": "fxdesk"
+        "name": "fxspotdesk"
       },
       "tradeConfig": {
         "startingTradeCount": 1000,
@@ -91,9 +91,9 @@ three main parts
         "deleteTadeStart": 120000,
         "deleteTradePeriodicity": 120000,
         "books": [
-          "book:fxdesk:fxspots:Book1",
-          "book:fxdesk:fxspots:Book2",
-          "book:fxdesk:fxspots:Book3"
+          "bank:fxdesk:fxspot:Book1",
+          "bank:fxdesk:fxspot:Book2",
+          "bank:fxdesk:fxspot:Book3"
         ],
         "otcUnderlying": [
           {
