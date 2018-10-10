@@ -1,10 +1,10 @@
 package com.reporting.mocks.generators;
 
-import com.reporting.mocks.model.trade.OtcTrade;
+import com.reporting.mocks.configuration.UnderlyingSetConfig;
+import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.model.underlying.OtcUnderlying;
 
-public interface ITradeGenerator<T extends OtcTrade> {
+public interface ITradeGenerator<T extends Trade> {
     TradeType getTradeType();
-    T generate(OtcUnderlying underlying, String book);
+    T generate(UnderlyingSetConfig underlyings, String book);
 }

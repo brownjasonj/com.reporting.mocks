@@ -1,10 +1,10 @@
 package com.reporting.mocks.generators.Trade;
 
+import com.reporting.mocks.configuration.UnderlyingSetConfig;
 import com.reporting.mocks.generators.ITradeGenerator;
-import com.reporting.mocks.model.trade.BuySell;
-import com.reporting.mocks.model.trade.OtcTradeTypes.VanillaOption;
+import com.reporting.mocks.model.trade.TradeTypes.VanillaOption;
 import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.model.underlying.OtcUnderlying;
+import com.reporting.mocks.model.underlying.Underlying;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -18,13 +18,18 @@ public class VanillaOptionGenerator implements ITradeGenerator<VanillaOption> {
     }
 
     @Override
-    public VanillaOption generate(OtcUnderlying underlying, String book) {
+    public VanillaOption generate(UnderlyingSetConfig underlyingSetConfig, String book) {
         Random rand = new Random();
         Double strike = rand.nextDouble();
         Date expiryDate = Date.from(LocalDate.now().plusDays(2 + rand.nextInt(2000)).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-        VanillaOption vanillaOption = new VanillaOption(underlying, expiryDate, strike, 1.0, strike, book);
-        vanillaOption.setQuantity(new Random().nextDouble() * 1000000);
-        vanillaOption.setBuySell(rand.nextBoolean() ? BuySell.Sell : BuySell.Buy);
+        Underlying underlying1 = underlyingSetConfig.selectRandomUnderlying1();
+        Underlying underlying2 = underlyingSetConfig.selectRandomUnderlying(underlying1.getName());
+        VanillaOption vanillaOption = new VanillaOption(
+                book,
+                new Random().nextDouble() * 1000000,
+                underlying1,
+                underlying2,
+                expiryDate, strike);
         return vanillaOption;
     }
 }

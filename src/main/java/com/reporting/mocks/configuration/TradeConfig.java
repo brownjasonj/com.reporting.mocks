@@ -1,7 +1,6 @@
 package com.reporting.mocks.configuration;
 
 import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.model.underlying.OtcUnderlying;
 import com.reporting.mocks.model.underlying.SecurityStatic;
 
 import java.util.List;
@@ -18,16 +17,16 @@ public class TradeConfig {
     protected int deleteTradePeriodicity = 120 * 1000;     // number of milliseconds between deletion of tcnTrades (default: 60s)
 
     List<String> books;
-    List<OtcUnderlying> otcUnderlying;
+    UnderlyingSetConfig underlyings;
     List<TradeType> tradeTypes;
     List<SecurityStatic> securityStatic;
 
     public TradeConfig() {
     }
 
-    public TradeConfig(List<String> books, List<OtcUnderlying> otcUnderlying, List<TradeType> otcTradeTypes, List<SecurityStatic> securityStatic) {
+    public TradeConfig(List<String> books, UnderlyingSetConfig underlyings, List<TradeType> otcTradeTypes, List<SecurityStatic> securityStatic) {
         this.books = books;
-        this.otcUnderlying = otcUnderlying;
+        this.underlyings = underlyings;
         this.tradeTypes = otcTradeTypes;
         this.securityStatic = securityStatic;
     }
@@ -44,8 +43,8 @@ public class TradeConfig {
         return books;
     }
 
-    public List<OtcUnderlying> getOtcUnderlying() {
-        return otcUnderlying;
+    public UnderlyingSetConfig getOtcUnderlying() {
+        return underlyings;
     }
 
     public List<SecurityStatic> getSecurityStatic() {

@@ -4,10 +4,7 @@ import com.reporting.mocks.configuration.*;
 import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
-import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.model.underlying.CurrencyPair;
-import com.reporting.mocks.model.underlying.OtcUnderlying;
 import com.reporting.mocks.model.underlying.SecurityStatic;
 
 import java.util.ArrayList;
@@ -17,7 +14,7 @@ import java.util.List;
 public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     public FXSpotDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
-        List<OtcUnderlying> otcUnderlying = new ArrayList<>();
+        UnderlyingSetConfig underlyings = new UnderlyingSetConfig();
         List<TradeType> otcTradeTypes = new ArrayList<>();
         List<SecurityStatic> securityStatic = new ArrayList<>();
 
@@ -29,25 +26,14 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         books.add("bank:fxdesk:fxspot:Book3");
 
 
-        otcUnderlying.add(new CurrencyPair("EUR", "USD"));
-        otcUnderlying.add(new CurrencyPair("EUR", "CHF"));
-        otcUnderlying.add(new CurrencyPair("EUR", "GBP"));
-        otcUnderlying.add(new CurrencyPair("EUR", "MXN"));
-        otcUnderlying.add(new CurrencyPair("EUR", "JPY"));
-        otcUnderlying.add(new CurrencyPair("EUR", "AUD"));
-        otcUnderlying.add(new CurrencyPair("EUR", "RBL"));
-        otcUnderlying.add(new CurrencyPair("USD", "CHF"));
-        otcUnderlying.add(new CurrencyPair("USD", "GBP"));
-        otcUnderlying.add(new CurrencyPair("USD", "MXN"));
-        otcUnderlying.add(new CurrencyPair("USD", "JPY"));
-        otcUnderlying.add(new CurrencyPair("USD", "AUD"));
-        otcUnderlying.add(new CurrencyPair("USD", "RBL"));
+        underlyings.addSet("EUR", Arrays.asList("USD", "CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));
+        underlyings.addSet("USD", Arrays.asList("CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));
 
         otcTradeTypes.add(TradeType.Spot);
         otcTradeTypes.add(TradeType.Forward);
         otcTradeTypes.add(TradeType.Swap);
 
-        this.tradeConfig = new TradeConfig(books, otcUnderlying, otcTradeTypes, securityStatic);
+        this.tradeConfig = new TradeConfig(books, underlyings, otcTradeTypes, securityStatic);
 
         ArrayList<RiskType> eodr = new ArrayList<>();
         eodr.add(RiskType.PV);

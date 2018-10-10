@@ -26,7 +26,7 @@ public class PvGenerator implements IRiskGenerator {
                     riskRequest.getRiskRunId(),
                     trade.getBook(),
                     trade.getTcn(),
-                    trade.getUnderlying().getUnderlyingCurrency(),
+                    trade.getUnderlying1(),
                     new Random().nextDouble() * trade.getQuantity());
         }
         catch (NullPointerException npe) {

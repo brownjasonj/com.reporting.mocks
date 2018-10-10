@@ -2,7 +2,6 @@ package com.reporting.mocks.process.trades;
 
 import com.reporting.mocks.configuration.TradeConfig;
 import com.reporting.mocks.generators.TradeGenerator;
-import com.reporting.mocks.model.trade.OtcTrade;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.model.TradeLifecycleType;
@@ -55,7 +54,7 @@ public class TradePopulationProducerThread implements Runnable {
                 switch (tradeEvent) {
                     case New:
                         int nextNewTrade  = (new Random()).nextInt(this.tradeConfig.getNewTradePeriodicity());
-                        OtcTrade newTrade = this.tradeGenerator.generateOneOtc();
+                        Trade newTrade = this.tradeGenerator.generateOneOtc();
                         this.tradeStore.add(newTrade);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, newTrade)));
                         tradeTimer.schedule(new TradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.New), nextNewTrade);

@@ -21,7 +21,7 @@ public class DeltaGenerator implements IRiskGenerator<Delta>{
         return new Delta(riskRequest.getCalculationId(),
                 riskRequest.getCalculationContext().get(this.getRiskType()),
                 riskRequest.getTradePopulationId(),
-                riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(), trade.getUnderlying(),
+                riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(), trade.getUnderlying1(),
                 new Random().nextDouble() * trade.getQuantity());
     }
 

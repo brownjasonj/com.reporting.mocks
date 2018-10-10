@@ -32,15 +32,15 @@ public class VegaGenerator implements IRiskGenerator<Vega> {
                 riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(),
                 timeBuckets);
 
-        Underlying underlying = trade.getUnderlying();
-        for(int underlyignComponentIndex = 0; underlyignComponentIndex < underlying.getComponenetCount(); underlyignComponentIndex++) {
-            String underlyingComponentName = underlying.getComponentName(underlyignComponentIndex);
-            ArrayList<Double> timeBucketValues = new ArrayList<>(timeBuckets.size());
-            for(int i = 0; i < timeBuckets.size(); i++) {
-                timeBucketValues.add(i, rand.nextDouble() * trade.getQuantity());
-            }
-            vega.addTimeBuckValues(underlyingComponentName, timeBucketValues);
-        }
+//        Underlying underlying = trade.getUnderlying1();
+//        for(int underlyignComponentIndex = 0; underlyignComponentIndex < underlying.getComponenetCount(); underlyignComponentIndex++) {
+//            String underlyingComponentName = underlying.getComponentName(underlyignComponentIndex);
+//            ArrayList<Double> timeBucketValues = new ArrayList<>(timeBuckets.size());
+//            for(int i = 0; i < timeBuckets.size(); i++) {
+//                timeBucketValues.add(i, rand.nextDouble() * trade.getQuantity());
+//            }
+//            vega.addTimeBuckValues(underlyingComponentName, timeBucketValues);
+//        }
         return vega;
     }
 
