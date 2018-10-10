@@ -9,6 +9,6 @@ import com.reporting.mocks.process.risks.RiskRunRequest;
 
 public interface IRiskGenerator <R extends Risk> {
     public RiskType getRiskType();
-    public R generate(RiskRequest riskRun, Trade trade);
+    public R generate(RiskRequest riskRequest, Trade trade);
     public int calcTimeEstimate(TradeType tradeType);
 }

@@ -14,9 +14,8 @@ import java.util.List;
 public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     public FXSpotDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
-        UnderlyingSetConfig underlyings = new UnderlyingSetConfig();
+        UnderlyingConfig underlyings = new UnderlyingConfig();
         List<TradeType> otcTradeTypes = new ArrayList<>();
-        List<SecurityStatic> securityStatic = new ArrayList<>();
 
         // - URN: book:<department name>:<desk name>:<book name>
         //   e.g., book:fxdesk:fxspots:bookname
@@ -33,7 +32,7 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         otcTradeTypes.add(TradeType.Forward);
         otcTradeTypes.add(TradeType.Swap);
 
-        this.tradeConfig = new TradeConfig(books, underlyings, otcTradeTypes, securityStatic);
+        this.tradeConfig = new TradeConfig(books, underlyings, otcTradeTypes);
 
         ArrayList<RiskType> eodr = new ArrayList<>();
         eodr.add(RiskType.PV);

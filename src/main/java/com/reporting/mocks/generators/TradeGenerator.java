@@ -23,6 +23,6 @@ public class TradeGenerator {
     }
 
     public Trade generateOneOtc() {
-        return TradeGeneratorFactory.getGenerator(this.getOtcTradeType()).generate(tradeConfig.getOtcUnderlying(), this.getBook());
+        return TradeGeneratorFactory.getGenerator(this.getOtcTradeType()).generate(tradeConfig.getUnderlyings(), this.getBook());
     }
 }

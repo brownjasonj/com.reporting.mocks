@@ -17,18 +17,16 @@ public class TradeConfig {
     protected int deleteTradePeriodicity = 120 * 1000;     // number of milliseconds between deletion of tcnTrades (default: 60s)
 
     List<String> books;
-    UnderlyingSetConfig underlyings;
+    UnderlyingConfig underlyings;
     List<TradeType> tradeTypes;
-    List<SecurityStatic> securityStatic;
 
     public TradeConfig() {
     }
 
-    public TradeConfig(List<String> books, UnderlyingSetConfig underlyings, List<TradeType> otcTradeTypes, List<SecurityStatic> securityStatic) {
+    public TradeConfig(List<String> books, UnderlyingConfig underlyings, List<TradeType> otcTradeTypes) {
         this.books = books;
         this.underlyings = underlyings;
         this.tradeTypes = otcTradeTypes;
-        this.securityStatic = securityStatic;
     }
 
     public int getStartingTradeCount() {
@@ -43,12 +41,8 @@ public class TradeConfig {
         return books;
     }
 
-    public UnderlyingSetConfig getOtcUnderlying() {
+    public UnderlyingConfig getUnderlyings() {
         return underlyings;
-    }
-
-    public List<SecurityStatic> getSecurityStatic() {
-        return securityStatic;
     }
 
     public int getNewTradePeriodicity() {

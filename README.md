@@ -79,11 +79,13 @@ This contains class models to hold the application configuration and is broken d
 three main parts
 <pre>
 {
+  "pricingGroups": [
+    {
       "pricingGroupId": {
-        "name": "fxspotdesk"
+        "name": "fxoptiondesk"
       },
       "tradeConfig": {
-        "startingTradeCount": 1000,
+        "startingTradeCount": 100,
         "newTradeStart": 0,
         "newTradePeriodicity": 1000,
         "modifiedTradeStart": 60000,
@@ -91,37 +93,39 @@ three main parts
         "deleteTadeStart": 120000,
         "deleteTradePeriodicity": 120000,
         "books": [
-          "bank:fxdesk:fxspot:Book1",
-          "bank:fxdesk:fxspot:Book2",
-          "bank:fxdesk:fxspot:Book3"
-        ],
-        "otcUnderlying": [
-          {
-            "ccy1": "EUR",
-            "ccy2": "USD",
-            "accy": "USD",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "USD"
-            }
-          },
-          {
-            "ccy1": "EUR",
-            "ccy2": "CHF",
-            "accy": "CHF",
-            "componenetCount": 2,
-            "underlyingCurrency": {
-              "currency": "CHF"
-            }
-          },
-        ...
+          "bank:fxdesk:fxoptions:LATAM",
+          "bank:fxdesk:fxoptions:EMEA",
+          "bank:fxdesk:fxotpions:APAC"
         ],
         "tradeTypes": [
           "Spot",
           "Forward",
-          "Swap"
+          "Swap",
+          "VanillaOption",
+          "BarrierOption"
         ],
-        "securityStatic": []
+        "securityStatic": [],
+        "otcUnderlying": {
+          "underlyingSets": {
+            "EUR": [
+              "USD",
+              "CHF",
+              "GBP",
+              "MXN",
+              "JPY",
+              "AUD",
+              "RBL"
+            ],
+            "USD": [
+              "CHF",
+              "GBP",
+              "MXN",
+              "JPY",
+              "AUD",
+              "RBL"
+            ]
+          }
+        }
       },
       "intradayConfig": {
         "risks": [
@@ -145,13 +149,15 @@ three main parts
           "DELTA",
           "VEGA"
         ],
-        "periodicity": 600000
+        "periodicity": 300000
       },
       "eod": true,
       "sod": true,
       "ind": true,
-      "marketPeriodicity": 600000
-    }
+      "marketPeriodicity": 30000
+    },
+    ...
+}
 </pre>
 <h4>TradeConfig</h4>
 Defines the trade types, underlyings and the rate at which new, modify and delete trade events occur.
@@ -186,26 +192,26 @@ There are six main business objects
 <li><b>Trade</b> a trade consisting of a trade type (e.g., Spot, Forward, Swap)
     <pre>
 {
-    "kind": "Otc",
+    "kind": "Any",
     "tcn": {
-      "id": "45362f65-c63a-4bf8-9618-2b056efa547f",
+      "id": "94d6f32e-482c-41df-96ba-3b64edb68262",
       "version": 0
     },
-    "book": "book:fxdesk:fxspots:Book1",
-    "tradeType": "Forward",
-    "quantity": null,
-    "buySell": null,
-    "underlying": {
-      "ccy1": "USD",
-      "ccy2": "MXN",
-      "underlyingCurrency": {
-        "currency": "MXN"
-      },
-      "componenetCount": 2,
-      "accy": "MXN"
+    "book": "bank:fxdesk:fxotpions:APAC",
+    "tradeType": "VanillaOption",
+    "quantity": 525442.2607299943,
+    "underlying1": {
+      "name": "EUR"
     },
+    "underlying2": {
+      "name": "CHF"
+    },
+    "expiryDate": "2021-07-21T22:00:00.000+0000",
+    "strike": 0.5286436596925947,
+    "amount1": 525442.2607299943,
+    "amount2": -277771.71966945473,
     "version": 0
-  }
+  },
         </pre>
     </li>
 <li><b>TradePopulation</b> a set of trades plus a label (e.g., EOD, Intraday).
@@ -377,65 +383,60 @@ should be updated whenever the market changes, Delta and Vega markets are update
 <pre>
 {
     "calculationContextId":{
-        "pricingGroupName":"fxdesk",
-        "locator":"/calculationcontext/fxdesk",
-        "uri":"/calculationcontext/fxdesk/2f3e4641-3a73-46d5-8ab3-3073afbc6a34",
-        "id":"2f3e4641-3a73-46d5-8ab3-3073afbc6a34"
+        "pricingGroupName":"fxoptiondesk",
+        "locator":"/calculationcontext/fxoptiondesk"
+        "uri":"/calculationcontext/fxoptiondesk/8abf9737-4ad6-490a-9f9d-941d9d91b8d1"
+        "id":"8abf9737-4ad6-490a-9f9d-941d9d91b8d1"
         },
     "tradePopulationId":{
-        "locator":"/tradepopulation/fxdesk",
-        "uri":"/tradepopulation/fxdesk/7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96",
-        "id":"7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96"
+        "locator":"/tradepopulation/fxoptiondesk",
+        "uri":"/tradepopulation/fxoptiondesk/ec176d38-2d67-4869-bb24-aa53c762a568"
+        "id":"ec176d38-2d67-4869-bb24-aa53c762a568"
     },
     "riskRunId":{
-        "locator":"/RiskRun/fxdesk",
-        "uri":"/RiskRun/fxdesk/8e8eb591-cf61-43b7-8434-cfc79d8dddc0",
-        "id":"8e8eb591-cf61-43b7-8434-cfc79d8dddc0"
-    },
-    "fragmentCount":3,
-    "fragmentNo":0,
-    "results":[
+        "locator":"/riskrun/fxoptiondesk",
+        "uri":"/riskrun/fxoptiondesk/7dd7349f-2fe7-4649-8f35-5e71ed77e704",
+        "id":"7dd7349f-2fe7-4649-8f35-5e71ed77e704"
+     },
+     "fragmentCount":3,
+     "fragmentNo":0,
+     "results":[
         {
             "nameValue":"value",
-            "nameCurrency":"currency",
-            "calculationContextId": {
-                "pricingGroupName":"fxdesk",
-                "locator":"/calculationcontext/fxdesk",
-                "uri":"/calculationcontext/fxdesk/2f3e4641-3a73-46d5-8ab3-3073afbc6a34",
-                "id":"2f3e4641-3a73-46d5-8ab3-3073afbc6a34"
+            "nameUnderlying":"underlying",
+            "calculationContextId":{
+                "pricingGroupName":"fxoptiondesk",
+                "locator":"/calculationcontext/fxoptiondesk",
+                "uri":"/calculationcontext/fxoptiondesk/8abf9737-4ad6-490a-9f9d-941d9d91b8d1",
+                "id":"8abf9737-4ad6-490a-9f9d-941d9d91b8d1"
             },
             "marketEnvId":{
-                "locator":"/calculationcontext/market/fxdesk",
-                "uri":"/calculationcontext/market/fxdesk/287e3617-e015-4382-9e75-07c418a51c1e",
-                "id":"287e3617-e015-4382-9e75-07c418a51c1e"
+                "locator":"/calculationcontext/market/fxoptiondesk",
+                "uri":"/calculationcontext/market/fxoptiondesk/71568bb8-9270-4043-a050-1a27d450289d",
+                "id":"71568bb8-9270-4043-a050-1a27d450289d"
             },
             "tradePopulationId":{
-                "locator":"/tradepopulation/fxdesk",
-                "uri":"/tradepopulation/fxdesk/7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96",
-                "id":"7f745b6d-6ffd-4a02-a6a4-7024fa7f3f96"
+                "locator":"/tradepopulation/fxoptiondesk",
+                "uri":"/tradepopulation/fxoptiondesk/ec176d38-2d67-4869-bb24-aa53c762a568",
+                "id":"ec176d38-2d67-4869-bb24-aa53c762a568"
             },
             "riskRunId":{
-                "locator":"/riskrun/fxdesk",
-                "uri":"/riskrun/fxdesk/262ba5b2-2357-4dee-a72f-33e1d56debaf",
-                "id":"262ba5b2-2357-4dee-a72f-33e1d56debaf"
+                "locator":"/riskrun/fxoptiondesk",
+                "uri":"/riskrun/fxoptiondesk/7ac05d13-a867-4285-bb25-6f21e2d693f8",
+                "id":"7ac05d13-a867-4285-bb25-6f21e2d693f8"
             },
-            "bookName":"book:fxdesk:fxspots:Book1",
+            "bookName":"bank:fxdesk:fxoptions:LATAM",
             "tcn":{
-                "id":"5d19fb54-b414-48cf-85d6-0ef5898eff26",
+                "id":"7b7127c6-86b9-4ff7-a9da-bf40551a10ea",
                 "version":0
-            },
-            "riskType":"PV",
-            "kvp":{
-                "currency":{
-                    "currency":"GBP"
+             },
+             "riskType":"PV",
+             "kvp":{
+                "underlying":{
+                    "name":"EUR"
                 },
-                "value":0.0077574439267200646
-            }
-        }
-    ],
-    "isDeleteEvent":false
-   }
-}
+             "value":175365.97656289116
+              }}],"isDeleteEvent":false}
 </pre>
 </ul>
 

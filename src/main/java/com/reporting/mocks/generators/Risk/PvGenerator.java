@@ -16,9 +16,9 @@ import java.util.Random;
 import static com.reporting.mocks.model.risks.RiskType.PV;
 
 
-public class PvGenerator implements IRiskGenerator {
+public class PvGenerator implements IRiskGenerator<Pv> {
     @Override
-    public Risk generate(RiskRequest riskRequest, Trade trade) {
+    public Pv generate(RiskRequest riskRequest, Trade trade) {
         try {
             return new Pv(riskRequest.getCalculationId(),
                     riskRequest.getCalculationContext().get(this.getRiskType()),
@@ -27,7 +27,7 @@ public class PvGenerator implements IRiskGenerator {
                     trade.getBook(),
                     trade.getTcn(),
                     trade.getUnderlying1(),
-                    new Random().nextDouble() * trade.getQuantity());
+                    new Random().nextDouble() * trade.getUnderlying1Amount());
         }
         catch (NullPointerException npe) {
             return null;

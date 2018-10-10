@@ -22,7 +22,7 @@ public class DeltaGenerator implements IRiskGenerator<Delta>{
                 riskRequest.getCalculationContext().get(this.getRiskType()),
                 riskRequest.getTradePopulationId(),
                 riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(), trade.getUnderlying1(),
-                new Random().nextDouble() * trade.getQuantity());
+                new Random().nextDouble() * trade.getUnderlying1Amount());
     }
 
     public int calcTimeEstimate(TradeType tradeType) {

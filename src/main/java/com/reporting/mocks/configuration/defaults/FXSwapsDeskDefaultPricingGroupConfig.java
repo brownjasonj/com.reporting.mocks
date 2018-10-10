@@ -5,7 +5,6 @@ import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.model.underlying.SecurityStatic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +13,8 @@ import java.util.List;
 public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     public FXSwapsDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
-        UnderlyingSetConfig underlyings = new UnderlyingSetConfig();
+        UnderlyingConfig underlyings = new UnderlyingConfig();
         List<TradeType> otcTradeTypes = new ArrayList<>();
-        List<SecurityStatic> securityStatic = new ArrayList<>();
 
         // - URN: book:<department name>:<desk name>:<book name>
         //   e.g., book:fxdesk:fxspots:bookname
@@ -34,12 +32,12 @@ public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         otcTradeTypes.add(TradeType.Swap);
         otcTradeTypes.add(TradeType.VanillaOption);
 
-        this.tradeConfig = new TradeConfig(books, underlyings, otcTradeTypes, securityStatic);
+        this.tradeConfig = new TradeConfig(books, underlyings, otcTradeTypes);
 
         ArrayList<RiskType> eodr = new ArrayList<>();
         eodr.add(RiskType.PV);
         eodr.add(RiskType.DELTA);
-        eodr.add(RiskType.VEGA);
+        eodr.add(RiskType.GAMMA);
         this.endofdayConfig = new EndofDayConfig(eodr, 5 * 60 * 1000);
 
         ArrayList<IntradayRiskType> indr = new ArrayList<>();

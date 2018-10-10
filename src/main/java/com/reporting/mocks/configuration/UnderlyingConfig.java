@@ -7,25 +7,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class UnderlyingSetConfig {
-    protected HashMap<String, List<String>> underlyingSets;
+public class UnderlyingConfig {
+    protected HashMap<String, List<String>> underlyingCrosses;
 
-    public UnderlyingSetConfig() {
-        this.underlyingSets = new HashMap<>();
+    public UnderlyingConfig() {
+        this.underlyingCrosses = new HashMap<>();
     }
 
     public void addSet(String underlying, List<String> underlyingSet) {
-        this.underlyingSets.put(underlying, underlyingSet);
+        this.underlyingCrosses.put(underlying, underlyingSet);
     }
 
     public Underlying selectRandomUnderlying1() {
-        ArrayList<String> keys = new ArrayList(this.underlyingSets.keySet());
+        ArrayList<String> keys = new ArrayList(this.underlyingCrosses.keySet());
         return new Underlying(keys.get(new Random().nextInt(keys.size() - 1)));
     }
 
-    public Underlying selectRandomUnderlying(String key) {
-        if (this.underlyingSets.containsKey(key)) {
-            List<String> underlyings = this.underlyingSets.get(key);
+    public Underlying selectRandomUnderlying2(String key) {
+        if (this.underlyingCrosses.containsKey(key)) {
+            List<String> underlyings = this.underlyingCrosses.get(key);
             return new Underlying(underlyings.get(new Random().nextInt(underlyings.size() - 1)));
         }
         else
@@ -33,6 +33,6 @@ public class UnderlyingSetConfig {
     }
 
     public HashMap<String, List<String>> getUnderlyingSets() {
-        return underlyingSets;
+        return underlyingCrosses;
     }
 }

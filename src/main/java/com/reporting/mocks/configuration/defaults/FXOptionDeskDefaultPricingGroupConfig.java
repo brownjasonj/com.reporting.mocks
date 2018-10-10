@@ -14,9 +14,8 @@ import java.util.List;
 public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     public FXOptionDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
-        UnderlyingSetConfig underlyings = new UnderlyingSetConfig();
+        UnderlyingConfig underlyings = new UnderlyingConfig();
         List<TradeType> otcTradeTypes = new ArrayList<>();
-        List<SecurityStatic> securityStatic = new ArrayList<>();
 
         // - URN: book:<department name>:<desk name>:<book name>
         //   e.g., book:fxdesk:fxspots:bookname
@@ -34,12 +33,12 @@ public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         otcTradeTypes.add(TradeType.VanillaOption);
         otcTradeTypes.add(TradeType.BarrierOption);
 
-        this.tradeConfig = new TradeConfig(books, underlyings, otcTradeTypes, securityStatic);
+        this.tradeConfig = new TradeConfig(books, underlyings, otcTradeTypes);
 
         ArrayList<RiskType> eodr = new ArrayList<>();
         eodr.add(RiskType.PV);
         eodr.add(RiskType.DELTA);
-        eodr.add(RiskType.VEGA);
+        eodr.add(RiskType.GAMMA);
         this.endofdayConfig = new EndofDayConfig(eodr, 5 * 60 * 1000);
 
         ArrayList<IntradayRiskType> indr = new ArrayList<>();
