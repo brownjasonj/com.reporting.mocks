@@ -1,21 +1,22 @@
 package com.reporting.mocks.configuration.defaults;
 
-import com.reporting.mocks.configuration.*;
+import com.reporting.mocks.configuration.EndofDayConfig;
+import com.reporting.mocks.configuration.IntradayConfig;
+import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.configuration.TradeConfig;
 import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
-import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.model.underlying.CurrencyPair;
 import com.reporting.mocks.model.underlying.OtcUnderlying;
 import com.reporting.mocks.model.underlying.SecurityStatic;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class FXDeskDefaultPricingGroupConfig extends PricingGroupConfig {
-    public FXDeskDefaultPricingGroupConfig() {
+public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
+    public FXOptionDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
         List<OtcUnderlying> otcUnderlying = new ArrayList<>();
         List<TradeType> otcTradeTypes = new ArrayList<>();
@@ -24,9 +25,9 @@ public class FXDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         // - URN: book:<department name>:<desk name>:<book name>
         //   e.g., book:fxdesk:fxspots:bookname
 
-        books.add("book:fxdesk:fxspots:Book1");
-        books.add("book:fxdesk:fxspots:Book2");
-        books.add("book:fxdesk:fxspots:Book3");
+        books.add("bank:fxdesk:fxoptions:LATAM");
+        books.add("bank:fxdesk:fxoptions:EMEA");
+        books.add("bank:fxdesk:fxotpions:APAC");
 
 
         otcUnderlying.add(new CurrencyPair("EUR", "USD"));
@@ -64,6 +65,6 @@ public class FXDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         this.intradayConfig = new IntradayConfig(indr);
 
 
-        this.pricingGroupId = new PricingGroup("fxdesk");
+        this.pricingGroupId = new PricingGroup("fxoptiondesk");
     }
 }

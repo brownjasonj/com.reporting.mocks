@@ -1,6 +1,8 @@
 package com.reporting.mocks.configuration;
 
-import com.reporting.mocks.configuration.defaults.FXDeskDefaultPricingGroupConfig;
+import com.reporting.mocks.configuration.defaults.FXOptionDeskDefaultPricingGroupConfig;
+import com.reporting.mocks.configuration.defaults.FXSpotDeskDefaultPricingGroupConfig;
+import com.reporting.mocks.configuration.defaults.FXSwapsDeskDefaultPricingGroupConfig;
 
 public class ConfigurationManager {
     protected static ConfigurationManager configManager = null;
@@ -12,7 +14,9 @@ public class ConfigurationManager {
             ConfigurationManager.configManager.setConfig(config);
 
 
-            config.addPricingGroup(new FXDeskDefaultPricingGroupConfig());
+            config.addPricingGroup(new FXSpotDeskDefaultPricingGroupConfig());
+            config.addPricingGroup(new FXOptionDeskDefaultPricingGroupConfig());
+            config.addPricingGroup(new FXSwapsDeskDefaultPricingGroupConfig());
 
         }
         return ConfigurationManager.configManager;

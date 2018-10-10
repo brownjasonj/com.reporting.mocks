@@ -49,21 +49,25 @@ gradle bootRun
 
 Use the swagger ui to see all available endpoints (<a href="http://localhost:30001/swagger-ui.html">http://localhost:30001/swagger-ui.html</a>)
 
-The behaviour of the simulator is defined by a configuration. There is one predefined configuration, but it is possible
+The behaviour of the simulator is defined by a configuration. There is currently three predefined configurations, but it is possible
 to create an setup new configurations.  To see all configurations available got to
 <a href="http://localhost:30001/getpricinggroups">http://localhost:30001/getpricinggroups</a>.
 
-To start the simulator you need to got to the process start endpoint and start it for a specific configuration.  As 
-seen above the predefined configuration is 'fxdesk'.  Start the simulator using
-<a href="http://localhost:30001/controlprocess/start/fxdesk">http://localhost:30001/controlprocess/start/fxdesk</a>.
+To start the simulator you need to got to the process start endpoint and start it for a specific configuration.  The simulator enables
+multiple pricing groups to be running at the same time which provides a more realistic simulation of a multi-trading desk
+situation that can be found in banks.
+
+The predefined configurations are <b>fxspotdesk</b>, <b>fxoptiondesk</b> and <b>fxswapdesk</b>.  To start the simulator for 
+the fxspotdesk, for example, use 
+<a href="http://localhost:30001/controlprocess/start/fxspotdesk">http://localhost:30001/controlprocess/start/fxspotdesk</a>.
 This will start all the simulator processes and you should see some output to the console, something like:
 <pre>
 TradeEvent New
-Trade Event New trade: {Type: Forward, Book: book:fxdesk:fxspots:Book3, TCN: 883967d8-c974-41c4-9272-79c92e9692f0.0}
+Trade Event New trade: {Type: Forward, Book: bank:fxdesk:fxspot:Book3, TCN: 883967d8-c974-41c4-9272-79c92e9692f0.0}
 TradeEvent New
-Trade Event New trade: {Type: Forward, Book: book:fxdesk:fxspots:Book2, TCN: 263a1b9d-3944-46aa-95f5-dc67261e68e2.0}
+Trade Event New trade: {Type: Forward, Book: bank:fxdesk:fxspot:Book2, TCN: 263a1b9d-3944-46aa-95f5-dc67261e68e2.0}
 TradeEvent New
-Trade Event New trade: {Type: Forward, Book: book:fxdesk:fxspots:Book2, TCN: eb76ae06-bd31-4f69-aa1b-2caa164307c8.0}
+Trade Event New trade: {Type: Forward, Book: bank:fxdesk:fxspot:Book2, TCN: eb76ae06-bd31-4f69-aa1b-2caa164307c8.0}
 </pre>
 
 
