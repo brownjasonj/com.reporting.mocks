@@ -4,6 +4,7 @@ import com.reporting.mocks.configuration.*;
 import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
+import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.model.underlying.CurrencyPair;
 import com.reporting.mocks.model.underlying.OtcUnderlying;
@@ -45,6 +46,8 @@ public class FXDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         otcTradeTypes.add(TradeType.Spot);
         otcTradeTypes.add(TradeType.Forward);
         otcTradeTypes.add(TradeType.Swap);
+        otcTradeTypes.add(TradeType.VanillaOption);
+        otcTradeTypes.add(TradeType.BarrierOption);
 
         this.tradeConfig = new TradeConfig(books, otcUnderlying, otcTradeTypes, securityStatic);
 
