@@ -14,11 +14,11 @@ public class RiskRequest {
     public RiskRequest(CalculationContext calculationContext, TradePopulationId tradePopulationId) {
         this.calculationContext = calculationContext;
         this.tradePopulationId = tradePopulationId;
-        this.riskRunId = new RiskRunId(this.calculationContext.getId().getPricingGroupName());
+        this.riskRunId = new RiskRunId(this.calculationContext.getCalculationContextId().getPricingGroupName());
     }
 
     public CalculationContextId getCalculationId() {
-        return this.calculationContext.getId();
+        return this.calculationContext.getCalculationContextId();
     }
 
     public CalculationContext getCalculationContext() {

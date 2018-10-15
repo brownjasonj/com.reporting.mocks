@@ -82,7 +82,7 @@ three main parts
   "pricingGroups": [
     {
       "pricingGroupId": {
-        "name": "fxoptiondesk"
+        "pricingGroup": "fxoptiondesk"
       },
       "tradeConfig": {
         "startingTradeCount": 100,
@@ -201,10 +201,10 @@ There are six main business objects
     "tradeType": "VanillaOption",
     "quantity": 525442.2607299943,
     "underlying1": {
-      "name": "EUR"
+      "pricingGroup": "EUR"
     },
     "underlying2": {
-      "name": "CHF"
+      "pricingGroup": "CHF"
     },
     "expiryDate": "2021-07-21T22:00:00.000+0000",
     "strike": 0.5286436596925947,
@@ -433,7 +433,7 @@ should be updated whenever the market changes, Delta and Vega markets are update
              "riskType":"PV",
              "kvp":{
                 "underlying":{
-                    "name":"EUR"
+                    "pricingGroup":"EUR"
                 },
              "value":175365.97656289116
               }}],"isDeleteEvent":false}

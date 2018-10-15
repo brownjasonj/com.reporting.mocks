@@ -1,4 +1,4 @@
-package com.reporting.mocks.persistence;
+package com.reporting.mocks.persistence.InMemory;
 
 import com.reporting.mocks.model.DataMarkerType;
 import com.reporting.mocks.model.TradePopulation;

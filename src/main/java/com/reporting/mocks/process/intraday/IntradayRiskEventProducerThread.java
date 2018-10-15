@@ -6,11 +6,7 @@ import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
-import com.reporting.mocks.persistence.CalculationContextStore;
-import com.reporting.mocks.persistence.MarketStore;
-import com.reporting.mocks.persistence.TradePopulationMutable;
-import com.reporting.mocks.persistence.TradeStore;
-import com.reporting.mocks.model.RiskResult;
+import com.reporting.mocks.persistence.*;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 import com.reporting.mocks.process.risks.RiskRunType;
 
@@ -22,33 +18,33 @@ public class IntradayRiskEventProducerThread implements Runnable {
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
     protected RiskRunPublisher riskPublisher;
-    protected TradeStore tradeStore;
-    protected MarketStore marketStore;
+    protected ITradeStore tradeStore;
+    protected IMarketStore marketStore;
     protected IntradayConfig config;
     protected TradePopulationMutable tradePopulation;
     protected IntradayCalculationSchedule calculationSchedule;
     protected CalculationContext currentCalculationContext;
-    protected CalculationContextStore calculationContextStore;
+    protected ICalculationContextStore calculationContextStore;
 
 
     public IntradayRiskEventProducerThread(PricingGroup pricingGroup,
                                            IntradayConfig config,
-                                           TradeStore tradeStore,
-                                           MarketStore marketStore,
-                                           CalculationContextStore calculationContextStore,
+                                           ITradeStore tradeStore,
+                                           IMarketStore IMarketStore,
+                                           ICalculationContextStore ICalculationContextStore,
                                            BlockingQueue<IntradayEvent<?>> intradayEventQueue,
                                            BlockingQueue<RiskRunRequest> riskRunRequestQueue,
                                            RiskRunPublisher riskPublisher,
                                            MarketEnv market) {
         this.config = config;
         this.tradeStore = tradeStore;
-        this.marketStore = marketStore;
+        this.marketStore = IMarketStore;
         this.intradayEventQueue = intradayEventQueue;
         this.riskRunRequestQueue = riskRunRequestQueue;
         this.riskPublisher = riskPublisher;
         this.calculationSchedule = new IntradayCalculationSchedule();
-        this.calculationContextStore = calculationContextStore;
-        this.currentCalculationContext = calculationContextStore.create();
+        this.calculationContextStore = ICalculationContextStore;
+        this.currentCalculationContext = ICalculationContextStore.create();
         for(IntradayRiskType riskType : config.getRisks()) {
             this.calculationSchedule.add(riskType.getPeriodicity(), riskType.getRiskType());
             this.currentCalculationContext.add(riskType.getRiskType(), market);
@@ -93,7 +89,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
 
                         this.riskRunRequestQueue.add(new RiskRunRequest(
                                 RiskRunType.Intraday,
-                                this.currentCalculationContext.getId(),
+                                this.currentCalculationContext.getCalculationContextId(),
                                 null,
                                 this.tradePopulation.getId(),
                                 risksToRun,
@@ -121,7 +117,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
 
                                         this.riskRunRequestQueue.add(new RiskRunRequest(
                                                 RiskRunType.Intraday,
-                                                this.currentCalculationContext.getId(),
+                                                this.currentCalculationContext.getCalculationContextId(),
                                                 null,
                                                 this.tradePopulation.getId(),
                                                 config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
@@ -141,7 +137,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                         this.tradePopulation.delete(existingTrade.getTcn());
                                         this.riskRunRequestQueue.add(new RiskRunRequest(
                                                 RiskRunType.Intraday,
-                                                this.currentCalculationContext.getId(),
+                                                this.currentCalculationContext.getCalculationContextId(),
                                                 null,
                                                 this.tradePopulation.getId(),
                                                 config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
@@ -152,7 +148,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                         // caclulate all the risks for this trade, since it is not in current population or has a different version
                                         this.riskRunRequestQueue.add(new RiskRunRequest(
                                                 RiskRunType.Intraday,
-                                                this.currentCalculationContext.getId(),
+                                                this.currentCalculationContext.getCalculationContextId(),
                                                 null,
                                                 this.tradePopulation.getId(),
                                                 config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
@@ -173,7 +169,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                         this.tradePopulation.delete(existingTrade.getTcn());
                                         this.riskRunRequestQueue.add(new RiskRunRequest(
                                                 RiskRunType.Intraday,
-                                                this.currentCalculationContext.getId(),
+                                                this.currentCalculationContext.getCalculationContextId(),
                                                 null,
                                                 this.tradePopulation.getId(),
                                                 config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),

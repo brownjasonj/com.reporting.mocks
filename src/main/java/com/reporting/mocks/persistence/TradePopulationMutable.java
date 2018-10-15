@@ -11,6 +11,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TradePopulationMutable extends TradePopulation {
+    public TradePopulationMutable() {
+        super();
+    }
     public TradePopulationMutable(String pricingGroupName, DataMarkerType type) {
         this.pricingGroupName = pricingGroupName;
         this.tradePopulationId = new TradePopulationId(pricingGroupName);

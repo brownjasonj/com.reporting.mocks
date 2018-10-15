@@ -5,7 +5,7 @@ import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.model.TradeLifecycleType;
-import com.reporting.mocks.persistence.TradeStore;
+import com.reporting.mocks.persistence.ITradeStore;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
 
@@ -16,14 +16,14 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class TradePopulationProducerThread implements Runnable {
-    protected TradeStore tradeStore;
+    protected ITradeStore tradeStore;
     protected TradeGenerator tradeGenerator;
     protected BlockingQueue<TradeLifecycleType> tradeEventQueue;
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected TradeConfig tradeConfig;
 
     public TradePopulationProducerThread(TradeConfig tradeConfig,
-                                         TradeStore tradeStore,
+                                         ITradeStore tradeStore,
                                          TradeGenerator tradeGenerator,
                                          BlockingQueue<IntradayEvent<?>> intradayEventQueue) {
         this.tradeEventQueue = new ArrayBlockingQueue(1024);
@@ -63,6 +63,7 @@ public class TradePopulationProducerThread implements Runnable {
                         int nextModifyTrade  = (new Random()).nextInt(this.tradeConfig.getModifiedTradePeriodicity());
                         Trade tradeToModify = this.tradeStore.oneAtRandom();
                         Trade modifiedTrade = tradeToModify.createNewVersion();
+                        this.tradeStore.modified(tradeToModify, modifiedTrade);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, new TradeLifecycle(tradeEvent, modifiedTrade)));
                         modifiedTradeTimer.schedule(new TradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.Modify), nextModifyTrade);
                         break;

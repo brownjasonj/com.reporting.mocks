@@ -8,14 +8,12 @@ import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.risks.RiskType;
-import com.reporting.mocks.persistence.CalculationContextStore;
-import com.reporting.mocks.persistence.MarketStore;
-import com.reporting.mocks.persistence.TradeStore;
-import com.reporting.mocks.model.RiskResult;
+import com.reporting.mocks.persistence.ICalculationContextStore;
+import com.reporting.mocks.persistence.IMarketStore;
+import com.reporting.mocks.persistence.ITradeStore;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 import com.reporting.mocks.process.risks.RiskRunType;
 
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -25,29 +23,29 @@ public class EndofDayRiskEventProducerThread implements Runnable {
     protected BlockingQueue<TradePopulationId> tradePopulationIdQueue;
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
     protected RiskRunPublisher riskPublisher;
-    protected TradeStore tradeStore;
-    protected MarketStore marketStore;
+    protected ITradeStore tradeStore;
+    protected IMarketStore IMarketStore;
     protected EndofDayConfig config;
     protected PricingGroup pricingGroup;
     protected CalculationContext currentCalculationContext;
-    protected CalculationContextStore calculationContextStore;
+    protected ICalculationContextStore ICalculationContextStore;
 
     public EndofDayRiskEventProducerThread(
             PricingGroup pricingGroup,
             EndofDayConfig eodConfig,
-            TradeStore tradeStore,
-            MarketStore marketStore,
-            CalculationContextStore calculationContextStore,
+            ITradeStore tradeStore,
+            IMarketStore IMarketStore,
+            ICalculationContextStore ICalculationContextStore,
             BlockingQueue<RiskRunRequest> riskRunRequestQueue,
             RiskRunPublisher riskPublisher) {
         this.pricingGroup = pricingGroup;
-        this.marketStore = marketStore;
+        this.IMarketStore = IMarketStore;
         this.config = eodConfig;
         this.tradeStore = tradeStore;
         this.tradePopulationIdQueue = new ArrayBlockingQueue(1024);
         this.riskRunRequestQueue = riskRunRequestQueue;
         this.riskPublisher = riskPublisher;
-        this.calculationContextStore = calculationContextStore;
+        this.ICalculationContextStore = ICalculationContextStore;
     }
 
     @Override
@@ -61,11 +59,11 @@ public class EndofDayRiskEventProducerThread implements Runnable {
         try {
             while(true) {
                 TradePopulationId tradePopId = this.tradePopulationIdQueue.take();
-                TradePopulation tradePopulation = this.tradeStore.getTradePopulation(tradePopId.getId());
+                TradePopulation tradePopulation = this.tradeStore.getTradePopulation(tradePopId);
 
                 if (tradePopulation != null) {
-                    MarketEnv market = this.marketStore.create(tradePopulation.getType());
-                    this.currentCalculationContext = this.calculationContextStore.create();
+                    MarketEnv market = this.IMarketStore.create(tradePopulation.getType());
+                    this.currentCalculationContext = this.ICalculationContextStore.create();
                     for(RiskType riskType : this.config.getRisks()) {
                         this.currentCalculationContext.add(riskType, market);
                     }
@@ -75,7 +73,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
 
                     this.riskRunRequestQueue.add(new RiskRunRequest(
                             RiskRunType.EndOfDay,
-                            this.currentCalculationContext.getId(),
+                            this.currentCalculationContext.getCalculationContextId(),
                             null,
                             tradePopulation.getId(),
                             this.config.getRisks(),

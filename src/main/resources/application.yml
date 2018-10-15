@@ -1,5 +1,8 @@
 spring:
   profiles: default
+  data:
+    mongodb:
+      uri: mongodb://localhost/risk
 server:
   port: 30001
   #port: ${PORT:${SERVER_PORT:0}}

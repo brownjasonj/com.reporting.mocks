@@ -37,21 +37,21 @@
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
     <bean id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
-        <property name="cacheConfiguration">
+        <property pricingGroup="cacheConfiguration">
             <list>
                 <!-- Partitioned cache example configuration (Atomic mode). -->
                 <bean class="org.apache.ignite.configuration.CacheConfiguration">
-                    <property name="name" value="default"/>
-                    <property name="atomicityMode" value="ATOMIC"/>
-                    <property name="backups" value="1"/>
+                    <property pricingGroup="pricingGroup" value="default"/>
+                    <property pricingGroup="atomicityMode" value="ATOMIC"/>
+                    <property pricingGroup="backups" value="1"/>
                 </bean>
             </list>
         </property>
 
         <!-- Explicitly configure TCP discovery SPI to provide list of initial nodes. -->
-        <property name="discoverySpi">
+        <property pricingGroup="discoverySpi">
             <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
-                <property name="ipFinder">
+                <property pricingGroup="ipFinder">
                     <!--
                         Ignite provides several options for automatic discovery that can be used
                         instead os static IP based discovery. For information on all options refer
@@ -60,7 +60,7 @@
                     <!-- Uncomment static IP finder to enable static-based discovery of initial nodes. -->
                     <!--<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">-->
                     <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder">
-                        <property name="addresses">
+                        <property pricingGroup="addresses">
                             <list>
                                 <!-- In distributed environment, replace with actual host IP address. -->
                                 <value>127.0.0.1:47500..47509</value>

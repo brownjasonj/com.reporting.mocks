@@ -31,7 +31,7 @@ public class CalculationContextKafkaProducer {
 
     public void send(CalculationContext calculationContext) {
         Gson gson = new Gson();
-        ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, calculationContext.getId().getId(), gson.toJson(calculationContext));
+        ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, calculationContext.getCalculationContextId().getId(), gson.toJson(calculationContext));
         try {
             this.producer.send(record).get();
         }

@@ -17,7 +17,7 @@ public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         UnderlyingConfig underlyings = new UnderlyingConfig();
         List<TradeType> otcTradeTypes = new ArrayList<>();
 
-        // - URN: book:<department name>:<desk name>:<book name>
+        // - URN: book:<department pricingGroup>:<desk pricingGroup>:<book pricingGroup>
         //   e.g., book:fxdesk:fxspots:bookname
 
         books.add("bank:fxdesk:fxoptions:LATAM");

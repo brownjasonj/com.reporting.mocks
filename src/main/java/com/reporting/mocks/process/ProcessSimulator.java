@@ -2,45 +2,27 @@ package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
-import com.reporting.mocks.endpoints.JavaQueue.RiskRunResultQueuePublisher;
+import com.reporting.mocks.endpoints.JavaQueue.RiskRunConsumerThread;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.endpoints.kafka.RiskRunResultKafkaPublisher;
 import com.reporting.mocks.generators.RiskRunGeneratorThread;
 import com.reporting.mocks.generators.TradeGenerator;
-import com.reporting.mocks.model.*;
+import com.reporting.mocks.model.DataMarkerType;
+import com.reporting.mocks.model.MarketEnv;
+import com.reporting.mocks.model.PricingGroup;
+import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.*;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
-import com.reporting.mocks.endpoints.JavaQueue.RiskRunConsumerThread;
+import com.reporting.mocks.process.markets.MarketEventProducerThread;
 import com.reporting.mocks.process.trades.TradePopulationProducerThread;
 
 import java.util.Collection;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class CompleteProcess {
-    protected static ConcurrentHashMap<String, CompleteProcess> processes;
-
-    static {
-        CompleteProcess.processes = new ConcurrentHashMap<>();
-    }
-
-    public static CompleteProcess addProcess(CompleteProcess completeProcess) {
-        return CompleteProcess.processes.put(completeProcess.getPricingGroupId().getName(), completeProcess);
-    }
-
-    public static CompleteProcess getProcess(String name) {
-        if (CompleteProcess.processes.containsKey(name))
-            return CompleteProcess.processes.get(name);
-        else
-            return null;
-    }
-
-    //
-    // Instance definition
-    //
+public class ProcessSimulator {
     protected UUID id;
     protected PricingGroupConfig config;
     protected MarketEventProducerThread marketEventProducerThread;
@@ -48,9 +30,9 @@ public class CompleteProcess {
     protected RiskRunGeneratorThread riskRunGeneratorThread;
 
 
-    protected TradeStore tradeStore;
-    protected CalculationContextStore calculationContextStore;
-    protected MarketStore marketStore;
+    protected ITradeStore tradeStore;
+    protected ICalculationContextStore calculationContextStore;
+    protected IMarketStore marketStore;
     protected TradeGenerator tradeGenerator;
     protected TradePopulationProducerThread tradePopulationProducerThread;
 
@@ -60,12 +42,16 @@ public class CompleteProcess {
 
     protected ThreadGroup threadGroup;
 
-    public CompleteProcess(PricingGroupConfig config, ApplicationConfig appConfig) {
+    public ProcessSimulator(PricingGroupConfig config,
+                            ApplicationConfig appConfig,
+                            ICalculationContextStore calculationContextStore,
+                            IMarketStore marketStore,
+                            ITradeStore tradeStore) {
         this.id = UUID.randomUUID();
         this.config = config;
-        this.tradeStore = TradeStoreFactory.get().create(config.getPricingGroupId().getName());
-        this.calculationContextStore = CalculationContextStoreFactory.create(config.getPricingGroupId());
-        this.marketStore = MarketStoreFactory.create(config.getPricingGroupId());
+        this.tradeStore = tradeStore;
+        this.calculationContextStore = calculationContextStore;
+        this.marketStore = marketStore;
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.processEventQueues = new JavaProcessEventQueues();
         this.riskRunPublisher = new RiskRunResultKafkaPublisher(appConfig);
@@ -77,7 +63,7 @@ public class CompleteProcess {
     }
 
     public TradePopulation getTradePopulation(TradePopulationId tradePopulationId) {
-        return this.tradeStore.getTradePopulation(tradePopulationId.getId());
+        return this.tradeStore.getTradePopulation(tradePopulationId);
     }
 
     public PricingGroup getPricingGroupId() {
@@ -114,8 +100,8 @@ public class CompleteProcess {
             EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(
                     this.config.getPricingGroupId(),
                     this.config.getEndofdayConfig(),
-                    tradeStore,
-                    marketStore,
+                    this.tradeStore,
+                    this.marketStore,
                     this.calculationContextStore,
                     this.processEventQueues.getRiskRunRequestQueue(),
                     this.riskRunPublisher);

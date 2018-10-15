@@ -2,11 +2,11 @@ package com.reporting.mocks.controllers;
 
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
-import com.reporting.mocks.model.id.CalculationContextId;
-import com.reporting.mocks.persistence.CalculationContextStore;
-import com.reporting.mocks.persistence.CalculationContextStoreFactory;
-import com.reporting.mocks.persistence.MarketStore;
-import com.reporting.mocks.persistence.MarketStoreFactory;
+import com.reporting.mocks.model.PricingGroup;
+import com.reporting.mocks.persistence.*;
+import com.reporting.mocks.persistence.InMemory.CalculationContextStoreFactory;
+import com.reporting.mocks.persistence.Mongo.MarketStoreFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -16,9 +16,21 @@ import java.util.UUID;
 
 @RestController
 public class CalculationContextController {
+    @Autowired
+    IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory;
+
+    @Autowired
+    MarketStoreFactory marketStoreFactory;
+
+    @Autowired
+    CalculationContextController(IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory, MarketStoreFactory marketStoreFactory) {
+        this.calculationContextStoreFactory = calculationContextStoreFactory;
+        this.marketStoreFactory = marketStoreFactory;
+    }
+
     @GetMapping("/calculationcontext/{pricingGroupName}")
     public Collection<CalculationContext> getCalculationContexts(@PathVariable String pricingGroupName) {
-        CalculationContextStore store = CalculationContextStoreFactory.get(pricingGroupName);
+        ICalculationContextStore store = this.calculationContextStoreFactory.get(new PricingGroup(pricingGroupName));
         if (store != null) {
             return store.getAll();
         }
@@ -28,7 +40,7 @@ public class CalculationContextController {
 
     @GetMapping("/calculationcontext/{pricingGroupName}/{id}")
     public Collection<CalculationContext> getCalculationContext(@PathVariable String pricingGroupName, @PathVariable UUID id) {
-        CalculationContextStore store = CalculationContextStoreFactory.get(pricingGroupName);
+        ICalculationContextStore store = this.calculationContextStoreFactory.get(new PricingGroup(pricingGroupName));
         if (store != null) {
             if (id == null)
                 return store.getAll();
@@ -39,8 +51,8 @@ public class CalculationContextController {
     }
 
     @GetMapping("/calculationcontext/market/{pricingGroupName}/{id}")
-    public MarketEnv getMarketEnvironment(@PathVariable String pricingGroupName, @RequestParam("id") UUID id) {
-        MarketStore store = MarketStoreFactory.get(pricingGroupName);
+    public MarketEnv getMarketEnvironment(@PathVariable String pricingGroupName, @PathVariable UUID id) {
+        IMarketStore store = this.marketStoreFactory.get(new PricingGroup(pricingGroupName));
         if (store != null) {
             return store.get(id);
         }

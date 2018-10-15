@@ -3,13 +3,12 @@ package com.reporting.mocks.generators;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.RiskResult;
-import com.reporting.mocks.model.dataviews.book.TcnRiskSet;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
-import com.reporting.mocks.persistence.CalculationContextStore;
-import com.reporting.mocks.persistence.TradeStore;
+import com.reporting.mocks.persistence.ICalculationContextStore;
+import com.reporting.mocks.persistence.ITradeStore;
 import com.reporting.mocks.process.risks.RiskRequest;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 
@@ -21,17 +20,17 @@ import java.util.concurrent.BlockingQueue;
 
 public class RiskRunGeneratorThread implements Runnable {
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
-    protected CalculationContextStore calculationContextStore;
-    protected TradeStore tradeStore;
+    protected ICalculationContextStore calculationContextStore;
+    protected ITradeStore tradeStore;
     protected RiskRunPublisher riskRunPublisher;
 
     public RiskRunGeneratorThread(BlockingQueue<RiskRunRequest> riskRunRequestQueue,
-                                  CalculationContextStore calculationContextStore,
-                                  TradeStore tradeStore,
+                                  ICalculationContextStore ICalculationContextStore,
+                                  ITradeStore tradeStore,
                                   RiskRunPublisher riskRunPublisher
                                   ) {
         this.riskRunRequestQueue = riskRunRequestQueue;
-        this.calculationContextStore = calculationContextStore;
+        this.calculationContextStore = ICalculationContextStore;
         this.tradeStore = tradeStore;
         this.riskRunPublisher = riskRunPublisher;
     }
@@ -50,7 +49,7 @@ public class RiskRunGeneratorThread implements Runnable {
                     trades = new ArrayList<>(Arrays.asList(riskRunRequest.getTrade()));
                 }
                 else {
-                    trades = this.tradeStore.getTradePopulation(tradePopulationId.getId()).getAllTrades();
+                    trades = this.tradeStore.getTradePopulation(tradePopulationId).getAllTrades();
                 }
 
                 CalculationContext calculationContext = this.calculationContextStore.get(riskRunRequest.getCalculationId().getId());
