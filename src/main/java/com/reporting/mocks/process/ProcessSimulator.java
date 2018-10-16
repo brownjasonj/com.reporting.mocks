@@ -55,8 +55,8 @@ public class ProcessSimulator {
         this.marketStore = marketStore;
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.processEventQueues = new JavaProcessEventQueues();
-        //this.riskRunPublisher = new RiskRunResultKafkaPublisher(appConfig);
-        this.riskRunPublisher = new RiskRunResultQueuePublisher(this.processEventQueues.getRiskResultQueue());
+        this.riskRunPublisher = new RiskRunResultKafkaPublisher(appConfig);
+        //this.riskRunPublisher = new RiskRunResultQueuePublisher(this.processEventQueues.getRiskResultQueue());
     }
 
     public Collection<TradePopulation> getTradePopulations() {

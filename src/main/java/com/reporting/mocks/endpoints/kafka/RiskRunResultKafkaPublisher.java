@@ -30,7 +30,7 @@ public class RiskRunResultKafkaPublisher implements RiskRunPublisher {
 
     @Override
     public void publish(MarketEnv marketEnv) {
-        //this.marketEnvKafkaPublisher.send(marketEnv);
+        this.marketEnvKafkaPublisher.send(marketEnv);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RiskRunResultKafkaPublisher implements RiskRunPublisher {
 
     @Override
     public void publishIntradayTrade(TradeLifecycle tradeLifecycle) {
-    //      this.tradeKafkaPublisher.send(tradeLifecycle);
+        this.tradeKafkaPublisher.send(tradeLifecycle);
     }
 
     @Override

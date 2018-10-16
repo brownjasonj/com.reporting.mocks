@@ -45,8 +45,8 @@ dependencies {
 	compile('org.springframework.cloud:spring-cloud-starter-openfeign')
 	compile('org.springframework.kafka:spring-kafka')
 	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
-	compile('de.flapdoodle.embed:de.flapdoodle.embed.mongo')
-	compile('cz.jirutka.spring:embedmongo-spring')
+//	compile('de.flapdoodle.embed:de.flapdoodle.embed.mongo')
+//	compile('cz.jirutka.spring:embedmongo-spring')
 	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.5.0'
 	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
