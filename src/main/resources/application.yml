@@ -12,5 +12,6 @@ kafka:
   topic:
     intradayriskset: IntraDayRiskSet
     intradayrisktick: IntraDayRiskTick
+    intradaytrade: IntraDayTrade
     calccontext: CalculationContext
-    market: Market
+    market: MarketEnv

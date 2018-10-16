@@ -72,4 +72,28 @@ public class TradeConfig {
     public List<TradeType> getTradeTypes() {
         return tradeTypes;
     }
+
+    public void setNewTradeStart(int newTradeStart) {
+        this.newTradeStart = newTradeStart;
+    }
+
+    public void setNewTradePeriodicity(int newTradePeriodicity) {
+        this.newTradePeriodicity = newTradePeriodicity;
+    }
+
+    public void setModifiedTradeStart(int modifiedTradeStart) {
+        this.modifiedTradeStart = modifiedTradeStart;
+    }
+
+    public void setModifiedTradePeriodicity(int modifiedTradePeriodicity) {
+        this.modifiedTradePeriodicity = modifiedTradePeriodicity;
+    }
+
+    public void setDeleteTadeStart(int deleteTadeStart) {
+        this.deleteTadeStart = deleteTadeStart;
+    }
+
+    public void setDeleteTradePeriodicity(int deleteTradePeriodicity) {
+        this.deleteTradePeriodicity = deleteTradePeriodicity;
+    }
 }

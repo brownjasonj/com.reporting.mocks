@@ -5,7 +5,6 @@ import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.DataMarkerType;
 import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.persistence.IMarketStore;
-import com.reporting.mocks.persistence.InMemory.MarketStore;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
 

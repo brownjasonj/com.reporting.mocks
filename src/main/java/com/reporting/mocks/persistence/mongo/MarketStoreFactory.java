@@ -1,9 +1,8 @@
-package com.reporting.mocks.persistence.Mongo;
+package com.reporting.mocks.persistence.mongo;
 
 import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.persistence.IMarketStore;
 import com.reporting.mocks.persistence.IPersistenceStoreFactory;
-import com.reporting.mocks.persistence.InMemory.MarketStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

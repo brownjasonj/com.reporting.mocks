@@ -4,8 +4,6 @@ import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.persistence.*;
-import com.reporting.mocks.persistence.InMemory.CalculationContextStoreFactory;
-import com.reporting.mocks.persistence.Mongo.MarketStoreFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +18,10 @@ public class CalculationContextController {
     IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory;
 
     @Autowired
-    MarketStoreFactory marketStoreFactory;
+    IPersistenceStoreFactory<IMarketStore> marketStoreFactory;
 
     @Autowired
-    CalculationContextController(IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory, MarketStoreFactory marketStoreFactory) {
+    CalculationContextController(IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory, IPersistenceStoreFactory<IMarketStore> marketStoreFactory) {
         this.calculationContextStoreFactory = calculationContextStoreFactory;
         this.marketStoreFactory = marketStoreFactory;
     }

@@ -36,6 +36,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.0.2.RELEASE'
 
 	compile(':com.reporting.mocks.model')
+    compile(':com.reporting.mocks.persistence.mongo')
 	compile(':com.reporting.kafka.serialization')
 	//compile project: ':com.reporting.mocks.model'
 	// https://mvnrepository.com/artifact/com.google.code.gson/gson

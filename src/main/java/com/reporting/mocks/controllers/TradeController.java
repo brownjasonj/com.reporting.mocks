@@ -4,8 +4,8 @@ import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
+import com.reporting.mocks.persistence.IPersistenceStoreFactory;
 import com.reporting.mocks.persistence.ITradeStore;
-import com.reporting.mocks.persistence.Mongo.MongoTradeStoreFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +16,10 @@ import java.util.UUID;
 @RestController
 public class TradeController {
     @Autowired
-    MongoTradeStoreFactory mongoTradeStoreFactory;
+    IPersistenceStoreFactory<ITradeStore> mongoTradeStoreFactory;
 
     @Autowired
-    public TradeController(MongoTradeStoreFactory mongoTradeStoreFactory) {
+    public TradeController(IPersistenceStoreFactory<ITradeStore> mongoTradeStoreFactory) {
         this.mongoTradeStoreFactory = mongoTradeStoreFactory;
     }
 

@@ -10,7 +10,6 @@ import com.reporting.mocks.model.trade.TradeType;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 public interface ITradeStore {
     PricingGroup getPricingGroup();

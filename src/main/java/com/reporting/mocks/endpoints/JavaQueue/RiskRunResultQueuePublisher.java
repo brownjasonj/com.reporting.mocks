@@ -4,6 +4,7 @@ import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.RiskResult;
+import com.reporting.mocks.model.TradeLifecycle;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -19,6 +20,11 @@ public class RiskRunResultQueuePublisher implements RiskRunPublisher {
 //    public void publish(RiskRunResult riskRunResult) {
 //
 //    }
+
+    @Override
+    public void publishIntradayTrade(TradeLifecycle tradeLifecycle) {
+
+    }
 
     @Override
     public void publish(CalculationContext calculationContext) {

@@ -1,4 +1,4 @@
-package com.reporting.mocks.persistence.Mongo;
+package com.reporting.mocks.persistence.mongo;
 
 
 import com.reporting.mocks.model.PricingGroup;

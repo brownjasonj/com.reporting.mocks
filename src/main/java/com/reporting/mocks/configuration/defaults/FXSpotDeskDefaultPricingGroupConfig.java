@@ -12,14 +12,24 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
+    protected final int startingTradeCount = 100;
+    protected final int newTradeStart = 0;
+    protected final int newTradePeriodicity = 100;        // number of milliseconds between new tcnTrades (default: 10s)
+
+    protected final int modifiedTradeStart = 6 * 1000;
+    protected final int modifiedTradePeriodicity = 6 * 1000;    // number of milliseconds between trade modifications (default: 30s)
+
+    protected final int deleteTadeStart = 6 * 1000;
+    protected final int deleteTradePeriodicity = 6 * 1000;
+
     public FXSpotDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
         UnderlyingConfig underlyings = new UnderlyingConfig();
         List<TradeType> otcTradeTypes = new ArrayList<>();
 
+        this.pricingGroupId = new PricingGroup("fxspotdesk");
         // - URN: book:<department pricingGroup>:<desk pricingGroup>:<book pricingGroup>
         //   e.g., book:fxdesk:fxspots:bookname
-
         books.add("bank:fxdesk:fxspot:Book1");
         books.add("bank:fxdesk:fxspot:Book2");
         books.add("bank:fxdesk:fxspot:Book3");
@@ -33,6 +43,13 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         otcTradeTypes.add(TradeType.Swap);
 
         this.tradeConfig = new TradeConfig(books, underlyings, otcTradeTypes);
+        this.tradeConfig.setStartingTradeCount(startingTradeCount);
+        this.tradeConfig.setNewTradeStart(newTradeStart);
+        this.tradeConfig.setNewTradePeriodicity(newTradePeriodicity);
+        this.tradeConfig.setModifiedTradeStart(modifiedTradeStart);
+        this.tradeConfig.setModifiedTradePeriodicity(modifiedTradePeriodicity);
+        this.tradeConfig.setDeleteTadeStart(deleteTadeStart);
+        this.tradeConfig.setDeleteTradePeriodicity(deleteTradePeriodicity);
 
         ArrayList<RiskType> eodr = new ArrayList<>();
         eodr.add(RiskType.PV);
@@ -45,6 +62,5 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         this.intradayConfig = new IntradayConfig(indr);
 
 
-        this.pricingGroupId = new PricingGroup("fxspotdesk");
     }
 }

@@ -140,7 +140,8 @@ public class ProcessSimulator {
             this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(),
                     this.tradeStore,
                     this.tradeGenerator,
-                    this.processEventQueues.getIntradayEventQueue());
+                    this.processEventQueues.getIntradayEventQueue(),
+                    this.riskRunPublisher);
             new Thread(threadGroup, this.tradePopulationProducerThread, "TradePopulationProducer").start();
 
 
