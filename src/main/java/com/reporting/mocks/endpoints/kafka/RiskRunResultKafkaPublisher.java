@@ -29,7 +29,9 @@ public class RiskRunResultKafkaPublisher implements RiskRunPublisher {
     }
 
     @Override
-    public void publish(MarketEnv marketEnv) { this.marketEnvKafkaPublisher.send(marketEnv); }
+    public void publish(MarketEnv marketEnv) {
+        //this.marketEnvKafkaPublisher.send(marketEnv);
+    }
 
     @Override
     public void publishIntradayRiskRun(RiskResult riskResult) {
@@ -42,7 +44,9 @@ public class RiskRunResultKafkaPublisher implements RiskRunPublisher {
     }
 
     @Override
-    public void publishIntradayTrade(TradeLifecycle tradeLifecycle) { this.tradeKafkaPublisher.send(tradeLifecycle); }
+    public void publishIntradayTrade(TradeLifecycle tradeLifecycle) {
+    //      this.tradeKafkaPublisher.send(tradeLifecycle);
+    }
 
     @Override
     public void publishEndofDayRiskRun(RiskResult riskResult) {
