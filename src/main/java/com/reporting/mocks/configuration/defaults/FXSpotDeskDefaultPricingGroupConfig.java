@@ -16,8 +16,8 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     protected final int newTradeStart = 0;
     protected final int newTradePeriodicity = 100;        // number of milliseconds between new tcnTrades (default: 10s)
 
-    protected final int modifiedTradeStart = 6 * 1000;
-    protected final int modifiedTradePeriodicity = 6 * 1000;    // number of milliseconds between trade modifications (default: 30s)
+    protected final int modifiedTradeStart = 1000;
+    protected final int modifiedTradePeriodicity = 1000;    // number of milliseconds between trade modifications (default: 30s)
 
     protected final int deleteTadeStart = 6 * 1000;
     protected final int deleteTradePeriodicity = 6 * 1000;

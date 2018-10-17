@@ -132,7 +132,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                 Trade trade = tradeLifecycleEvent.getTrade();
                                 if (trade != null) {
                                     Trade existingTrade = this.tradePopulation.getTrade(trade.getTcn());
-                                    if (existingTrade == null || trade.getVersion() != existingTrade.getVersion())  {
+                                    if (existingTrade != null && trade.getVersion() != existingTrade.getVersion())  {
                                         // modify trade in the current trade population
                                         this.tradePopulation.delete(existingTrade.getTcn());
                                         this.riskRunRequestQueue.add(new RiskRunRequest(
@@ -155,7 +155,6 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                                 trade,
                                                 false  // this is NOT a delete event
                                         ));
-
                                     }
                                 }
                             }
