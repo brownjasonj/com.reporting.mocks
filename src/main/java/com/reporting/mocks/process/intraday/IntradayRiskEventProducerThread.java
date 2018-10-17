@@ -12,9 +12,12 @@ import com.reporting.mocks.process.risks.RiskRunType;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class IntradayRiskEventProducerThread implements Runnable {
+    private static final Logger LOGGER = Logger.getLogger( IntradayRiskEventProducerThread.class.getName() );
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
     protected RiskRunPublisher riskPublisher;
@@ -189,7 +192,8 @@ public class IntradayRiskEventProducerThread implements Runnable {
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // LOGGER.log( Level.FINE, "processing {0} entries in loop", list.size() );
+            LOGGER.log( Level.FINE, "thread interrupted");
         }
     }
 }

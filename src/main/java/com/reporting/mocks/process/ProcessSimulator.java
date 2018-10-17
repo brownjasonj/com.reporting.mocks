@@ -76,79 +76,77 @@ public class ProcessSimulator {
 
     protected void init() {
         if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
-            this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
+                this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
 
 
-            RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.processEventQueues.getRiskResultQueue());
-            new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
+                RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.processEventQueues.getRiskResultQueue());
+                new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
 
-            // RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.processEventQueues.getRiskResultQueue());
+                // RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.processEventQueues.getRiskResultQueue());
 
-            // RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher(this.config.getPricingGroupId());
-
-
-            //RiskRunResultKafkaPublisher riskRunPublisher = new RiskRunResultKafkaPublisher();
-
-            this.riskRunGeneratorThread = new RiskRunGeneratorThread(
-                    this.processEventQueues.getRiskRunRequestQueue(),
-                    this.calculationContextStore,
-                    this.tradeStore,
-                    this.riskRunPublisher,
-                    this.riskResultStore
-            );
-
-            new Thread(threadGroup, this.riskRunGeneratorThread, "RiskRunGeneratorThread").start();
+                // RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher(this.config.getPricingGroupId());
 
 
-            // kick-off end-of-day
+                //RiskRunResultKafkaPublisher riskRunPublisher = new RiskRunResultKafkaPublisher();
 
-            EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(
-                    this.config.getPricingGroupId(),
-                    this.config.getEndofdayConfig(),
-                    this.tradeStore,
-                    this.marketStore,
-                    this.calculationContextStore,
-                    this.processEventQueues.getRiskRunRequestQueue(),
-                    this.riskRunPublisher);
-            new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
+                this.riskRunGeneratorThread = new RiskRunGeneratorThread(
+                        this.processEventQueues.getRiskRunRequestQueue(),
+                        this.calculationContextStore,
+                        this.tradeStore,
+                        this.riskRunPublisher,
+                        this.riskResultStore
+                );
 
-            // kick-off start-of-day
-
-            // start intra-day process
-            // initiate market environment change process
-            this.marketEventProducerThread = new MarketEventProducerThread(
-                    this.config.getPricingGroupId(),
-                    this.marketStore,
-                    this.riskRunPublisher,
-                    this.config.getMarketPeriodicity(),
-                    this.processEventQueues.getIntradayEventQueue());
-            // start the market event thread
-            new Thread(threadGroup, this.marketEventProducerThread, "MarketEventProducer").start();
+                new Thread(threadGroup, this.riskRunGeneratorThread, "RiskRunGeneratorThread").start();
 
 
+                // kick-off end-of-day
 
-            // initiate intra-day risk jobs
-            this.intradayRiskEventProducerThread = new IntradayRiskEventProducerThread(
-                    this.config.getPricingGroupId(),
-                    this.config.getIntradayConfig(),
-                    this.tradeStore,
-                    this.marketStore,
-                    this.calculationContextStore,
-                    this.processEventQueues.getIntradayEventQueue(),
-                    this.processEventQueues.getRiskRunRequestQueue(),
-                    this.riskRunPublisher,
-                    new MarketEnv(this.config.getPricingGroupId(), DataMarkerType.IND));
+                EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(
+                        this.config.getPricingGroupId(),
+                        this.config.getEndofdayConfig(),
+                        this.tradeStore,
+                        this.marketStore,
+                        this.calculationContextStore,
+                        this.processEventQueues.getRiskRunRequestQueue(),
+                        this.riskRunPublisher);
+                new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
 
-            new Thread(threadGroup, this.intradayRiskEventProducerThread, "IntradayRiskEvent").start();
+                // kick-off start-of-day
 
-            //TradeConfig tradeConfig, TradeStore tradeStore, BlockingQueue<Trade> tradeQueue
-            this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(),
-                    this.tradeStore,
-                    this.tradeGenerator,
-                    this.processEventQueues.getIntradayEventQueue(),
-                    this.riskRunPublisher);
-            new Thread(threadGroup, this.tradePopulationProducerThread, "TradePopulationProducer").start();
+                // start intra-day process
+                // initiate market environment change process
+                this.marketEventProducerThread = new MarketEventProducerThread(
+                        this.config.getPricingGroupId(),
+                        this.marketStore,
+                        this.riskRunPublisher,
+                        this.config.getMarketPeriodicity(),
+                        this.processEventQueues.getIntradayEventQueue());
+                // start the market event thread
+                new Thread(threadGroup, this.marketEventProducerThread, "MarketEventProducer").start();
 
+
+                // initiate intra-day risk jobs
+                this.intradayRiskEventProducerThread = new IntradayRiskEventProducerThread(
+                        this.config.getPricingGroupId(),
+                        this.config.getIntradayConfig(),
+                        this.tradeStore,
+                        this.marketStore,
+                        this.calculationContextStore,
+                        this.processEventQueues.getIntradayEventQueue(),
+                        this.processEventQueues.getRiskRunRequestQueue(),
+                        this.riskRunPublisher,
+                        new MarketEnv(this.config.getPricingGroupId(), DataMarkerType.IND));
+
+                new Thread(threadGroup, this.intradayRiskEventProducerThread, "IntradayRiskEvent").start();
+
+                //TradeConfig tradeConfig, TradeStore tradeStore, BlockingQueue<Trade> tradeQueue
+                this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(),
+                        this.tradeStore,
+                        this.tradeGenerator,
+                        this.processEventQueues.getIntradayEventQueue(),
+                        this.riskRunPublisher);
+                new Thread(threadGroup, this.tradePopulationProducerThread, "TradePopulationProducer").start();
 
         }
     }
@@ -156,7 +154,7 @@ public class ProcessSimulator {
     public void stop() {
         if (this.threadGroup != null && !this.threadGroup.isDestroyed()) {
             //this.threadGroup.interrupt();
-            this.threadGroup.destroy();
+            this.threadGroup.interrupt();;
         }
     }
 

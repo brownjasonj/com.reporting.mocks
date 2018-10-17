@@ -10,17 +10,19 @@ import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.ICalculationContextStore;
 import com.reporting.mocks.persistence.IRiskResultStore;
 import com.reporting.mocks.persistence.ITradeStore;
+import com.reporting.mocks.process.endofday.EndofDayEventTimerThread;
 import com.reporting.mocks.process.risks.RiskRequest;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RiskRunGeneratorThread implements Runnable {
+    private static final Logger LOGGER = Logger.getLogger( EndofDayEventTimerThread.class.getName() );
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
     protected ICalculationContextStore calculationContextStore;
     protected ITradeStore tradeStore;
@@ -126,7 +128,7 @@ public class RiskRunGeneratorThread implements Runnable {
             }
         }
         catch (InterruptedException ie) {
-            ie.printStackTrace();
+            LOGGER.log( Level.FINE, "thread interrupted");
         }
 
     }

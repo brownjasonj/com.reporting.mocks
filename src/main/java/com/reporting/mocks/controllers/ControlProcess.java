@@ -62,6 +62,7 @@ public class ControlProcess {
         ProcessSimulator processSimulator = this.processFactory.getProcess(pricingGroup);
         if (processSimulator != null) {
             processSimulator.stop();
+            this.processFactory.deleteProcess(pricingGroup);
             return true;
         }
         else {

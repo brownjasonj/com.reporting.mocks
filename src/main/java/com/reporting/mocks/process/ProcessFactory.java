@@ -21,10 +21,16 @@ public class ProcessFactory {
         this.processes = new ConcurrentHashMap<>();
     }
 
-    public ProcessSimulator addProcess(ProcessSimulator completeProcess) {
+    protected ProcessSimulator addProcess(ProcessSimulator completeProcess) {
         return this.processes.put(completeProcess.getPricingGroupId().getName(), completeProcess);
     }
 
+    public ProcessSimulator deleteProcess(PricingGroup pricingGroup) {
+        if (this.processes.containsKey(pricingGroup.getName()))
+            return this.processes.remove(pricingGroup.getName());
+        else
+            return null;
+    }
     public ProcessSimulator getProcess(PricingGroup pricingGroup) {
         if (this.processes.containsKey(pricingGroup.getName()))
             return this.processes.get(pricingGroup.getName());

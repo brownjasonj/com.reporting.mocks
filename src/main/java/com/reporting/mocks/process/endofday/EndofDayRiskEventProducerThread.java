@@ -11,6 +11,7 @@ import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.persistence.ICalculationContextStore;
 import com.reporting.mocks.persistence.IMarketStore;
 import com.reporting.mocks.persistence.ITradeStore;
+import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 import com.reporting.mocks.process.risks.RiskRunType;
 
@@ -18,8 +19,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EndofDayRiskEventProducerThread implements Runnable {
+    private static final Logger LOGGER = Logger.getLogger( EndofDayRiskEventProducerThread.class.getName() );
     protected BlockingQueue<TradePopulationId> tradePopulationIdQueue;
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
     protected RiskRunPublisher riskPublisher;
@@ -84,7 +88,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
             }
         }
         catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.log( Level.FINE, "thread interrupted");
         }
     }
 }

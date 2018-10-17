@@ -9,14 +9,18 @@ import com.reporting.mocks.model.TradeLifecycleType;
 import com.reporting.mocks.persistence.ITradeStore;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
+import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TradePopulationProducerThread implements Runnable {
+    private static final Logger LOGGER = Logger.getLogger( TradePopulationProducerThread.class.getName() );
     protected ITradeStore tradeStore;
     protected TradeGenerator tradeGenerator;
     protected BlockingQueue<TradeLifecycleType> tradeEventQueue;
@@ -90,7 +94,7 @@ public class TradePopulationProducerThread implements Runnable {
                 System.out.println("TradeEvent " + tradeEvent.toString());
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.log( Level.FINE, "thread interrupted");
         }
     }
 }

@@ -7,8 +7,12 @@ import com.reporting.mocks.persistence.ITradeStore;
 
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EndofDayEventTimerThread extends TimerTask {
+    private static final Logger LOGGER = Logger.getLogger( EndofDayEventTimerThread.class.getName() );
+
     protected BlockingQueue<TradePopulationId> tradePopulationIdQueue;
     protected ITradeStore tradeStore;
 
@@ -24,7 +28,7 @@ public class EndofDayEventTimerThread extends TimerTask {
             this.tradePopulationIdQueue.put(tradePop.getId());
         }
         catch (InterruptedException e) {
-            System.out.println("Exception: EndofDayEventTimerThread : TradePopId " + tradePop.getId()+ " " + e);
+            LOGGER.log( Level.FINE, "thread interrupted");
         }
     }
 }
