@@ -121,8 +121,10 @@ public class RiskRunGeneratorThread implements Runnable {
                             if (risk != null)
                                 risks.add(risk);
                         }
-                        fragmentNo++;
-                        createAndPublishRiskResult(riskRunRequest, fragmentCount, fragmentNo, risks);
+                        if (finalFragmentTradeCount != 0) {
+                            fragmentNo++;
+                            createAndPublishRiskResult(riskRunRequest, fragmentCount, fragmentNo, risks);
+                        }
                     }
                 }
             }

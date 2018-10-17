@@ -10,6 +10,7 @@ import com.reporting.mocks.process.risks.RiskRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class VegaGenerator implements IRiskGenerator<Vega> {
@@ -32,15 +33,12 @@ public class VegaGenerator implements IRiskGenerator<Vega> {
                 riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(),
                 timeBuckets);
 
-//        Underlying underlying = trade.getUnderlying1();
-//        for(int underlyignComponentIndex = 0; underlyignComponentIndex < underlying.getComponenetCount(); underlyignComponentIndex++) {
-//            String underlyingComponentName = underlying.getComponentName(underlyignComponentIndex);
-//            ArrayList<Double> timeBucketValues = new ArrayList<>(timeBuckets.size());
-//            for(int i = 0; i < timeBuckets.size(); i++) {
-//                timeBucketValues.add(i, rand.nextDouble() * trade.getQuantity());
-//            }
-//            vega.addTimeBuckValues(underlyingComponentName, timeBucketValues);
-//        }
+        List<Double> bucketValues = new ArrayList<>();
+        for(int i = 0; i < timeBuckets.size(); i++) {
+            bucketValues.add(i, rand.nextDouble() * trade.getUnderlying1Amount());
+        }
+
+        vega.addTimeBuckValues(trade.getUnderlying1().getName(), bucketValues);
         return vega;
     }
 

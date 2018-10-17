@@ -18,7 +18,10 @@ public class PricingGroupConfig {
     public PricingGroupConfig() {
     }
 
-    public PricingGroupConfig(PricingGroup pricingGroupId, TradeConfig tradeConfig, EndofDayConfig eodc, IntradayConfig indc) {
+    public PricingGroupConfig(PricingGroup pricingGroupId,
+                              TradeConfig tradeConfig,
+                              EndofDayConfig eodc,
+                              IntradayConfig indc) {
         this();
         this.pricingGroupId = pricingGroupId;
         this.tradeConfig = tradeConfig;

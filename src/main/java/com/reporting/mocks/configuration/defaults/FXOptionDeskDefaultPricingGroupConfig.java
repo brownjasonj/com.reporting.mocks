@@ -57,11 +57,13 @@ public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         eodr.add(RiskType.PV);
         eodr.add(RiskType.DELTA);
         eodr.add(RiskType.GAMMA);
+        eodr.add(RiskType.VEGA);
         this.endofdayConfig = new EndofDayConfig(eodr, 5 * 60 * 1000);
 
         ArrayList<IntradayRiskType> indr = new ArrayList<>();
         indr.add(new IntradayRiskType(RiskType.PV, 1));
-        indr.add(new IntradayRiskType(RiskType.DELTA, 3));
+        indr.add(new IntradayRiskType(RiskType.DELTA, 1));
+        indr.add(new IntradayRiskType(RiskType.GAMMA, 2));
         indr.add(new IntradayRiskType(RiskType.VEGA, 3));
         this.intradayConfig = new IntradayConfig(indr);
     }
