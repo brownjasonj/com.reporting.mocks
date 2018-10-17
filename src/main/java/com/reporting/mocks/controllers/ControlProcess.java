@@ -1,5 +1,10 @@
 package com.reporting.mocks.controllers;
 
+import com.reporting.mocks.configuration.ApplicationConfig;
+import com.reporting.mocks.configuration.Configurations;
+import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.model.PricingGroup;
+import com.reporting.mocks.persistence.*;
 import com.reporting.mocks.process.ProcessFactory;
 import com.reporting.mocks.process.ProcessSimulator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,26 +16,50 @@ public class ControlProcess {
     ProcessFactory processFactory;
 
     @Autowired
+    ApplicationConfig applicationConfig;
+
+    @Autowired
+    Configurations configurations;
+
+    @Autowired
+    IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory;
+
+    @Autowired
+    IPersistenceStoreFactory<IMarketStore> marketStoreFactory;
+
+    @Autowired
+    IPersistenceStoreFactory<ITradeStore> mongoTradeStoreFactory;
+
+    @Autowired
+    IRiskResultStore riskResultStore;
+
+    @Autowired
     public ControlProcess(ProcessFactory processFactory) {
         this.processFactory = processFactory;
     }
 
     @GetMapping("/controlprocess/start/{pricingGroupName}")
-    public Boolean startCompleteProcess(@PathVariable String pricingGroupName) {
-        ProcessSimulator processSimulator = this.processFactory.getProcess(pricingGroupName);
-
+    public PricingGroupConfig startCompleteProcess(@PathVariable String pricingGroupName) {
+        ProcessSimulator processSimulator = this.processFactory.getProcess(new PricingGroup(pricingGroupName));
         if (processSimulator != null) {
-            processSimulator.start();
-            return true;
+            return processSimulator.start();
         }
         else {
-            return false;
+            PricingGroupConfig config = this.configurations.getPricingGroup(pricingGroupName);
+            processSimulator = this.processFactory.createProcess(this.applicationConfig,
+                    config,
+                    calculationContextStoreFactory,
+                    marketStoreFactory,
+                    mongoTradeStoreFactory,
+                    riskResultStore);
+            return processSimulator.start();
         }
     }
 
     @GetMapping("/controlprocess/stop/{pricingGroupName}")
     public Boolean stopCompleteProcess(@PathVariable String pricingGroupName) {
-        ProcessSimulator processSimulator = this.processFactory.getProcess(pricingGroupName);
+        PricingGroup pricingGroup = new PricingGroup(pricingGroupName);
+        ProcessSimulator processSimulator = this.processFactory.getProcess(pricingGroup);
         if (processSimulator != null) {
             processSimulator.stop();
             return true;

@@ -1,5 +1,10 @@
 package com.reporting.mocks.process;
 
+import com.reporting.mocks.configuration.ApplicationConfig;
+import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.model.PricingGroup;
+import com.reporting.mocks.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -20,11 +25,27 @@ public class ProcessFactory {
         return this.processes.put(completeProcess.getPricingGroupId().getName(), completeProcess);
     }
 
-    public ProcessSimulator getProcess(String name) {
-        if (this.processes.containsKey(name))
-            return this.processes.get(name);
+    public ProcessSimulator getProcess(PricingGroup pricingGroup) {
+        if (this.processes.containsKey(pricingGroup.getName()))
+            return this.processes.get(pricingGroup.getName());
         else
             return null;
     }
 
+    public ProcessSimulator createProcess(ApplicationConfig applicationConfig,
+                                          PricingGroupConfig config,
+                                          IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory,
+                                          IPersistenceStoreFactory<IMarketStore> marketStoreFactory,
+                                          IPersistenceStoreFactory<ITradeStore> tradeStoreFactory,
+                                          IRiskResultStore riskResultStore
+                                          ) {
+        String pricingGroupName = config.getPricingGroupId().getName();
+        ITradeStore tradeStore = tradeStoreFactory.create(config.getPricingGroupId());
+        IMarketStore marketStore = marketStoreFactory.create(config.getPricingGroupId());
+        ICalculationContextStore calculationContextStore = calculationContextStoreFactory.create(config.getPricingGroupId());
+
+        ProcessSimulator processSimulator = new ProcessSimulator(config, applicationConfig, calculationContextStore, marketStore, tradeStore, riskResultStore);
+        this.addProcess(processSimulator);
+        return processSimulator;
+    }
 }

@@ -160,11 +160,11 @@ public class ProcessSimulator {
         }
     }
 
-    public void start() {
-        this.start(this.config);
+    public PricingGroupConfig start() {
+        return this.start(this.config);
     }
 
-    public void start(PricingGroupConfig config) {
+    public PricingGroupConfig start(PricingGroupConfig config) {
         if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
             if (this.config.getPricingGroupId() == config.getPricingGroupId()) {
                 this.config = config;
@@ -176,7 +176,10 @@ public class ProcessSimulator {
                 }
 
                 this.init();
+
+                return config;
             }
         }
+        return null;
     }
 }

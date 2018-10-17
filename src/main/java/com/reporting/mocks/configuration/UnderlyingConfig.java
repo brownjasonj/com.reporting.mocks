@@ -32,6 +32,10 @@ public class UnderlyingConfig {
             return null;
     }
 
+    public HashMap<String, List<String>> getUnderlyingCrosses() {
+        return underlyingCrosses;
+    }
+
     public HashMap<String, List<String>> getUnderlyingSets() {
         return underlyingCrosses;
     }

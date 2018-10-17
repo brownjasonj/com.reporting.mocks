@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-//@Scope(value= ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Scope
 public class Configurations {
     protected Map<String, PricingGroupConfig> pricingGroups;
