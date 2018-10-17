@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.stream.Collectors;
 
 public class RiskRunGeneratorThread implements Runnable {
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
@@ -40,99 +41,86 @@ public class RiskRunGeneratorThread implements Runnable {
     }
 
 
+    private void createAndPublishRiskResult(RiskRunRequest riskRunRequest, int fragmentCount, int fragmentNo, List<Risk> risks) {
+        RiskResult riskResult = new RiskResult(
+                riskRunRequest.getCalculationId(),
+                riskRunRequest.getTradePopulationId(),
+                riskRunRequest.getRiskRunId(),
+                fragmentCount,
+                fragmentNo,
+                risks,
+                riskRunRequest.isDeleteEvent());
+
+        // persist the riskResult for future use
+        this.riskResultStore.add(riskResult);
+
+        switch (riskRunRequest.getRiskRunType()) {
+            case EndOfDay:
+                riskRunPublisher.publishEndofDayRiskRun(riskResult);
+                break;
+            case OnDemand:
+            case Intraday:
+                riskRunPublisher.publishIntradayRiskRun(riskResult);
+                break;
+            case IntradayTick:
+                riskRunPublisher.publishIntradayTick(riskResult);
+                break;
+            default:
+        }
+    }
     @Override
     public void run() {
+        int maxTradeCountPerFragment = 100;
         try {
             while(true) {
                 RiskRunRequest riskRunRequest = this.riskRunRequestQueue.take();
                 TradePopulationId tradePopulationId = riskRunRequest.getTradePopulationId();
-                Collection<Trade> trades = null;
+                ArrayList<Trade> trades = null;
                 List<RiskType> riskTypes = riskRunRequest.getRisksToRun();
                 int fragmentCount = riskTypes.size();
+                int tradeFragmentsWithMaxTrades = 0;
+                int finalFragmentTradeCount = 0;
                 if (riskRunRequest.isSingleTrade()) {
                     trades = new ArrayList<>(Arrays.asList(riskRunRequest.getTrade()));
+                    finalFragmentTradeCount = 1;
                 }
                 else {
-                    trades = this.tradeStore.getTradePopulation(tradePopulationId).getAllTrades();
+                    trades = new ArrayList<>(this.tradeStore.getTradePopulation(tradePopulationId).getAllTrades());
+                    int tradeCount = trades.size();
+                    finalFragmentTradeCount = tradeCount % maxTradeCountPerFragment;
+                    tradeFragmentsWithMaxTrades = tradeCount/ maxTradeCountPerFragment;
+                    fragmentCount = fragmentCount * (tradeFragmentsWithMaxTrades + (finalFragmentTradeCount > 0 ? 1 : 0));
                 }
 
                 CalculationContext calculationContext = this.calculationContextStore.get(riskRunRequest.getCalculationId().getId());
 
-                /*
-                RiskRequest riskRequest = new RiskRequest(calculationContext, tradePopulationId);
-                List<TcnRiskSet> risks = new ArrayList<>();
-                for(Trade t : trades) {
-                    TcnRiskSet trs = new TcnRiskSet(t.getTcn());
-                    for(RiskType rt : riskTypes) {
-                        IRiskGenerator<? extends Risk> riskGenerator = RiskGeneratorFactory.getGenerator(rt);
-                        trs.setRisk(riskGenerator.generate(riskRequest, t));
-                    }
-                    risks.add(trs);
-                }
-
-                RiskResult riskResult = new RiskResult(
-                        riskRunRequest.getCalculationId(),
-                        riskRunRequest.getTradePopulationId(),
-                        riskRunRequest.getRiskRunId(),
-                        fragmentCount,
-                        0,
-                        risks,
-                        riskRunRequest.isDeleteEvent());
-
-                switch (riskRunRequest.getRiskRunType()) {
-                    case EndOfDay:
-                        riskRunPublisher.publishEndofDayRiskRun(riskResult);
-                        break;
-                    case OnDemand:
-                    case Intraday:
-                        riskRunPublisher.publishIntradayRiskRun(riskResult);
-                        break;
-                    case IntradayTick:
-                        riskRunPublisher.publishIntradayTick(riskResult);
-                        break;
-                    default:
-                }
-                */
-
-
-
-                for(int fragment = 0; fragment < fragmentCount; fragment++) {
-                    List<Risk> risks = new ArrayList<>();
-                    RiskType riskType = riskTypes.get(fragment);
+                int fragmentNo = 0;
+                for(RiskType riskType : riskTypes) {
                     IRiskGenerator<? extends Risk> riskGenerator = RiskGeneratorFactory.getGenerator(riskType);
                     RiskRequest riskRequest = new RiskRequest(calculationContext, tradePopulationId);
 
                     if (riskGenerator != null) {
-                        for (Trade t : trades) {
-                            Risk risk = riskGenerator.generate(riskRequest, t);
+                        int tradeFragmentNo = 0;
+                        for (tradeFragmentNo = 0; tradeFragmentNo < tradeFragmentsWithMaxTrades; tradeFragmentNo++) {
+                            List<Risk> risks = new ArrayList<>();
+                            for (int tradeInFragNo = 0; tradeInFragNo < maxTradeCountPerFragment; tradeInFragNo++) {
+                                Trade trade = trades.get((tradeFragmentNo * maxTradeCountPerFragment) + tradeInFragNo);
+                                Risk risk = riskGenerator.generate(riskRequest, trade);
+                                if (risk != null)
+                                    risks.add(risk);
+                            }
+                            fragmentNo++;
+                            createAndPublishRiskResult(riskRunRequest, fragmentCount, fragmentNo, risks);
+                        }
+                        List<Risk> risks = new ArrayList<>();
+                        for (int tradeInFragNo = 0; tradeInFragNo < finalFragmentTradeCount; tradeInFragNo++) {
+                            Trade trade = trades.get((tradeFragmentNo * maxTradeCountPerFragment) + tradeInFragNo);
+                            Risk risk = riskGenerator.generate(riskRequest, trade);
                             if (risk != null)
                                 risks.add(risk);
                         }
-                        RiskResult riskResult = new RiskResult(
-                                riskRunRequest.getCalculationId(),
-                                riskRunRequest.getTradePopulationId(),
-                                riskRunRequest.getRiskRunId(),
-                                fragmentCount,
-                                fragment,
-                                risks,
-                                riskRunRequest.isDeleteEvent());
-
-                        // persist the riskResult for future use
-                        this.riskResultStore.add(riskResult);
-
-                        switch (riskRunRequest.getRiskRunType()) {
-                            case EndOfDay:
-                                riskRunPublisher.publishEndofDayRiskRun(riskResult);
-                                break;
-                            case OnDemand:
-                            case Intraday:
-                                riskRunPublisher.publishIntradayRiskRun(riskResult);
-                                break;
-                            case IntradayTick:
-                                riskRunPublisher.publishIntradayTick(riskResult);
-                                break;
-                            default:
-                        }
+                        fragmentNo++;
+                        createAndPublishRiskResult(riskRunRequest, fragmentCount, fragmentNo, risks);
                     }
                 }
             }

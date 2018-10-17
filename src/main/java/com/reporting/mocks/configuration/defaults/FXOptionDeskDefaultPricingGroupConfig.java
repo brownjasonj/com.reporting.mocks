@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
-    protected final int startingTradeCount = 100;
+    protected final int startingTradeCount = 500;
     protected final int newTradeStart = 0;
     protected final int newTradePeriodicity = 1000;        // number of milliseconds between new tcnTrades (default: 10s)
 
