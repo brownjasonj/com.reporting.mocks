@@ -1,7 +1,6 @@
 package com.reporting.mocks.controllers;
 
 import com.reporting.mocks.model.RiskResult;
-import com.reporting.mocks.model.id.CalculationContextId;
 import com.reporting.mocks.model.id.RiskRunId;
 import com.reporting.mocks.persistence.IRiskResultStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +25,5 @@ public class RiskResultController {
     public List<RiskResult> getRiskResultByRiskRunId(@PathVariable String pricingGroupName, @PathVariable UUID uuid) {
         return this.riskResultStore.getAllByRiskRunId(new RiskRunId(pricingGroupName, uuid));
     }
-    
+
 }
