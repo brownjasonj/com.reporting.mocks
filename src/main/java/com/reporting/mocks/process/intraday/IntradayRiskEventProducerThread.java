@@ -103,6 +103,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                         System.out.println("Trade Event " + tradeEvent.getEvent().getLifecycleType() + " trade: " + tradeEvent.getEvent().getTrade().toString());
                         // 1. calculate all risks for the current trade (if new)
                         TradeLifecycle tradeLifecycleEvent = tradeEvent.getEvent();
+                        this.riskPublisher.publishIntradayTrade(tradeLifecycleEvent);
                         switch (tradeLifecycleEvent.getLifecycleType()) {
                             case New: {
                                 // before calculating risk, check that the trade was not in the current TradePopulation
@@ -114,7 +115,6 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                         // add the trade to the current tradepopulation
                                         this.tradePopulation.add(trade);
                                         // caclulate all the risks for this trade, since it is not in current population or has a different version
-
                                         this.riskRunRequestQueue.add(new RiskRunRequest(
                                                 RiskRunType.Intraday,
                                                 this.currentCalculationContext.getCalculationContextId(),

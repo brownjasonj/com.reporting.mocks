@@ -4,7 +4,6 @@ import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.RiskResult;
 import com.reporting.mocks.model.TradeLifecycle;
-import com.reporting.mocks.model.trade.Trade;
 
 public interface RiskRunPublisher {
     void publish(CalculationContext calculationContext);

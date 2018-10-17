@@ -39,13 +39,14 @@ kafka:
   topic:
     intradayriskset: IntraDayRiskSet
     intradayrisktick: IntraDayRiskTick
+    intradaytrade: IntraDayTrade
     calccontext: CalculationContext
-    market: Market
+    market: MarketEnv
 </pre>
 
 To start the simulator run the following
 
-gradle bootRun
+./gradlew bootRun
 
 Use the swagger ui to see all available endpoints (<a href="http://localhost:30001/swagger-ui.html">http://localhost:30001/swagger-ui.html</a>)
 
