@@ -14,10 +14,10 @@ import java.util.Properties;
 import java.util.UUID;
 
 public class TradeKafkaPublisher {
-    private String BOOTSTRAPSERVER =  "localhost:9092";
-    private String TOPIC = "IntraDayTrade";
+    private String BOOTSTRAPSERVER = null;
+    private String TOPIC = null;
     private Properties kafkaProperties;
-    private Producer producer;
+    private Producer producer = null;
 
     public TradeKafkaPublisher(ApplicationConfig appConfig) {
         this.TOPIC = appConfig.getIntradayTradeTopic();
@@ -29,17 +29,19 @@ public class TradeKafkaPublisher {
         this.kafkaProperties.put("key.serializer", "com.reporting.kafka.serialization.UUIDSerializer");
         this.kafkaProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-        this.producer = new KafkaProducer<UUID,String>(this.kafkaProperties);
+        if (this.TOPIC != null && !this.TOPIC.isEmpty())
+            this.producer = new KafkaProducer<UUID,String>(this.kafkaProperties);
     }
 
     public void send(TradeLifecycle tradeLifecycle) {
-        Gson gson = new Gson();
-        ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, tradeLifecycle.getTrade().getTcn().getId(), gson.toJson(tradeLifecycle));
-        try {
-            this.producer.send(record).get();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        if (producer != null) {
+            Gson gson = new Gson();
+            ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, tradeLifecycle.getTrade().getTcn().getId(), gson.toJson(tradeLifecycle));
+            try {
+                this.producer.send(record).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

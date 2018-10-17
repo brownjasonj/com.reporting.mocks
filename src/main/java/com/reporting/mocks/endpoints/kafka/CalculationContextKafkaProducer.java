@@ -11,10 +11,10 @@ import java.util.Properties;
 import java.util.UUID;
 
 public class CalculationContextKafkaProducer {
-    private String BOOTSTRAPSERVER =  "localhost:9092";
-    private String TOPIC = "RiskResult";
-    private Properties kafkaProperties;
-    private Producer producer;
+    private String BOOTSTRAPSERVER = null;
+    private String TOPIC = null;
+    private Properties kafkaProperties = null;
+    private Producer producer = null;
 
     public CalculationContextKafkaProducer(ApplicationConfig appConfig) {
         this.TOPIC = appConfig.getCalculationContextTopic();
@@ -26,17 +26,19 @@ public class CalculationContextKafkaProducer {
         this.kafkaProperties.put("key.serializer", "com.reporting.kafka.serialization.UUIDSerializer");
         this.kafkaProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-        this.producer = new KafkaProducer<UUID,String>(this.kafkaProperties);
+        if (this.TOPIC != null && !this.TOPIC.isEmpty())
+            this.producer = new KafkaProducer<UUID,String>(this.kafkaProperties);
     }
 
     public void send(CalculationContext calculationContext) {
-        Gson gson = new Gson();
-        ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, calculationContext.getCalculationContextId().getId(), gson.toJson(calculationContext));
-        try {
-            this.producer.send(record).get();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        if (this.producer != null) {
+            Gson gson = new Gson();
+            ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, calculationContext.getCalculationContextId().getId(), gson.toJson(calculationContext));
+            try {
+                this.producer.send(record).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

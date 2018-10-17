@@ -13,8 +13,8 @@ import java.util.Properties;
 import java.util.UUID;
 
 public class MarketEnvKafkaPublisher {
-    private String BOOTSTRAPSERVER =  "localhost:9092";
-    private String TOPIC = "MarketEnv";
+    private String BOOTSTRAPSERVER;
+    private String TOPIC;
     private Properties kafkaProperties;
     private Producer producer;
 
@@ -28,17 +28,19 @@ public class MarketEnvKafkaPublisher {
         this.kafkaProperties.put("key.serializer", "com.reporting.kafka.serialization.UUIDSerializer");
         this.kafkaProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-        this.producer = new KafkaProducer<UUID,String>(this.kafkaProperties);
+        if (this.TOPIC != null && !this.TOPIC.isEmpty())
+            this.producer = new KafkaProducer<UUID,String>(this.kafkaProperties);
     }
 
     public void send(MarketEnv marketEnv) {
-        Gson gson = new Gson();
-        ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, marketEnv.getId().getId(), gson.toJson(marketEnv));
-        try {
-            this.producer.send(record).get();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        if (this.producer != null) {
+            Gson gson = new Gson();
+            ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, marketEnv.getId().getId(), gson.toJson(marketEnv));
+            try {
+                this.producer.send(record).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
