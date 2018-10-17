@@ -36,6 +36,7 @@ public class ProcessSimulator {
     protected IMarketStore marketStore;
     protected TradeGenerator tradeGenerator;
     protected TradePopulationProducerThread tradePopulationProducerThread;
+    protected IRiskResultStore riskResultStore;
 
     protected RiskRunPublisher riskRunPublisher;
 
@@ -47,12 +48,14 @@ public class ProcessSimulator {
                             ApplicationConfig appConfig,
                             ICalculationContextStore calculationContextStore,
                             IMarketStore marketStore,
-                            ITradeStore tradeStore) {
+                            ITradeStore tradeStore,
+                            IRiskResultStore riskResultStore) {
         this.id = UUID.randomUUID();
         this.config = config;
         this.tradeStore = tradeStore;
         this.calculationContextStore = calculationContextStore;
         this.marketStore = marketStore;
+        this.riskResultStore = riskResultStore;
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.processEventQueues = new JavaProcessEventQueues();
         this.riskRunPublisher = new RiskRunResultKafkaPublisher(appConfig);
@@ -90,7 +93,8 @@ public class ProcessSimulator {
                     this.processEventQueues.getRiskRunRequestQueue(),
                     this.calculationContextStore,
                     this.tradeStore,
-                    this.riskRunPublisher
+                    this.riskRunPublisher,
+                    this.riskResultStore
             );
 
             new Thread(threadGroup, this.riskRunGeneratorThread, "RiskRunGeneratorThread").start();

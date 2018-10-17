@@ -8,6 +8,7 @@ import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.ICalculationContextStore;
+import com.reporting.mocks.persistence.IRiskResultStore;
 import com.reporting.mocks.persistence.ITradeStore;
 import com.reporting.mocks.process.risks.RiskRequest;
 import com.reporting.mocks.process.risks.RiskRunRequest;
@@ -23,15 +24,18 @@ public class RiskRunGeneratorThread implements Runnable {
     protected ICalculationContextStore calculationContextStore;
     protected ITradeStore tradeStore;
     protected RiskRunPublisher riskRunPublisher;
+    protected IRiskResultStore riskResultStore;
 
     public RiskRunGeneratorThread(BlockingQueue<RiskRunRequest> riskRunRequestQueue,
                                   ICalculationContextStore ICalculationContextStore,
                                   ITradeStore tradeStore,
-                                  RiskRunPublisher riskRunPublisher
+                                  RiskRunPublisher riskRunPublisher,
+                                  IRiskResultStore riskResultStore
                                   ) {
         this.riskRunRequestQueue = riskRunRequestQueue;
         this.calculationContextStore = ICalculationContextStore;
         this.tradeStore = tradeStore;
+        this.riskResultStore = riskResultStore;
         this.riskRunPublisher = riskRunPublisher;
     }
 
@@ -112,6 +116,9 @@ public class RiskRunGeneratorThread implements Runnable {
                                 fragment,
                                 risks,
                                 riskRunRequest.isDeleteEvent());
+
+                        // persist the riskResult for future use
+                        this.riskResultStore.add(riskResult);
 
                         switch (riskRunRequest.getRiskRunType()) {
                             case EndOfDay:
