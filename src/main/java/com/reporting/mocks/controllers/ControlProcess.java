@@ -47,13 +47,17 @@ public class ControlProcess {
         }
         else {
             PricingGroupConfig config = this.configurations.getPricingGroup(pricingGroupName);
-            processSimulator = this.processFactory.createProcess(this.applicationConfig,
-                    config,
-                    calculationContextStoreFactory,
-                    marketStoreFactory,
-                    mongoTradeStoreFactory,
-                    riskResultStore);
-            return processSimulator.start();
+            if (config != null) {
+                processSimulator = this.processFactory.createProcess(this.applicationConfig,
+                        config,
+                        calculationContextStoreFactory,
+                        marketStoreFactory,
+                        mongoTradeStoreFactory,
+                        riskResultStore);
+                return processSimulator.start();
+            }
+            else
+                return null;
         }
     }
 
