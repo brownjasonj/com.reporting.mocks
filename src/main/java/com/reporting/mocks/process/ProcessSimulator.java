@@ -8,10 +8,7 @@ import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.endpoints.kafka.RiskRunResultKafkaPublisher;
 import com.reporting.mocks.generators.RiskRunGeneratorThread;
 import com.reporting.mocks.generators.TradeGenerator;
-import com.reporting.mocks.model.DataMarkerType;
-import com.reporting.mocks.model.MarketEnv;
-import com.reporting.mocks.model.PricingGroup;
-import com.reporting.mocks.model.TradePopulation;
+import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.*;
@@ -78,16 +75,16 @@ public class ProcessSimulator {
         if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
                 this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
 
+                // initialize the start calculation context
+                CalculationContext cc = this.calculationContextStore.getCurrentContext();
+                if (cc == null) {
+                    cc = this.calculationContextStore.create();
+                    cc.update(this.config.getAllRiskTypes(), marketStore.create(DataMarkerType.SOD));
+                    this.calculationContextStore.setCurrentContext(cc);
+                }
 
                 RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.processEventQueues.getRiskResultQueue());
                 new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
-
-                // RiskRunPublisher riskRunPublisher = new RiskRunResultQueuePublisher(this.processEventQueues.getRiskResultQueue());
-
-                // RiskRunIgnitePublisher riskRunPublisher = new RiskRunIgnitePublisher(this.config.getPricingGroupId());
-
-
-                //RiskRunResultKafkaPublisher riskRunPublisher = new RiskRunResultKafkaPublisher();
 
                 this.riskRunGeneratorThread = new RiskRunGeneratorThread(
                         this.processEventQueues.getRiskRunRequestQueue(),
