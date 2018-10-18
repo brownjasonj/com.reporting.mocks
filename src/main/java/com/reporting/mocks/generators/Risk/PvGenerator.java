@@ -20,10 +20,7 @@ public class PvGenerator implements IRiskGenerator<Pv> {
     @Override
     public Pv generate(RiskRequest riskRequest, Trade trade) {
         try {
-            return new Pv(riskRequest.getCalculationId(),
-                    riskRequest.getCalculationContext().get(this.getRiskType()),
-                    riskRequest.getTradePopulationId(),
-                    riskRequest.getRiskRunId(),
+            return new Pv(riskRequest.getCalculationContext().get(this.getRiskType()),
                     trade.getBook(),
                     trade.getTcn(),
                     trade.getUnderlying1(),

@@ -18,10 +18,8 @@ public class DeltaGenerator implements IRiskGenerator<Delta>{
 
     @Override
     public Delta generate(RiskRequest riskRequest, Trade trade) {
-        return new Delta(riskRequest.getCalculationId(),
-                riskRequest.getCalculationContext().get(this.getRiskType()),
-                riskRequest.getTradePopulationId(),
-                riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(), trade.getUnderlying1(),
+        return new Delta(riskRequest.getCalculationContext().get(this.getRiskType()),
+                trade.getBook(), trade.getTcn(), trade.getUnderlying1(),
                 new Random().nextDouble() * trade.getUnderlying1Amount());
     }
 

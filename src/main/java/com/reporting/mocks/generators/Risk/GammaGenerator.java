@@ -18,10 +18,7 @@ public class GammaGenerator implements IRiskGenerator<Gamma> {
     @Override
     public Gamma generate(RiskRequest riskRequest, Trade trade) {
         return new Gamma(
-                riskRequest.getCalculationId(),
                 riskRequest.getCalculationContext().get(this.getRiskType()),
-                riskRequest.getTradePopulationId(),
-                riskRequest.getRiskRunId(),
                 trade.getBook(),
                 trade.getTcn(),
                 trade.getUnderlying1(),

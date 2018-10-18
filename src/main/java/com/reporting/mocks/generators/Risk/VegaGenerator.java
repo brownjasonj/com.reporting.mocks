@@ -27,10 +27,8 @@ public class VegaGenerator implements IRiskGenerator<Vega> {
 
         ArrayList<String> timeBuckets = new ArrayList<String>(
                 Arrays.asList("OIS", "1mth", "3mth", "6mth", "1yr", "2yr", "3yr"));
-        Vega vega = new Vega(riskRequest.getCalculationId(),
-                riskRequest.getCalculationContext().get(this.getRiskType()),
-                riskRequest.getTradePopulationId(),
-                riskRequest.getRiskRunId(), trade.getBook(), trade.getTcn(),
+        Vega vega = new Vega(riskRequest.getCalculationContext().get(this.getRiskType()),
+                trade.getBook(), trade.getTcn(),
                 timeBuckets);
 
         List<Double> bucketValues = new ArrayList<>();
