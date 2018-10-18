@@ -85,8 +85,15 @@ public class IntradayRiskEventProducerThread implements Runnable {
 
                         // set the markets for each of the risks to run with given market
                         this.currentCalculationContext = this.calculationContextStore.getCurrentContext();
-                        this.currentCalculationContext = this.calculationContextStore.createCopy(this.currentCalculationContext);
-                        this.currentCalculationContext.update(risksToRun, marketEvent.getEvent());
+                        if (this.currentCalculationContext == null) {
+                            for(IntradayRiskType riskType : this.config.getRisks()) {
+                                this.currentCalculationContext.add(riskType.getRiskType(), marketEvent.getEvent());
+                            }
+                        }
+                        else {
+                            this.currentCalculationContext = this.calculationContextStore.createCopy(this.currentCalculationContext);
+                            this.currentCalculationContext.update(risksToRun, marketEvent.getEvent());
+                        }
                         this.calculationContextStore.setCurrentContext(this.currentCalculationContext);
 
 
