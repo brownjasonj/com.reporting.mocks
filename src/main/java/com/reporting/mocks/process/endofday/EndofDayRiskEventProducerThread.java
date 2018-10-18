@@ -32,14 +32,14 @@ public class EndofDayRiskEventProducerThread implements Runnable {
     protected EndofDayConfig config;
     protected PricingGroup pricingGroup;
     protected CalculationContext currentCalculationContext;
-    protected ICalculationContextStore ICalculationContextStore;
+    protected ICalculationContextStore calculationContextStore;
 
     public EndofDayRiskEventProducerThread(
             PricingGroup pricingGroup,
             EndofDayConfig eodConfig,
             ITradeStore tradeStore,
             IMarketStore IMarketStore,
-            ICalculationContextStore ICalculationContextStore,
+            ICalculationContextStore calculationContextStore,
             BlockingQueue<RiskRunRequest> riskRunRequestQueue,
             RiskRunPublisher riskPublisher) {
         this.pricingGroup = pricingGroup;
@@ -49,7 +49,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
         this.tradePopulationIdQueue = new ArrayBlockingQueue(1024);
         this.riskRunRequestQueue = riskRunRequestQueue;
         this.riskPublisher = riskPublisher;
-        this.ICalculationContextStore = ICalculationContextStore;
+        this.calculationContextStore = calculationContextStore;
     }
 
     @Override
@@ -67,10 +67,12 @@ public class EndofDayRiskEventProducerThread implements Runnable {
 
                 if (tradePopulation != null) {
                     MarketEnv market = this.IMarketStore.create(tradePopulation.getType());
-                    this.currentCalculationContext = this.ICalculationContextStore.create();
+
+                    this.currentCalculationContext = this.calculationContextStore.create();
                     for(RiskType riskType : this.config.getRisks()) {
                         this.currentCalculationContext.add(riskType, market);
                     }
+                    this.calculationContextStore.setCurrentContext(this.currentCalculationContext);
 
                     riskPublisher.publish(market);
                     riskPublisher.publish(this.currentCalculationContext);

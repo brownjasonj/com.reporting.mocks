@@ -83,10 +83,12 @@ public class IntradayRiskEventProducerThread implements Runnable {
 
                         List<RiskType> risksToRun = this.calculationSchedule.getRisksToRun();
 
-
                         // set the markets for each of the risks to run with given market
+                        this.currentCalculationContext = this.calculationContextStore.getCurrentContext();
                         this.currentCalculationContext = this.calculationContextStore.createCopy(this.currentCalculationContext);
                         this.currentCalculationContext.update(risksToRun, marketEvent.getEvent());
+                        this.calculationContextStore.setCurrentContext(this.currentCalculationContext);
+
 
                         this.riskPublisher.publish(this.currentCalculationContext);
 
@@ -107,6 +109,8 @@ public class IntradayRiskEventProducerThread implements Runnable {
                         // 1. calculate all risks for the current trade (if new)
                         TradeLifecycle tradeLifecycleEvent = tradeEvent.getEvent();
                         this.riskPublisher.publishIntradayTrade(tradeLifecycleEvent);
+                        // grab the latest calculation context from the store as it may have changed due to an end of day event
+                        this.currentCalculationContext = this.calculationContextStore.getCurrentContext();
                         switch (tradeLifecycleEvent.getLifecycleType()) {
                             case New: {
                                 // before calculating risk, check that the trade was not in the current TradePopulation
@@ -136,6 +140,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                 if (trade != null) {
                                     Trade existingTrade = this.tradePopulation.getTrade(trade.getTcn());
                                     if (existingTrade != null && trade.getVersion() != existingTrade.getVersion())  {
+                                        this.currentCalculationContext = this.calculationContextStore.getCurrentContext();
                                         // modify trade in the current trade population
                                         this.tradePopulation.delete(existingTrade.getTcn());
                                         this.riskRunRequestQueue.add(new RiskRunRequest(

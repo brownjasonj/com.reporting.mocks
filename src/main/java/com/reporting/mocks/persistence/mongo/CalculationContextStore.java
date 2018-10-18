@@ -11,22 +11,33 @@ import java.util.UUID;
 public class CalculationContextStore implements ICalculationContextStore {
     protected PricingGroup pricingGroup;
     protected CalculationContextRepository calculationContextRepository;
+    protected CalculationContext currentCalculationContext;
 
     public CalculationContextStore(PricingGroup pricingGroup, CalculationContextRepository calculationContextRepository) {
         this.pricingGroup = pricingGroup;
         this.calculationContextRepository = calculationContextRepository;
+        this.currentCalculationContext = null;
     }
 
     @Override
     public CalculationContext create() {
-        CalculationContext newCC = new CalculationContext(this.pricingGroup);
-        return this.calculationContextRepository.save(newCC);
+        return new CalculationContext(this.pricingGroup);
     }
 
     @Override
     public CalculationContext createCopy(CalculationContext calculationContextToCopy) {
-        CalculationContext newCC = new CalculationContext(calculationContextToCopy);
-        return this.calculationContextRepository.save(newCC);
+        return new CalculationContext(calculationContextToCopy);
+    }
+
+    @Override
+    public CalculationContext setCurrentContext(CalculationContext cc) {
+        this.currentCalculationContext = cc;
+        return this.calculationContextRepository.save(cc);
+    }
+
+    @Override
+    public CalculationContext getCurrentContext() {
+        return this.currentCalculationContext;
     }
 
     @Override

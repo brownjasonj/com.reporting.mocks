@@ -11,6 +11,9 @@ public interface ICalculationContextStore {
 
     CalculationContext createCopy(CalculationContext calculationContextToCopy);
 
+    CalculationContext setCurrentContext(CalculationContext calculationContext);
+    CalculationContext getCurrentContext();
+
     CalculationContext get(UUID id);
 
     PricingGroup getPricingGroup();
