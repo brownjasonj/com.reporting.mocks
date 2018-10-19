@@ -10,6 +10,8 @@ import java.util.UUID;
 public interface IMarketStore {
     MarketEnv create(DataMarkerType type);
 
+    MarketEnv create(DataMarkerType type, int dayAdvance);
+
     MarketEnv get(UUID id);
 
     UUID getStoreId();

@@ -17,9 +17,17 @@ public class MongoMarketStore implements IMarketStore {
         this.pricingGroup = pricingGroup;
         this.marketEnvRepository = marketEnvRepository;
     }
+
     @Override
     public MarketEnv create(DataMarkerType type) {
         MarketEnv marketEnv = new MarketEnv(this.pricingGroup, type);
+        MarketEnv storedEnv = this.marketEnvRepository.save(marketEnv);
+        return storedEnv;
+    }
+
+    @Override
+    public MarketEnv create(DataMarkerType type, int dayAdvance) {
+        MarketEnv marketEnv = new MarketEnv(this.pricingGroup, type, dayAdvance);
         MarketEnv storedEnv = this.marketEnvRepository.save(marketEnv);
         return storedEnv;
     }

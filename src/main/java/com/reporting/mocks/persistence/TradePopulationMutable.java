@@ -65,7 +65,7 @@ public class TradePopulationMutable extends TradePopulation {
             if (trade.getTcn().getVersion() == tcn.getVersion()) {
                 List<Trade> trades = this.tradeTypeTrades.get(trade.getTradeType());
                 if (trades.remove(trade))
-                    return this.tcnTrades.remove(tcn);
+                    return this.tcnTrades.remove(tcn.getId());
             }
         }
         return null;

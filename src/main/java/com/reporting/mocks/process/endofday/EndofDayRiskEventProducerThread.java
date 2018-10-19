@@ -2,12 +2,13 @@ package com.reporting.mocks.process.endofday;
 
 import com.reporting.mocks.configuration.EndofDayConfig;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
-import com.reporting.mocks.model.CalculationContext;
-import com.reporting.mocks.model.MarketEnv;
-import com.reporting.mocks.model.PricingGroup;
-import com.reporting.mocks.model.TradePopulation;
+import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.risks.RiskType;
+import com.reporting.mocks.model.trade.Trade;
+import com.reporting.mocks.model.trade.TradeTypes.Balance;
+import com.reporting.mocks.model.trade.TradeTypes.Payment;
+import com.reporting.mocks.model.underlying.Underlying;
 import com.reporting.mocks.persistence.ICalculationContextStore;
 import com.reporting.mocks.persistence.IMarketStore;
 import com.reporting.mocks.persistence.ITradeStore;
@@ -15,8 +16,7 @@ import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 import com.reporting.mocks.process.risks.RiskRunType;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
@@ -33,6 +33,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
     protected PricingGroup pricingGroup;
     protected CalculationContext currentCalculationContext;
     protected ICalculationContextStore calculationContextStore;
+    protected int eodCounts;
 
     public EndofDayRiskEventProducerThread(
             PricingGroup pricingGroup,
@@ -50,6 +51,49 @@ public class EndofDayRiskEventProducerThread implements Runnable {
         this.riskRunRequestQueue = riskRunRequestQueue;
         this.riskPublisher = riskPublisher;
         this.calculationContextStore = calculationContextStore;
+        this.eodCounts = 0;
+    }
+
+    private TradePopulation runEoDProcess(ITradeStore tradeStore, TradePopulation tradePopulation, Date asOf) {
+        Map<String, Map<String,Double>> bookUnderlyingBalances = new HashMap<>();
+        List<Trade> tradesToDelete = new ArrayList<>();
+
+        for(Trade trade : tradePopulation.getAllTrades()) {
+            if (trade.hasExpired(asOf)) {
+                tradesToDelete.add(trade);
+                Map<String,Double> balances = bookUnderlyingBalances.get(trade.getBook());
+                if (balances == null) {
+                    balances = new HashMap<>();
+                    bookUnderlyingBalances.put(trade.getBook(), balances);
+                }
+                for(Map.Entry<String, Double> notional : trade.getNotionals().entrySet()) {
+                    if (balances.containsKey(notional.getKey())) {
+                        balances.put(notional.getKey(), balances.get(notional.getKey()) + notional.getValue());
+                    }
+                    else {
+                        balances.put(notional.getKey(), notional.getValue());
+                    }
+                }
+            }
+        }
+
+        for(String book : bookUnderlyingBalances.keySet()) {
+            Map<String, Double> bookBalanaces = bookUnderlyingBalances.get(book);
+            for(Map.Entry<String,Double> underlyingBalance : bookBalanaces.entrySet()) {
+                // String book, Double underlyingAmount1, Underlying underlying1, Date settlementDate
+                Balance balance = new Balance(book,
+                        underlyingBalance.getValue(),
+                        new Underlying(underlyingBalance.getKey()),
+                        new Date());
+                tradeStore.add(balance);
+            }
+        }
+
+        for(Trade trade : tradesToDelete) {
+            tradeStore.delete(trade.getTcn());
+        }
+
+        return this.tradeStore.create(DataMarkerType.EOD);
     }
 
     @Override
@@ -63,10 +107,12 @@ public class EndofDayRiskEventProducerThread implements Runnable {
         try {
             while(true) {
                 TradePopulationId tradePopId = this.tradePopulationIdQueue.take();
-                TradePopulation tradePopulation = this.tradeStore.getTradePopulation(tradePopId);
+                TradePopulation tradePopulation = this.tradeStore.create(DataMarkerType.EOD);
 
                 if (tradePopulation != null) {
-                    MarketEnv market = this.IMarketStore.create(tradePopulation.getType());
+                    MarketEnv market = this.IMarketStore.create(tradePopulation.getType(), this.eodCounts++);
+
+                    tradePopulation = runEoDProcess(tradeStore, tradePopulation, market.getAsOf());
 
                     this.currentCalculationContext = this.calculationContextStore.create();
                     for(RiskType riskType : this.config.getRisks()) {

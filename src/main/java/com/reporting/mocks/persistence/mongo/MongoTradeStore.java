@@ -64,7 +64,11 @@ public class MongoTradeStore implements ITradeStore {
 
     @Override
     public Trade oneAtRandom() {
-        return this.currentTradePopulation.oneAtRandom();
+        Trade trade = this.currentTradePopulation.oneAtRandom();
+        while (!trade.isModifiable()) {
+            trade = this.currentTradePopulation.oneAtRandom();
+        }
+        return trade;
     }
 
 
