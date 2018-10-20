@@ -87,6 +87,7 @@ public class ProcessSimulator {
 
                 this.riskRunGeneratorThread = new RiskRunGeneratorThread(
                         this.processEventQueues.getRiskRunRequestQueue(),
+                        config,
                         this.calculationContextStore,
                         this.tradeStore,
                         this.riskRunPublisher,

@@ -36,7 +36,7 @@ public class TradePopulationMutable extends TradePopulation {
     }
 
     public Trade add(Trade trade) {
-        ArrayList<Trade> trades;
+        List<Trade> trades;
         TradeType tradeType = trade.getTradeType();
         if (!tradeTypeTrades.containsKey(tradeType)) {
             trades = new ArrayList<>();

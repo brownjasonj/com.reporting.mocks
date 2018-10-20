@@ -14,6 +14,7 @@ public class PricingGroupConfig {
     protected EndofDayConfig endofdayConfig;
 
     protected int marketPeriodicity = 30 * 1000;   // milliseconds between change in market data.
+    protected int riskResultsPerFragment = 100;
 
     public PricingGroupConfig() {
     }
@@ -54,4 +55,6 @@ public class PricingGroupConfig {
     public int getMarketPeriodicity() {
         return marketPeriodicity;
     }
+
+    public int getRiskResultsPerFragment() { return riskResultsPerFragment; }
 }
