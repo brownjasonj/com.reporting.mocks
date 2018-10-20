@@ -81,7 +81,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
             Map<String, Double> bookBalanaces = bookUnderlyingBalances.get(book);
             for(Map.Entry<String,Double> underlyingBalance : bookBalanaces.entrySet()) {
                 // String book, Double underlyingAmount1, Underlying underlying1, Date settlementDate
-                Balance balance = new Balance(book,
+                Payment balance = new Payment(book,
                         underlyingBalance.getValue(),
                         new Underlying(underlyingBalance.getKey()),
                         new Date());

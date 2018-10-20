@@ -10,6 +10,7 @@ public class TradeGeneratorFactory {
     private static HashMap<TradeType, ITradeGenerator<? extends Trade>> generators = new HashMap<>();
 
     static {
+        TradeGeneratorFactory.register(new PaymentGenerator());
         TradeGeneratorFactory.register(new SpotGenerator());
         TradeGeneratorFactory.register(new SwapGenerator());
         TradeGeneratorFactory.register(new ForwardGenerator());

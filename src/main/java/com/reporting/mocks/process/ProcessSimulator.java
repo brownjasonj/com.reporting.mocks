@@ -3,7 +3,6 @@ package com.reporting.mocks.process;
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.JavaQueue.RiskRunConsumerThread;
-import com.reporting.mocks.endpoints.JavaQueue.RiskRunResultQueuePublisher;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.endpoints.kafka.RiskRunResultKafkaPublisher;
 import com.reporting.mocks.generators.RiskRunGeneratorThread;
@@ -79,7 +78,7 @@ public class ProcessSimulator {
                 CalculationContext cc = this.calculationContextStore.getCurrentContext();
                 if (cc == null) {
                     cc = this.calculationContextStore.create();
-                    cc.update(this.config.getAllRiskTypes(), marketStore.create(DataMarkerType.SOD));
+                    cc.update(this.config.findAllRiskTypes(), marketStore.create(DataMarkerType.SOD));
                     this.calculationContextStore.setCurrentContext(cc);
                 }
 

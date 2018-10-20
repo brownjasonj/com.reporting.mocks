@@ -1,9 +1,12 @@
 package com.reporting.mocks.configuration;
 
+import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.model.underlying.SecurityStatic;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TradeConfig {
     protected int startingTradeCount = 100;
@@ -18,15 +21,15 @@ public class TradeConfig {
 
     List<String> books;
     UnderlyingConfig underlyings;
-    List<TradeType> tradeTypes;
+    Map<TradeType, List<RiskType>> tradeTypesAndRisks;           // defines list of trade types and their risks
 
     public TradeConfig() {
     }
 
-    public TradeConfig(List<String> books, UnderlyingConfig underlyings, List<TradeType> otcTradeTypes) {
+    public TradeConfig(List<String> books, UnderlyingConfig underlyings, Map<TradeType,List<RiskType>> tradeTypesAndRisks) {
         this.books = books;
         this.underlyings = underlyings;
-        this.tradeTypes = otcTradeTypes;
+        this.tradeTypesAndRisks = tradeTypesAndRisks;
     }
 
     public int getStartingTradeCount() {
@@ -69,8 +72,8 @@ public class TradeConfig {
         return deleteTadeStart;
     }
 
-    public List<TradeType> getTradeTypes() {
-        return tradeTypes;
+    public List<TradeType> findAllTradeTypes() {
+        return this.tradeTypesAndRisks.keySet().stream().collect(Collectors.toList());
     }
 
     public void setNewTradeStart(int newTradeStart) {
@@ -95,5 +98,18 @@ public class TradeConfig {
 
     public void setDeleteTradePeriodicity(int deleteTradePeriodicity) {
         this.deleteTradePeriodicity = deleteTradePeriodicity;
+    }
+
+    public List<RiskType> findRiskByTradeType(TradeType tradeType) {
+        if (this.tradeTypesAndRisks.containsKey(tradeType)) {
+            return this.tradeTypesAndRisks.get(tradeType);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public Map<TradeType, List<RiskType>> getTradeTypesAndRisks() {
+        return tradeTypesAndRisks;
     }
 }

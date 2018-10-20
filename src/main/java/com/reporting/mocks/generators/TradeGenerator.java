@@ -4,6 +4,7 @@ import com.reporting.mocks.configuration.TradeConfig;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeType;
 
+import java.util.List;
 import java.util.Random;
 
 public class TradeGenerator {
@@ -19,7 +20,8 @@ public class TradeGenerator {
     }
 
     protected TradeType getOtcTradeType() {
-        return tradeConfig.getTradeTypes().get((new Random()).nextInt(tradeConfig.getTradeTypes().size()));
+        List<TradeType> tradeTypes = tradeConfig.findAllTradeTypes();
+        return tradeTypes.get((new Random()).nextInt(tradeTypes.size()));
     }
 
     public Trade generateOneOtc() {

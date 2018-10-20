@@ -7,9 +7,7 @@ import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.model.underlying.SecurityStatic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     protected final int startingTradeCount = 100;
@@ -25,7 +23,8 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     public FXSpotDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
         UnderlyingConfig underlyings = new UnderlyingConfig();
-        List<TradeType> otcTradeTypes = new ArrayList<>();
+        Map<TradeType, List<RiskType>> tradeTypeAndRisks = new HashMap<>();
+
 
         this.pricingGroupId = new PricingGroup("fxspotdesk");
         // - URN: book:<department pricingGroup>:<desk pricingGroup>:<book pricingGroup>
@@ -38,11 +37,13 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         underlyings.addSet("EUR", Arrays.asList("USD", "CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));
         underlyings.addSet("USD", Arrays.asList("CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));
 
-        otcTradeTypes.add(TradeType.Spot);
-        otcTradeTypes.add(TradeType.Forward);
-        otcTradeTypes.add(TradeType.Swap);
+        tradeTypeAndRisks.put(TradeType.Payment, Arrays.asList(RiskType.PV));
+        tradeTypeAndRisks.put(TradeType.Spot, Arrays.asList(RiskType.PV, RiskType.DELTA));
+        tradeTypeAndRisks.put(TradeType.Forward, Arrays.asList(RiskType.PV, RiskType.DELTA));
+        tradeTypeAndRisks.put(TradeType.Swap, Arrays.asList(RiskType.PV, RiskType.DELTA));
 
-        this.tradeConfig = new TradeConfig(books, underlyings, otcTradeTypes);
+
+        this.tradeConfig = new TradeConfig(books, underlyings, tradeTypeAndRisks);
         this.tradeConfig.setStartingTradeCount(startingTradeCount);
         this.tradeConfig.setNewTradeStart(newTradeStart);
         this.tradeConfig.setNewTradePeriodicity(newTradePeriodicity);

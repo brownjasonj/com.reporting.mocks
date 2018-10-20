@@ -6,9 +6,7 @@ import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.TradeType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     protected final int startingTradeCount = 100;
@@ -24,7 +22,7 @@ public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     public FXSwapsDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
         UnderlyingConfig underlyings = new UnderlyingConfig();
-        List<TradeType> otcTradeTypes = new ArrayList<>();
+        Map<TradeType, List<RiskType>> tradeTypeAndRisks = new HashMap<>();
 
         this.pricingGroupId = new PricingGroup("fxswapdesk");
         // - URN: book:<department pricingGroup>:<desk pricingGroup>:<book pricingGroup>
@@ -37,12 +35,13 @@ public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         underlyings.addSet("EUR", Arrays.asList("USD", "CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));
         underlyings.addSet("USD", Arrays.asList("CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));
 
-        otcTradeTypes.add(TradeType.Spot);
-        otcTradeTypes.add(TradeType.Forward);
-        otcTradeTypes.add(TradeType.Swap);
-        otcTradeTypes.add(TradeType.VanillaOption);
+        tradeTypeAndRisks.put(TradeType.Payment, Arrays.asList(RiskType.PV));
+        tradeTypeAndRisks.put(TradeType.Spot, Arrays.asList(RiskType.PV, RiskType.DELTA));
+        tradeTypeAndRisks.put(TradeType.Forward, Arrays.asList(RiskType.PV, RiskType.DELTA));
+        tradeTypeAndRisks.put(TradeType.Swap, Arrays.asList(RiskType.PV, RiskType.DELTA));
+        tradeTypeAndRisks.put(TradeType.VanillaOption, Arrays.asList(RiskType.PV, RiskType.DELTA, RiskType.GAMMA, RiskType.VEGA));
 
-        this.tradeConfig = new TradeConfig(books, underlyings, otcTradeTypes);
+        this.tradeConfig = new TradeConfig(books, underlyings, tradeTypeAndRisks);
         this.tradeConfig.setStartingTradeCount(startingTradeCount);
         this.tradeConfig.setNewTradeStart(newTradeStart);
         this.tradeConfig.setNewTradePeriodicity(newTradePeriodicity);
