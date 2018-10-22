@@ -29,7 +29,8 @@ public class Configurations {
     }
 
     public PricingGroupConfig addPricingGroup(PricingGroupConfig pricingGroup) {
-        return this.pricingGroups.put(pricingGroup.getPricingGroupId().getName(), pricingGroup);
+        this.pricingGroups.put(pricingGroup.getPricingGroupId().getName(), pricingGroup);
+        return this.getPricingGroup(pricingGroup.getPricingGroupId().getName());
     }
 
     public PricingGroupConfig getPricingGroup(String name) {
