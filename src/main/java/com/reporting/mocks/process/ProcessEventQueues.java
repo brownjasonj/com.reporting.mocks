@@ -1,5 +1,6 @@
 package com.reporting.mocks.process;
 
+import com.reporting.mocks.generators.process.streaming.RiskStreamMessage;
 import com.reporting.mocks.model.RiskResult;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.process.intraday.IntradayEvent;
@@ -12,5 +13,5 @@ public interface ProcessEventQueues {
     BlockingQueue<TradeLifecycle> getTradeLifecycleQueue();
     BlockingQueue<RiskResult> getRiskResultQueue();
     BlockingQueue<RiskRunRequest> getRiskRunRequestQueue();
-
+    BlockingQueue<RiskStreamMessage> getRiskStreamMessageQueue();
 }

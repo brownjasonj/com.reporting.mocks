@@ -5,15 +5,20 @@ import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.JavaQueue.RiskRunConsumerThread;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
 import com.reporting.mocks.endpoints.kafka.RiskRunResultKafkaPublisher;
-import com.reporting.mocks.generators.RiskRunGeneratorThread;
+import com.reporting.mocks.generators.process.minibatch.RiskRunGeneratorThread;
 import com.reporting.mocks.generators.TradeGenerator;
+import com.reporting.mocks.generators.process.streaming.RiskStreamMessage;
+import com.reporting.mocks.generators.process.streaming.StreamRiskResultPublisherThread;
+import com.reporting.mocks.generators.process.streaming.StreamRiskRunGeneratorThread;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.id.TradePopulationId;
+import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.*;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.markets.MarketEventProducerThread;
+import com.reporting.mocks.process.risks.RiskRunRequest;
 import com.reporting.mocks.process.trades.TradePopulationProducerThread;
 
 import java.util.Collection;
@@ -25,6 +30,9 @@ public class ProcessSimulator {
     protected MarketEventProducerThread marketEventProducerThread;
     protected IntradayRiskEventProducerThread intradayRiskEventProducerThread;
     protected RiskRunGeneratorThread riskRunGeneratorThread;
+    protected StreamRiskRunGeneratorThread streamRiskRunGeneratorThread;
+    protected StreamRiskResultPublisherThread streamRiskResultPublisherThread;
+
 
 
     protected ITradeStore tradeStore;
@@ -85,16 +93,33 @@ public class ProcessSimulator {
                 RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.processEventQueues.getRiskResultQueue());
                 new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
 
-                this.riskRunGeneratorThread = new RiskRunGeneratorThread(
-                        this.processEventQueues.getRiskRunRequestQueue(),
-                        config,
+//                this.riskRunGeneratorThread = new RiskRunGeneratorThread(
+//                        this.processEventQueues.getRiskRunRequestQueue(),
+//                        config,
+//                        this.calculationContextStore,
+//                        this.tradeStore,
+//                        this.riskRunPublisher,
+//                        this.riskResultStore
+//                );
+//            new Thread(threadGroup, this.riskRunGeneratorThread, "RiskRunGeneratorThread").start();
+
+                this.streamRiskRunGeneratorThread = new StreamRiskRunGeneratorThread(this.processEventQueues.getRiskRunRequestQueue(),
+                        this.processEventQueues.getRiskStreamMessageQueue(),
+                        this.config,
                         this.calculationContextStore,
                         this.tradeStore,
                         this.riskRunPublisher,
-                        this.riskResultStore
-                );
+                        this.riskResultStore);
 
-                new Thread(threadGroup, this.riskRunGeneratorThread, "RiskRunGeneratorThread").start();
+                this.streamRiskResultPublisherThread = new StreamRiskResultPublisherThread(this.processEventQueues.getRiskStreamMessageQueue(),
+                    this.config,
+                    this.riskRunPublisher,
+                    this.riskResultStore);
+
+                new Thread(threadGroup, this.streamRiskResultPublisherThread, "StreamRiskResultPublisherThread").start();
+                new Thread(threadGroup, this.streamRiskRunGeneratorThread, "StreamRiskRunGeneratorThread").start();
+
+
 
 
                 // kick-off end-of-day

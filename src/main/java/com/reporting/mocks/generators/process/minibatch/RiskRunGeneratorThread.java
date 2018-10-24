@@ -1,7 +1,9 @@
-package com.reporting.mocks.generators;
+package com.reporting.mocks.generators.process.minibatch;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.RiskRunPublisher;
+import com.reporting.mocks.generators.IRiskGenerator;
+import com.reporting.mocks.generators.RiskGeneratorFactory;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.RiskResult;
 import com.reporting.mocks.model.TradePopulation;
@@ -136,7 +138,7 @@ public class RiskRunGeneratorThread implements Runnable {
             RiskRequest riskRequest = new RiskRequest(calculationContext, tradePopulationId);
             List<Risk> risks = new ArrayList<>();
 
-            this.riskCount += this.appConfig.getTradeConfig().findRiskByTradeType(trade.getTradeType()).size();
+            this.riskCount = this.appConfig.getTradeConfig().findRiskByTradeType(trade.getTradeType()).size();
             int risksPerFragment = this.appConfig.getRiskResultsPerFragment();
             this.fragmentCount = (riskCount / risksPerFragment) + ((riskCount % risksPerFragment) > 0 ? 1 : 0);
             this.fragmentNo = fragmentCount;

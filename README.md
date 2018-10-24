@@ -25,7 +25,8 @@ This is a set of classes that model the set of business objects such as risks, t
 <h1>Using the simulator</h1>
 The simulator automatically publishes to Kafka, so you will need to install both Zookeeper and Kafka and have those
 running.  Take a look at the application.yml file to understand which ports and topics are defined, these can be
-changed to whatever you want.
+changed to whatever you want. Alternatively to stop the simulator publishing just comment out
+the topic line or set the value to null.
 
 <pre>
 spring:
@@ -80,83 +81,118 @@ This contains class models to hold the application configuration and is broken d
 three main parts
 <pre>
 {
-  "pricingGroups": [
-    {
-      "pricingGroupId": {
-        "pricingGroup": "fxoptiondesk"
-      },
-      "tradeConfig": {
-        "startingTradeCount": 100,
-        "newTradeStart": 0,
-        "newTradePeriodicity": 1000,
-        "modifiedTradeStart": 60000,
-        "modifiedTradePeriodicity": 60000,
-        "deleteTadeStart": 120000,
-        "deleteTradePeriodicity": 120000,
-        "books": [
-          "bank:fxdesk:fxoptions:LATAM",
-          "bank:fxdesk:fxoptions:EMEA",
-          "bank:fxdesk:fxotpions:APAC"
+  "pricingGroupId": {
+    "name": "fxoptiondesk"
+  },
+  "tradeConfig": {
+    "startingTradeCount": 500,
+    "newTradeStart": 0,
+    "newTradePeriodicity": 1000,
+    "modifiedTradeStart": 60000,
+    "modifiedTradePeriodicity": 60000,
+    "deleteTadeStart": 120000,
+    "deleteTradePeriodicity": 120000,
+    "books": [
+      "bank:fxdesk:fxoptions:LATAM",
+      "bank:fxdesk:fxoptions:EMEA",
+      "bank:fxdesk:fxotpions:APAC"
+    ],
+    "underlyings": {
+      "underlyingCrosses": {
+        "EUR": [
+          "USD",
+          "CHF",
+          "GBP",
+          "MXN",
+          "JPY",
+          "AUD",
+          "RBL"
         ],
-        "tradeTypes": [
-          "Spot",
-          "Forward",
-          "Swap",
-          "VanillaOption",
-          "BarrierOption"
-        ],
-        "securityStatic": [],
-        "otcUnderlying": {
-          "underlyingSets": {
-            "EUR": [
-              "USD",
-              "CHF",
-              "GBP",
-              "MXN",
-              "JPY",
-              "AUD",
-              "RBL"
-            ],
-            "USD": [
-              "CHF",
-              "GBP",
-              "MXN",
-              "JPY",
-              "AUD",
-              "RBL"
-            ]
-          }
-        }
-      },
-      "intradayConfig": {
-        "risks": [
-          {
-            "riskType": "PV",
-            "periodicity": 1
-          },
-          {
-            "riskType": "DELTA",
-            "periodicity": 3
-          },
-          {
-            "riskType": "VEGA",
-            "periodicity": 3
-          }
+        "USD": [
+          "CHF",
+          "GBP",
+          "MXN",
+          "JPY",
+          "AUD",
+          "RBL"
         ]
       },
-      "endofdayConfig": {
-        "risks": [
-          "PV",
-          "DELTA",
-          "VEGA"
+      "underlyingSets": {
+        "EUR": [
+          "USD",
+          "CHF",
+          "GBP",
+          "MXN",
+          "JPY",
+          "AUD",
+          "RBL"
         ],
-        "periodicity": 300000
-      },
-      "eod": true,
-      "sod": true,
-      "ind": true,
-      "marketPeriodicity": 30000
+        "USD": [
+          "CHF",
+          "GBP",
+          "MXN",
+          "JPY",
+          "AUD",
+          "RBL"
+        ]
+      }
     },
+    "tradeTypesAndRisks": {
+      "Forward": [
+        "PV",
+        "DELTA"
+      ],
+      "Payment": [
+        "PV"
+      ],
+      "VanillaOption": [
+        "PV",
+        "DELTA",
+        "GAMMA",
+        "VEGA"
+      ],
+      "Swap": [
+        "PV",
+        "DELTA"
+      ],
+      "Spot": [
+        "PV",
+        "DELTA"
+      ]
+    }
+  },
+  "intradayConfig": {
+    "risks": [
+      {
+        "riskType": "PV",
+        "periodicity": 1
+      },
+      {
+        "riskType": "DELTA",
+        "periodicity": 1
+      },
+      {
+        "riskType": "GAMMA",
+        "periodicity": 2
+      },
+      {
+        "riskType": "VEGA",
+        "periodicity": 3
+      }
+    ]
+  },
+  "endofdayConfig": {
+    "risks": [
+      "PV",
+      "DELTA",
+      "GAMMA",
+      "VEGA"
+    ],
+    "periodicity": 300000
+  },
+  "marketPeriodicity": 30000,
+  "riskResultsPerFragment": 100
+},
     ...
 }
 </pre>
