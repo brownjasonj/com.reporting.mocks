@@ -2,7 +2,7 @@ package com.reporting.mocks.endpoints.kafka;
 
 import com.google.gson.Gson;
 import com.reporting.mocks.configuration.ApplicationConfig;
-import com.reporting.mocks.model.RiskResult;
+import com.reporting.mocks.model.RiskResultSet;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -10,14 +10,14 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import java.util.Properties;
 import java.util.UUID;
 
-public class RiskResultKafkaProducer {
+public class RiskResultSetKafkaProducer {
     private String BOOTSTRAPSERVER = null;
     private String TOPIC = null;
     private Properties kafkaProperties = null;
     private Producer producer = null;
 
-    public RiskResultKafkaProducer(ApplicationConfig appConfig) {
-        this.TOPIC = appConfig.getIntradayRiskTickTopic();
+    public RiskResultSetKafkaProducer(ApplicationConfig appConfig) {
+        this.TOPIC = appConfig.getIntradayRiskSetTopic();
         this.BOOTSTRAPSERVER = appConfig.getKafkaServer();
 
         this.kafkaProperties = new Properties();
@@ -30,10 +30,10 @@ public class RiskResultKafkaProducer {
             this.producer = new KafkaProducer<UUID,String>(this.kafkaProperties);
     }
 
-    public void send(RiskResult riskResult) {
+    public void send(RiskResultSet riskResultSet) {
         if (this.producer != null) {
             Gson gson = new Gson();
-            ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, riskResult.getRiskRunId().getId(), gson.toJson(riskResult));
+            ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, riskResultSet.getRiskRunId().getId(), gson.toJson(riskResultSet));
             try {
                 this.producer.send(record).get();
             } catch (Exception e) {
@@ -41,4 +41,5 @@ public class RiskResultKafkaProducer {
             }
         }
     }
+
 }

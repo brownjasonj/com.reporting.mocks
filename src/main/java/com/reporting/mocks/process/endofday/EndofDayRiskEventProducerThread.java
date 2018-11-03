@@ -1,18 +1,16 @@
 package com.reporting.mocks.process.endofday;
 
 import com.reporting.mocks.configuration.EndofDayConfig;
-import com.reporting.mocks.endpoints.RiskRunPublisher;
+import com.reporting.mocks.endpoints.IResultPublisher;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
-import com.reporting.mocks.model.trade.TradeTypes.Balance;
 import com.reporting.mocks.model.trade.TradeTypes.Payment;
 import com.reporting.mocks.model.underlying.Underlying;
 import com.reporting.mocks.persistence.ICalculationContextStore;
 import com.reporting.mocks.persistence.IMarketStore;
 import com.reporting.mocks.persistence.ITradeStore;
-import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 import com.reporting.mocks.process.risks.RiskRunType;
 
@@ -26,7 +24,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
     private static final Logger LOGGER = Logger.getLogger( EndofDayRiskEventProducerThread.class.getName() );
     protected BlockingQueue<TradePopulationId> tradePopulationIdQueue;
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
-    protected RiskRunPublisher riskPublisher;
+    protected IResultPublisher riskPublisher;
     protected ITradeStore tradeStore;
     protected IMarketStore IMarketStore;
     protected EndofDayConfig config;
@@ -42,7 +40,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
             IMarketStore IMarketStore,
             ICalculationContextStore calculationContextStore,
             BlockingQueue<RiskRunRequest> riskRunRequestQueue,
-            RiskRunPublisher riskPublisher) {
+            IResultPublisher riskPublisher) {
         this.pricingGroup = pricingGroup;
         this.IMarketStore = IMarketStore;
         this.config = eodConfig;

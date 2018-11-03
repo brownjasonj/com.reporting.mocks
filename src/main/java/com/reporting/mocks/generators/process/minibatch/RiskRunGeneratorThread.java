@@ -1,11 +1,11 @@
 package com.reporting.mocks.generators.process.minibatch;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
-import com.reporting.mocks.endpoints.RiskRunPublisher;
+import com.reporting.mocks.endpoints.IResultPublisher;
 import com.reporting.mocks.generators.IRiskGenerator;
 import com.reporting.mocks.generators.RiskGeneratorFactory;
 import com.reporting.mocks.model.CalculationContext;
-import com.reporting.mocks.model.RiskResult;
+import com.reporting.mocks.model.RiskResultSet;
 import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.risks.Risk;
@@ -13,14 +13,13 @@ import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.persistence.ICalculationContextStore;
-import com.reporting.mocks.persistence.IRiskResultStore;
+import com.reporting.mocks.persistence.IRiskResultSetStore;
 import com.reporting.mocks.persistence.ITradeStore;
 import com.reporting.mocks.process.endofday.EndofDayEventTimerThread;
 import com.reporting.mocks.process.risks.RiskRequest;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -33,8 +32,8 @@ public class RiskRunGeneratorThread implements Runnable {
     protected BlockingQueue<Risk> riskQueue;
     protected ICalculationContextStore calculationContextStore;
     protected ITradeStore tradeStore;
-    protected RiskRunPublisher riskRunPublisher;
-    protected IRiskResultStore riskResultStore;
+    protected IResultPublisher resultPublisher;
+    protected IRiskResultSetStore riskResultStore;
     protected PricingGroupConfig appConfig;
 
     protected int fragmentCount;
@@ -46,14 +45,14 @@ public class RiskRunGeneratorThread implements Runnable {
                                   PricingGroupConfig appConfig,
                                   ICalculationContextStore ICalculationContextStore,
                                   ITradeStore tradeStore,
-                                  RiskRunPublisher riskRunPublisher,
-                                  IRiskResultStore riskResultStore
+                                  IResultPublisher resultPublisher,
+                                  IRiskResultSetStore riskResultStore
                                   ) {
         this.riskRunRequestQueue = riskRunRequestQueue;
         this.calculationContextStore = ICalculationContextStore;
         this.tradeStore = tradeStore;
         this.riskResultStore = riskResultStore;
-        this.riskRunPublisher = riskRunPublisher;
+        this.resultPublisher = resultPublisher;
         this.appConfig = appConfig;
     }
 
@@ -61,7 +60,7 @@ public class RiskRunGeneratorThread implements Runnable {
         risks.add(risk);
 
         if ((risks.size() == this.appConfig.getRiskResultsPerFragment()) || (this.fragmentCount == 1 && riskCount == 0)) {
-            RiskResult riskResult = new RiskResult(
+            RiskResultSet riskResultSet = new RiskResultSet(
                     riskRunRequest.getCalculationId(),
                     riskRunRequest.getTradePopulationId(),
                     riskRunRequest.getRiskRunId(),
@@ -72,19 +71,19 @@ public class RiskRunGeneratorThread implements Runnable {
 
             this.fragmentCount--;
 
-            // persist the riskResult for future use
-            this.riskResultStore.add(riskResult);
+            // persist the riskResultSet for future use
+            this.riskResultStore.add(riskResultSet);
 
             switch (riskRunRequest.getRiskRunType()) {
                 case EndOfDay:
-                    riskRunPublisher.publishEndofDayRiskRun(riskResult);
+                    resultPublisher.publishEndofDayRiskRun(riskResultSet);
                     break;
                 case OnDemand:
                 case Intraday:
-                    riskRunPublisher.publishIntradayRiskRun(riskResult);
+                    resultPublisher.publishIntradayRiskResultSet(riskResultSet);
                     break;
                 case IntradayTick:
-                    riskRunPublisher.publishIntradayTick(riskResult);
+                    resultPublisher.publishIntradayRiskResultSet(riskResultSet);
                     break;
                 default:
             }

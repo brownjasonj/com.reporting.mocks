@@ -2,35 +2,33 @@ package com.reporting.mocks.generators.process.streaming;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.IResultPublisher;
-import com.reporting.mocks.model.RiskResult;
+import com.reporting.mocks.model.RiskResultSet;
 import com.reporting.mocks.model.risks.Risk;
-import com.reporting.mocks.persistence.IRiskResultStore;
+import com.reporting.mocks.persistence.IRiskResultSetStore;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class StreamRiskResultPublisherThread implements Runnable {
+public class StreamRiskResultSetPublisherThread implements Runnable {
     private static final Logger LOGGER = Logger.getLogger( StreamRiskResultSetPublisherThread.class.getName() );
     protected BlockingQueue<RiskStreamMessage> riskQueue;
     protected PricingGroupConfig appConfig;
-    protected IResultPublisher riskRunPublisher;
-    protected IRiskResultStore riskResultStore;
-    protected Map<UUID, RiskStreamFragmentState> riskStreams;
+    protected IResultPublisher riskResultSetPublisher;
+    protected IRiskResultSetStore riskResultStore;
+    protected Map<UUID, RiskResultStreamFragmentState> riskStreams;
 
 
-    public StreamRiskResultPublisherThread(
+    public StreamRiskResultSetPublisherThread(
             BlockingQueue<RiskStreamMessage> riskQueue,
             PricingGroupConfig appConfig,
-            IResultPublisher riskRunPublisher,
-            IRiskResultStore riskResultStore
+            IResultPublisher riskResultSetPublisher,
+            IRiskResultSetStore riskResultStore
     ) {
         this.riskQueue = riskQueue;
         this.appConfig = appConfig;
-        this.riskRunPublisher = riskRunPublisher;
+        this.riskResultSetPublisher = riskResultSetPublisher;
         this.riskResultStore = riskResultStore;
         this.riskStreams = new HashMap<>();
     }
@@ -41,9 +39,9 @@ public class StreamRiskResultPublisherThread implements Runnable {
             while (true) {
                 RiskStreamMessage<? extends Risk> riskStreamMsg = this.riskQueue.take();
                 UUID riskRunId = riskStreamMsg.riskRunId.getId();
-                RiskStreamFragmentState riskStream = null;
+                RiskResultStreamFragmentState riskStream = null;
                 if (!this.riskStreams.containsKey(riskRunId)) {
-                    riskStream = new RiskStreamFragmentState(riskStreamMsg.riskRunId, riskStreamMsg.riskCount);
+                    riskStream = new RiskResultStreamFragmentState(riskStreamMsg.riskRunId, riskStreamMsg.riskCount, this.appConfig.getRiskResultsPerFragment());
                     this.riskStreams.put(riskRunId, riskStream);
                 }
                 else {
@@ -55,31 +53,32 @@ public class StreamRiskResultPublisherThread implements Runnable {
                 }
                 else {
                     if (riskStream.add(riskStreamMsg.getRisk())) {
-                        RiskResult riskResult = new RiskResult(
-                                riskStreamMsg.getRiskRunId(),
+                        RiskResultSet riskResultSet = new RiskResultSet(
+                                riskStreamMsg.getCalculationContextId(),
                                 riskStreamMsg.getTradePopulationId(),
+                                riskStreamMsg.getRiskRunId(),
                                 riskStream.getFragmentCount(),
                                 riskStream.getFragmentNo(),
-                                riskStreamMsg.getRisk(),
-                                riskStreamMsg.isDelete()
-                        );
+                                riskStream.getRisks(),
+                                riskStreamMsg.isDelete());
 
                         // persist the riskResultSet for future use
-                        this.riskResultStore.add(riskResult);
+                        this.riskResultStore.add(riskResultSet);
 
                         switch (riskStreamMsg.getRiskRunType()) {
                             case EndOfDay:
-                                riskRunPublisher.publishIntradayRiskResult(riskResult);
+                                riskResultSetPublisher.publishEndofDayRiskRun(riskResultSet);
                                 break;
                             case OnDemand:
                             case Intraday:
-                                riskRunPublisher.publishIntradayRiskResult(riskResult);
+                                riskResultSetPublisher.publishIntradayRiskResultSet(riskResultSet);
                                 break;
                             case IntradayTick:
-                                riskRunPublisher.publishIntradayRiskResult(riskResult);
+                                riskResultSetPublisher.publishIntradayRiskResultSet(riskResultSet);
                                 break;
                             default:
                         }
+                        riskStream.nextFragment();
                     }
                 }
             }

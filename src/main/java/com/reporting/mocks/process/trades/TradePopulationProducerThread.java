@@ -1,7 +1,7 @@
 package com.reporting.mocks.process.trades;
 
 import com.reporting.mocks.configuration.TradeConfig;
-import com.reporting.mocks.endpoints.RiskRunPublisher;
+import com.reporting.mocks.endpoints.IResultPublisher;
 import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.TradeLifecycle;
@@ -9,7 +9,6 @@ import com.reporting.mocks.model.TradeLifecycleType;
 import com.reporting.mocks.persistence.ITradeStore;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
-import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 
 import java.util.Random;
 import java.util.Timer;
@@ -26,19 +25,19 @@ public class TradePopulationProducerThread implements Runnable {
     protected BlockingQueue<TradeLifecycleType> tradeEventQueue;
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected TradeConfig tradeConfig;
-    protected RiskRunPublisher riskRunPublisher;
+    protected IResultPublisher IResultPublisher;
 
     public TradePopulationProducerThread(TradeConfig tradeConfig,
                                          ITradeStore tradeStore,
                                          TradeGenerator tradeGenerator,
                                          BlockingQueue<IntradayEvent<?>> intradayEventQueue,
-                                         RiskRunPublisher riskRunPublisher) {
+                                         IResultPublisher IResultPublisher) {
         this.tradeEventQueue = new ArrayBlockingQueue(1024);
         this.tradeStore = tradeStore;
         this.tradeGenerator = tradeGenerator;
         this.intradayEventQueue = intradayEventQueue;
         this.tradeConfig = tradeConfig;
-        this.riskRunPublisher = riskRunPublisher;
+        this.IResultPublisher = IResultPublisher;
     }
 
     @Override
@@ -65,7 +64,7 @@ public class TradePopulationProducerThread implements Runnable {
                         Trade newTrade = this.tradeGenerator.generateOneOtc();
                         TradeLifecycle newTradeLifecycle = new TradeLifecycle(tradeEvent, newTrade);
                         this.tradeStore.add(newTrade);
-                        this.riskRunPublisher.publishIntradayTrade(newTradeLifecycle);
+                        this.IResultPublisher.publishIntradayTrade(newTradeLifecycle);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, newTradeLifecycle));
                         tradeTimer.schedule(new TradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.New), nextNewTrade);
                         break;
@@ -75,7 +74,7 @@ public class TradePopulationProducerThread implements Runnable {
                         Trade modifiedTrade = tradeToModify.createNewVersion();
                         TradeLifecycle modifiedTradeLifecycle = new TradeLifecycle(tradeEvent, modifiedTrade);
                         this.tradeStore.modified(tradeToModify, modifiedTrade);
-                        this.riskRunPublisher.publishIntradayTrade(modifiedTradeLifecycle);
+                        this.IResultPublisher.publishIntradayTrade(modifiedTradeLifecycle);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, modifiedTradeLifecycle));
                         modifiedTradeTimer.schedule(new TradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.Modify), nextModifyTrade);
                         break;
@@ -84,7 +83,7 @@ public class TradePopulationProducerThread implements Runnable {
                         Trade tradeToDelete = this.tradeStore.oneAtRandom();
                         TradeLifecycle deleteTradeLifecycle = new TradeLifecycle(tradeEvent, tradeToDelete);
                         this.tradeStore.delete(tradeToDelete.getTcn());
-                        this.riskRunPublisher.publishIntradayTrade(deleteTradeLifecycle);
+                        this.IResultPublisher.publishIntradayTrade(deleteTradeLifecycle);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, deleteTradeLifecycle));
                         deleteTradeTimer.schedule(new TradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.Delete), newDeleteTrade);
                         break;

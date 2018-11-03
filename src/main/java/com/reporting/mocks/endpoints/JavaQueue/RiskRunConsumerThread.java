@@ -1,9 +1,7 @@
 package com.reporting.mocks.endpoints.JavaQueue;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
-import com.reporting.mocks.model.RiskResult;
-import com.reporting.mocks.process.trades.TradePopulationProducerThread;
+import com.reporting.mocks.model.RiskResultSet;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
@@ -11,10 +9,10 @@ import java.util.logging.Logger;
 
 public class RiskRunConsumerThread implements Runnable {
     private static final Logger LOGGER = Logger.getLogger( RiskRunConsumerThread.class.getName() );
-    protected BlockingQueue<RiskResult> riskResultQueue;
+    protected BlockingQueue<RiskResultSet> riskResultSetQueue;
 
-    public RiskRunConsumerThread(BlockingQueue<RiskResult> riskResultQueue) {
-        this.riskResultQueue = riskResultQueue;
+    public RiskRunConsumerThread(BlockingQueue<RiskResultSet> riskResultSetQueue) {
+        this.riskResultSetQueue = riskResultSetQueue;
     }
 
     @Override
@@ -22,7 +20,7 @@ public class RiskRunConsumerThread implements Runnable {
         Gson gson = new Gson();
         while(true) {
             try {
-                RiskResult result = this.riskResultQueue.take();
+                RiskResultSet result = this.riskResultSetQueue.take();
 
                 String resultString = gson.toJson(result);
 

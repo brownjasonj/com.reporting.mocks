@@ -2,23 +2,21 @@ package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.endpoints.IResultPublisher;
 import com.reporting.mocks.endpoints.JavaQueue.RiskRunConsumerThread;
-import com.reporting.mocks.endpoints.RiskRunPublisher;
-import com.reporting.mocks.endpoints.kafka.RiskRunResultKafkaPublisher;
+import com.reporting.mocks.endpoints.kafka.ResultKafkaPublisher;
 import com.reporting.mocks.generators.process.minibatch.RiskRunGeneratorThread;
 import com.reporting.mocks.generators.TradeGenerator;
-import com.reporting.mocks.generators.process.streaming.RiskStreamMessage;
 import com.reporting.mocks.generators.process.streaming.StreamRiskResultPublisherThread;
+import com.reporting.mocks.generators.process.streaming.StreamRiskResultSetPublisherThread;
 import com.reporting.mocks.generators.process.streaming.StreamRiskRunGeneratorThread;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.id.TradePopulationId;
-import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.persistence.*;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.markets.MarketEventProducerThread;
-import com.reporting.mocks.process.risks.RiskRunRequest;
 import com.reporting.mocks.process.trades.TradePopulationProducerThread;
 
 import java.util.Collection;
@@ -31,6 +29,7 @@ public class ProcessSimulator {
     protected IntradayRiskEventProducerThread intradayRiskEventProducerThread;
     protected RiskRunGeneratorThread riskRunGeneratorThread;
     protected StreamRiskRunGeneratorThread streamRiskRunGeneratorThread;
+    protected StreamRiskResultSetPublisherThread streamRiskResultSetPublisherThread;
     protected StreamRiskResultPublisherThread streamRiskResultPublisherThread;
 
 
@@ -42,7 +41,7 @@ public class ProcessSimulator {
     protected TradePopulationProducerThread tradePopulationProducerThread;
     protected IRiskResultStore riskResultStore;
 
-    protected RiskRunPublisher riskRunPublisher;
+    protected IResultPublisher resultPublisher;
 
     ProcessEventQueues processEventQueues;
 
@@ -62,8 +61,8 @@ public class ProcessSimulator {
         this.riskResultStore = riskResultStore;
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.processEventQueues = new JavaProcessEventQueues();
-        this.riskRunPublisher = new RiskRunResultKafkaPublisher(appConfig);
-        //this.riskRunPublisher = new RiskRunResultQueuePublisher(this.processEventQueues.getRiskResultQueue());
+        this.resultPublisher = new ResultKafkaPublisher(appConfig);
+        //this.riskRunPublisher = new IResultSetResultQueuePublisher(this.processEventQueues.getRiskResultSetQueue());
     }
 
     public Collection<TradePopulation> getTradePopulations() {
@@ -90,7 +89,7 @@ public class ProcessSimulator {
                     this.calculationContextStore.setCurrentContext(cc);
                 }
 
-                RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.processEventQueues.getRiskResultQueue());
+                RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.processEventQueues.getRiskResultSetQueue());
                 new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
 
 //                this.riskRunGeneratorThread = new RiskRunGeneratorThread(
@@ -108,14 +107,21 @@ public class ProcessSimulator {
                         this.config,
                         this.calculationContextStore,
                         this.tradeStore,
-                        this.riskRunPublisher,
-                        this.riskResultStore);
+                        this.resultPublisher);
 
-                this.streamRiskResultPublisherThread = new StreamRiskResultPublisherThread(this.processEventQueues.getRiskStreamMessageQueue(),
-                    this.config,
-                    this.riskRunPublisher,
-                    this.riskResultStore);
+//                this.streamRiskResultSetPublisherThread = new StreamRiskResultSetPublisherThread(this.processEventQueues.getRiskStreamMessageQueue(),
+//                    this.config,
+//                    this.resultPublisher,
+//                    this.riskResultStore);
 
+                this.streamRiskResultPublisherThread = new StreamRiskResultPublisherThread(
+                        this.processEventQueues.getRiskStreamMessageQueue(),
+                        this.config,
+                        this.resultPublisher,
+                        this.riskResultStore
+                );
+
+                //new Thread(threadGroup, this.streamRiskResultSetPublisherThread, "StreamRiskResultSetPublisherThread").start();
                 new Thread(threadGroup, this.streamRiskResultPublisherThread, "StreamRiskResultPublisherThread").start();
                 new Thread(threadGroup, this.streamRiskRunGeneratorThread, "StreamRiskRunGeneratorThread").start();
 
@@ -131,7 +137,7 @@ public class ProcessSimulator {
                         this.marketStore,
                         this.calculationContextStore,
                         this.processEventQueues.getRiskRunRequestQueue(),
-                        this.riskRunPublisher);
+                        this.resultPublisher);
                 new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
 
                 // kick-off start-of-day
@@ -141,7 +147,7 @@ public class ProcessSimulator {
                 this.marketEventProducerThread = new MarketEventProducerThread(
                         this.config.getPricingGroupId(),
                         this.marketStore,
-                        this.riskRunPublisher,
+                        this.resultPublisher,
                         this.config.getMarketPeriodicity(),
                         this.processEventQueues.getIntradayEventQueue());
                 // start the market event thread
@@ -157,7 +163,7 @@ public class ProcessSimulator {
                         this.calculationContextStore,
                         this.processEventQueues.getIntradayEventQueue(),
                         this.processEventQueues.getRiskRunRequestQueue(),
-                        this.riskRunPublisher,
+                        this.resultPublisher,
                         new MarketEnv(this.config.getPricingGroupId(), DataMarkerType.IND));
 
                 new Thread(threadGroup, this.intradayRiskEventProducerThread, "IntradayRiskEvent").start();
@@ -167,7 +173,7 @@ public class ProcessSimulator {
                         this.tradeStore,
                         this.tradeGenerator,
                         this.processEventQueues.getIntradayEventQueue(),
-                        this.riskRunPublisher);
+                        this.resultPublisher);
                 new Thread(threadGroup, this.tradePopulationProducerThread, "TradePopulationProducer").start();
 
         }

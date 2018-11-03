@@ -1,7 +1,7 @@
 package com.reporting.mocks.process.intraday;
 
 import com.reporting.mocks.configuration.IntradayConfig;
-import com.reporting.mocks.endpoints.RiskRunPublisher;
+import com.reporting.mocks.endpoints.IResultPublisher;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
@@ -20,7 +20,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
     private static final Logger LOGGER = Logger.getLogger( IntradayRiskEventProducerThread.class.getName() );
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
-    protected RiskRunPublisher riskPublisher;
+    protected IResultPublisher riskPublisher;
     protected ITradeStore tradeStore;
     protected IMarketStore marketStore;
     protected IntradayConfig config;
@@ -37,7 +37,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                            ICalculationContextStore ICalculationContextStore,
                                            BlockingQueue<IntradayEvent<?>> intradayEventQueue,
                                            BlockingQueue<RiskRunRequest> riskRunRequestQueue,
-                                           RiskRunPublisher riskPublisher,
+                                           IResultPublisher riskPublisher,
                                            MarketEnv market) {
         this.config = config;
         this.tradeStore = tradeStore;

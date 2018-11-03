@@ -1,22 +1,18 @@
 package com.reporting.mocks.endpoints.kafka;
 
 import com.reporting.mocks.configuration.ApplicationConfig;
-import com.reporting.mocks.endpoints.RiskRunPublisher;
-import com.reporting.mocks.model.CalculationContext;
-import com.reporting.mocks.model.MarketEnv;
-import com.reporting.mocks.model.RiskResult;
-import com.reporting.mocks.model.TradeLifecycle;
-import com.reporting.mocks.model.trade.Trade;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import com.reporting.mocks.endpoints.IResultPublisher;
+import com.reporting.mocks.model.*;
 
-public class RiskRunResultKafkaPublisher implements RiskRunPublisher {
+public class ResultKafkaPublisher implements IResultPublisher {
+    protected RiskResultSetKafkaProducer riskResultSetProducer;
     protected RiskResultKafkaProducer riskResultProducer;
     protected CalculationContextKafkaProducer calculationContextProducer;
     protected TradeKafkaPublisher tradeKafkaPublisher;
     protected MarketEnvKafkaPublisher marketEnvKafkaPublisher;
 
-    public RiskRunResultKafkaPublisher(ApplicationConfig appConfig) {
+    public ResultKafkaPublisher(ApplicationConfig appConfig) {
+        this.riskResultSetProducer = new RiskResultSetKafkaProducer(appConfig);
         this.riskResultProducer = new RiskResultKafkaProducer(appConfig);
         this.calculationContextProducer = new CalculationContextKafkaProducer(appConfig);
         this.tradeKafkaPublisher = new TradeKafkaPublisher(appConfig);
@@ -34,14 +30,13 @@ public class RiskRunResultKafkaPublisher implements RiskRunPublisher {
     }
 
     @Override
-    public void publishIntradayRiskRun(RiskResult riskResult) {
-        this.riskResultProducer.send(riskResult);
+    public void publishIntradayRiskResultSet(RiskResultSet riskResultSet) {
+        this.riskResultSetProducer.send(riskResultSet);
     }
 
+
     @Override
-    public void publishIntradayTick(RiskResult riskResult) {
-        this.riskResultProducer.send(riskResult);
-    }
+    public void publishIntradayRiskResult(RiskResult riskResult) { this.riskResultProducer.send(riskResult); }
 
     @Override
     public void publishIntradayTrade(TradeLifecycle tradeLifecycle) {
@@ -49,7 +44,7 @@ public class RiskRunResultKafkaPublisher implements RiskRunPublisher {
     }
 
     @Override
-    public void publishEndofDayRiskRun(RiskResult riskResult) {
+    public void publishEndofDayRiskRun(RiskResultSet riskResultSet) {
 
     }
 }

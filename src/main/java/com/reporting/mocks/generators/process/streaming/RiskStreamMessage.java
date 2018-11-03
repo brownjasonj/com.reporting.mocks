@@ -24,7 +24,7 @@ public class RiskStreamMessage<T extends Risk> {
         RiskRunType riskRunType,
         int riskCount,
         int riskNo,
-        T Risk,
+        T risk,
         boolean isDelete)
     {
         this.calculationContextId = calculationContextId;

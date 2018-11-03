@@ -1,7 +1,7 @@
 package com.reporting.mocks.process;
 
 import com.reporting.mocks.generators.process.streaming.RiskStreamMessage;
-import com.reporting.mocks.model.RiskResult;
+import com.reporting.mocks.model.RiskResultSet;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.risks.RiskRunRequest;
@@ -12,15 +12,15 @@ import java.util.concurrent.BlockingQueue;
 public class JavaProcessEventQueues implements ProcessEventQueues {
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected BlockingQueue<TradeLifecycle> tradeLifecycleQueue;
-    protected BlockingQueue<RiskResult> riskResultQueue;
+    protected BlockingQueue<RiskResultSet> riskResultSetQueue;
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
     protected BlockingQueue<RiskStreamMessage> riskStreamMessageQueue;
 
     public JavaProcessEventQueues() {
         this.intradayEventQueue = new ArrayBlockingQueue<>(4096);
         this.tradeLifecycleQueue = new ArrayBlockingQueue<>(4096);;
-        this.riskResultQueue = new ArrayBlockingQueue<>(4096);
-        this.riskResultQueue = new ArrayBlockingQueue<>(4096);
+        this.riskResultSetQueue = new ArrayBlockingQueue<>(4096);
+        this.riskResultSetQueue = new ArrayBlockingQueue<>(4096);
         this.riskRunRequestQueue = new ArrayBlockingQueue<>(4096);
         this.riskStreamMessageQueue = new ArrayBlockingQueue<>(4096);
     }
@@ -36,8 +36,8 @@ public class JavaProcessEventQueues implements ProcessEventQueues {
     }
 
     @Override
-    public BlockingQueue<RiskResult> getRiskResultQueue() {
-        return this.riskResultQueue;
+    public BlockingQueue<RiskResultSet> getRiskResultSetQueue() {
+        return this.riskResultSetQueue;
     }
 
     @Override
