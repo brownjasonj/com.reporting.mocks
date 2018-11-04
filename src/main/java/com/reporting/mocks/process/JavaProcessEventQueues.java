@@ -22,7 +22,7 @@ public class JavaProcessEventQueues implements ProcessEventQueues {
         this.riskResultSetQueue = new ArrayBlockingQueue<>(4096);
         this.riskResultSetQueue = new ArrayBlockingQueue<>(4096);
         this.riskRunRequestQueue = new ArrayBlockingQueue<>(4096);
-        this.riskStreamMessageQueue = new ArrayBlockingQueue<>(4096);
+        this.riskStreamMessageQueue = new ArrayBlockingQueue<>(4096 * 10);
     }
 
     @Override
