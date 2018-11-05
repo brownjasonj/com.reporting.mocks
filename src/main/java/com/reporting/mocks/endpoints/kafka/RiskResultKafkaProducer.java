@@ -33,7 +33,9 @@ public class RiskResultKafkaProducer {
     public void send(RiskResult riskResult) {
         if (this.producer != null) {
             Gson gson = new Gson();
-            ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, riskResult.getRiskRunId().getId(), gson.toJson(riskResult));
+            String riskResultJson = gson.toJson(riskResult);
+            // System.out.println("RiskResult: " + riskResultJson);
+            ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, riskResult.getRiskRunId().getId(), riskResultJson);
             try {
                 this.producer.send(record).get();
             } catch (Exception e) {

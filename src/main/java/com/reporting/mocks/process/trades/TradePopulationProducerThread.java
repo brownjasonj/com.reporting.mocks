@@ -90,7 +90,7 @@ public class TradePopulationProducerThread implements Runnable {
                     default:
                         break;
                 }
-                System.out.println("TradeEvent " + tradeEvent.toString());
+                // System.out.println("TradeEvent " + tradeEvent.toString());
             }
         } catch (InterruptedException e) {
             LOGGER.log( Level.FINE, "thread interrupted");

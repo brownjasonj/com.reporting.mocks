@@ -36,7 +36,9 @@ public class TradeKafkaPublisher {
     public void send(TradeLifecycle tradeLifecycle) {
         if (producer != null) {
             Gson gson = new Gson();
-            ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, tradeLifecycle.getTrade().getTcn().getId(), gson.toJson(tradeLifecycle));
+            String tradeLifeCycleJson = gson.toJson(tradeLifecycle);
+            System.out.println("TradeLifecycle: " + tradeLifeCycleJson);
+            ProducerRecord<UUID, String> record = new ProducerRecord<>(this.TOPIC, tradeLifecycle.getTrade().getTcn().getId(), tradeLifeCycleJson);
             try {
                 this.producer.send(record).get();
             } catch (Exception e) {

@@ -10,9 +10,9 @@ import com.reporting.mocks.model.underlying.SecurityStatic;
 import java.util.*;
 
 public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
-    protected final int startingTradeCount = 500;
+    protected final int startingTradeCount = 0;
     protected final int newTradeStart = 0;
-    protected final int newTradePeriodicity = 1000;        // number of milliseconds between new tcnTrades (default: 10s)
+    protected final int newTradePeriodicity = 5 * 1000;        // number of milliseconds between new tcnTrades (default: 10s)
 
     protected final int modifiedTradeStart = 60 * 1000;
     protected final int modifiedTradePeriodicity = 60 * 1000;    // number of milliseconds between trade modifications (default: 30s)
