@@ -5,42 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MocksApplication implements CommandLineRunner {
-//	@Autowired
-//	ApplicationConfig applicationConfig;
-//
-//	@Autowired
-//    ProcessFactory processFactory;
-//
-//	@Autowired
-//    Configurations configurations;
-//
-//	@Autowired
-//    IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory;
-//
-//	@Autowired
-//    IPersistenceStoreFactory<IMarketStore> marketStoreFactory;
-//
-//	@Autowired
-//    IPersistenceStoreFactory<ITradeStore> mongoTradeStoreFactory;
-//
-//	@Autowired
-//    IRiskResultSetStore riskResultStore;
-
+public class MocksApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MocksApplication.class, args);
 	}
-
-    @Override
-    public void run(String... args) throws Exception {
-//        for (PricingGroupConfig config : this.configurations.getPricingGroups()) {
-//            String pricingGroupName = config.getPricingGroupId().getName();
-//            ITradeStore tradeStore = this.mongoTradeStoreFactory.create(config.getPricingGroupId());
-//            IMarketStore marketStore = this.marketStoreFactory.create(config.getPricingGroupId());
-//            ICalculationContextStore calculationContextStore = this.calculationContextStoreFactory.create(config.getPricingGroupId());
-//
-//            ProcessSimulator processSimulator = new ProcessSimulator(config, this.applicationConfig, calculationContextStore, marketStore, tradeStore, riskResultStore);
-//            this.processFactory.addProcess(processSimulator);
-//        }
-    }
 }

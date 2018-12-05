@@ -6,6 +6,7 @@ import com.reporting.mocks.model.RiskResult;
 import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.persistence.IRiskResultStore;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
