@@ -2,8 +2,11 @@ package com.reporting.mocks.generators.process.streaming;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.IResultPublisher;
+import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.RiskResult;
+import com.reporting.mocks.model.id.MarketEnvId;
 import com.reporting.mocks.model.risks.Risk;
+import com.reporting.mocks.persistence.ICalculationContextStore;
 import com.reporting.mocks.persistence.IRiskResultStore;
 
 import java.lang.reflect.Type;
@@ -18,6 +21,7 @@ public class StreamRiskResultPublisherThread implements Runnable {
     private static final Logger LOGGER = Logger.getLogger( StreamRiskResultSetPublisherThread.class.getName() );
     protected BlockingQueue<RiskStreamMessage> riskQueue;
     protected PricingGroupConfig appConfig;
+    protected ICalculationContextStore calculationContextStore;
     protected IResultPublisher riskRunPublisher;
     protected IRiskResultStore riskResultStore;
     protected Map<UUID, RiskStreamFragmentState> riskStreams;
@@ -26,11 +30,13 @@ public class StreamRiskResultPublisherThread implements Runnable {
     public StreamRiskResultPublisherThread(
             BlockingQueue<RiskStreamMessage> riskQueue,
             PricingGroupConfig appConfig,
+            ICalculationContextStore calculationContextStore,
             IResultPublisher riskRunPublisher,
             IRiskResultStore riskResultStore
     ) {
         this.riskQueue = riskQueue;
         this.appConfig = appConfig;
+        this.calculationContextStore = calculationContextStore;
         this.riskRunPublisher = riskRunPublisher;
         this.riskResultStore = riskResultStore;
         this.riskStreams = new HashMap<>();
@@ -56,8 +62,13 @@ public class StreamRiskResultPublisherThread implements Runnable {
                 }
                 else {
                     if (riskStream.add(riskStreamMsg.getRisk())) {
+                        // get the market that risk was calculated againsts
+                        CalculationContext calculationContext = this.calculationContextStore.get(riskStreamMsg.calculationContextId.getId());
+                        MarketEnvId marketEnvId = calculationContext.get(riskStreamMsg.getRisk().getRiskType());
+
                         RiskResult riskResult = new RiskResult(
                                 riskStreamMsg.getRiskRunId(),
+                                marketEnvId,
                                 riskStreamMsg.getTradePopulationId(),
                                 riskStream.getFragmentCount(),
                                 riskStream.getFragmentNo(),

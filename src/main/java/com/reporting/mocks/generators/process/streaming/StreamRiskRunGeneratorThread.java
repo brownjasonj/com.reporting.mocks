@@ -36,12 +36,12 @@ public class StreamRiskRunGeneratorThread implements Runnable  {
     public StreamRiskRunGeneratorThread(BlockingQueue<RiskRunRequest> riskRunRequestQueue,
                                         BlockingQueue<RiskStreamMessage> riskStreamQueue,
                                         PricingGroupConfig appConfig,
-                                        ICalculationContextStore ICalculationContextStore,
+                                        ICalculationContextStore calculationContextStore,
                                         ITradeStore tradeStore,
                                         IResultPublisher resultPublisher) {
         this.riskRunRequestQueue = riskRunRequestQueue;
         this.riskQueue = riskStreamQueue;
-        this.calculationContextStore = ICalculationContextStore;
+        this.calculationContextStore = calculationContextStore;
         this.tradeStore = tradeStore;
         this.resultPublisher = resultPublisher;
         this.appConfig = appConfig;

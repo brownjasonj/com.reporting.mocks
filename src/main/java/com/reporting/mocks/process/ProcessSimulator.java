@@ -117,6 +117,7 @@ public class ProcessSimulator {
                 this.streamRiskResultPublisherThread = new StreamRiskResultPublisherThread(
                         this.processEventQueues.getRiskStreamMessageQueue(),
                         this.config,
+                        this.calculationContextStore,
                         this.resultPublisher,
                         this.riskResultStore
                 );
