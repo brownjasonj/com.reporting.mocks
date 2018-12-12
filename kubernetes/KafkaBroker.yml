@@ -19,7 +19,7 @@ spec:
             - name: KAFKA_ADVERTISED_PORT
               value: "30718"
             - name: KAFKA_ADVERTISED_HOST_NAME
-              value: locahost
+              value: kafka-service
             - name: KAFKA_ZOOKEEPER_CONNECT
               value: zookeeper-svc1:2181
             - name: KAFKA_BROKER_ID

@@ -483,4 +483,16 @@ The simulator simulates the following set of events
 <li><b>Trade Event</b> - at random intervals the simulator will create a <b>New</b> trade , <b>Modify</b> a trade in the <b>TradePopulation</b> or <b>Delete</b> a trade from the </b>TradePopulation</b>.  This trade event will trigger one or more <b>Risk</b> values to be generated and thus one or more <b>RiskResult</b> objects to be generated.</li>
 <li><b>Market Event</b> - a market event is a configurably timed trigger that generates a new <b>Market</b> object.</li>
 <li><b>End-of-Day Event</b></li>
+</ul>
+
+<h1>Docker & Kubernetes</h1>
+To create a docker image for the application use the maven <tt>dockerfile:build</tt> and <tt>dockerfile:push</tt> tasks.  Ensure that you change the <tt>docker.image.prefix</tt> value to point to your dockerhub login name.
+
+There are several kubernetes deploy scripts to help deploy MongoDB, ZooKeeper and Kafka.  These can be found in the kubernetes directory.  The order of setup is fairly straight forward
 <ul>
+<li>MongoDB</li>
+<li>ZooKeeper</li>
+<li>KafkaService</li>
+<li>KafkaBroker</li>
+<li>MockSimulator</li>
+</ul>
