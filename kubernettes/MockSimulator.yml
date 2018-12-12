@@ -1,0 +1,17 @@
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: mocks-simulator
+spec:
+  template:
+    metadata:
+      labels:
+        app: mocks
+        id: "0"
+    spec:
+      containers:
+        - name: mocks
+          image: jajabro/com.reporting.mocks:0.3.3-SNAPSHOT
+          ports:
+            - containerPort: 30001
