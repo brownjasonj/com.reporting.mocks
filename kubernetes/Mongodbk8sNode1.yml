@@ -22,7 +22,7 @@ kind: ReplicationController
 metadata:
   name: mongo-rc1
   labels:
-  name: mongo-rc
+    name: mongo-rc
 spec:
   replicas: 1
   selector:

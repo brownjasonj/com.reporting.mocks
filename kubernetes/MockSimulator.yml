@@ -1,14 +1,36 @@
----
-kind: Deployment
-apiVersion: extensions/v1beta1
+apiVersion: v1
+kind: Service
+
 metadata:
-  name: mocks-simulator
+  name: mocks-svc
+  labels:
+    name: mocks-svc
 spec:
+  type: LoadBalancer
+  ports:
+    - port: 30001
+      targetPort: 30001
+      protocol: TCP
+      name: mocks-svc
+  selector:
+    name:  mocks-sumulator-node1
+    instance: rod
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mocks-simulator1
+  labels:
+    name: mocks-simulator
+spec:
+  replicas: 1
+  selector:
+    name: mocks-sumulator-node1
   template:
     metadata:
       labels:
-        app: mocks
-        id: "0"
+        name: mocks-sumulator-node1
+        instance: rod
     spec:
       containers:
         - name: mocks
