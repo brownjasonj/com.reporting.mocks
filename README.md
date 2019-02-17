@@ -488,11 +488,15 @@ The simulator simulates the following set of events
 <h1>Docker & Kubernetes</h1>
 To create a docker image for the application use the maven <tt>dockerfile:build</tt> and <tt>dockerfile:push</tt> tasks.  Ensure that you change the <tt>docker.image.prefix</tt> value to point to your dockerhub login name.
 
-There are several kubernetes deploy scripts to help deploy MongoDB, ZooKeeper and Kafka.  These can be found in the kubernetes directory.  The order of setup is fairly straight forward
-<ul>
-<li>MongoDB</li>
-<li>ZooKeeper</li>
-<li>KafkaService</li>
-<li>KafkaBroker</li>
-<li>MockSimulator</li>
-</ul>
+<h3>Kafka and ZooKeeper</h3>
+To deploy ZooKeeper and Kafka with persistence storage we use the deploy scripts from Yolean. Clone following git repo.
+<p>
+<a href="https://github.com/Yolean/kubernetes-kafka">https://github.com/Yolean/kubernetes-kafka</a>
+</p>
+Follow the instructions there and this should give a fully functioning Kafka cluster.
+
+Next you will need to deploy MongoDB (with persistence). Use the supplied deploy script <tt>Mongodbk8sNdode1.yml</tt>.
+
+Finally deploy the application using <tt>MockSimulator.yml</tt>
+
+

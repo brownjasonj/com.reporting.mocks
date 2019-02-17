@@ -15,4 +15,5 @@ kafka:
     intradaytrade: IntraDayTrade
     calccontext: CalculationContext
     market: MarketEnv
-
+zookeeper:
+    server: zookeepr.kafka.svc.cluster.local:2181
