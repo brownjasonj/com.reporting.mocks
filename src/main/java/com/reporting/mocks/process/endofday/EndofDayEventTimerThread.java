@@ -1,9 +1,9 @@
 package com.reporting.mocks.process.endofday;
 
+import com.reporting.mocks.interfaces.persistence.ITradeStore;
 import com.reporting.mocks.model.DataMarkerType;
 import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
-import com.reporting.mocks.persistence.ITradeStore;
 
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;

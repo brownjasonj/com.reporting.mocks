@@ -1,8 +1,8 @@
 package com.reporting.mocks.controllers;
 
+import com.reporting.mocks.interfaces.persistence.IRiskResultSetStore;
 import com.reporting.mocks.model.RiskResultSet;
 import com.reporting.mocks.model.id.RiskRunId;
-import com.reporting.mocks.persistence.IRiskResultSetStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

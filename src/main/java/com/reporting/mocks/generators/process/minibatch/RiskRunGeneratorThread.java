@@ -1,9 +1,12 @@
 package com.reporting.mocks.generators.process.minibatch;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
-import com.reporting.mocks.endpoints.IResultPublisher;
 import com.reporting.mocks.generators.IRiskGenerator;
 import com.reporting.mocks.generators.RiskGeneratorFactory;
+import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
+import com.reporting.mocks.interfaces.persistence.IRiskResultSetStore;
+import com.reporting.mocks.interfaces.persistence.ITradeStore;
+import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.RiskResultSet;
 import com.reporting.mocks.model.TradePopulation;
@@ -12,9 +15,6 @@ import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.persistence.ICalculationContextStore;
-import com.reporting.mocks.persistence.IRiskResultSetStore;
-import com.reporting.mocks.persistence.ITradeStore;
 import com.reporting.mocks.process.endofday.EndofDayEventTimerThread;
 import com.reporting.mocks.process.risks.RiskRequest;
 import com.reporting.mocks.process.risks.RiskRunRequest;

@@ -1,11 +1,11 @@
 package com.reporting.mocks.controllers;
 
+import com.reporting.mocks.interfaces.persistence.IPersistenceStoreFactory;
+import com.reporting.mocks.interfaces.persistence.ITradeStore;
 import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
-import com.reporting.mocks.persistence.IPersistenceStoreFactory;
-import com.reporting.mocks.persistence.ITradeStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

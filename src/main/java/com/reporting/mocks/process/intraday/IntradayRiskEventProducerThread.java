@@ -1,12 +1,14 @@
 package com.reporting.mocks.process.intraday;
 
 import com.reporting.mocks.configuration.IntradayConfig;
-import com.reporting.mocks.endpoints.IResultPublisher;
+import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
+import com.reporting.mocks.interfaces.persistence.IMarketStore;
+import com.reporting.mocks.interfaces.persistence.ITradeStore;
+import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
-import com.reporting.mocks.persistence.*;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 import com.reporting.mocks.process.risks.RiskRunType;
 

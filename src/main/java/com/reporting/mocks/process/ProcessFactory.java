@@ -2,8 +2,9 @@ package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.interfaces.persistence.*;
+import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.PricingGroup;
-import com.reporting.mocks.persistence.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -41,14 +42,21 @@ public class ProcessFactory {
                                           IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory,
                                           IPersistenceStoreFactory<IMarketStore> marketStoreFactory,
                                           IPersistenceStoreFactory<ITradeStore> tradeStoreFactory,
-                                          IRiskResultStore riskResultStore
+                                          IRiskResultStore riskResultStore,
+                                          IResultPublisher resultPublisher
                                           ) {
         String pricingGroupName = config.getPricingGroupId().getName();
         ITradeStore tradeStore = tradeStoreFactory.create(config.getPricingGroupId());
         IMarketStore marketStore = marketStoreFactory.create(config.getPricingGroupId());
         ICalculationContextStore calculationContextStore = calculationContextStoreFactory.create(config.getPricingGroupId());
 
-        ProcessSimulator processSimulator = new ProcessSimulator(config, applicationConfig, calculationContextStore, marketStore, tradeStore, riskResultStore);
+        ProcessSimulator processSimulator = new ProcessSimulator(config,
+                applicationConfig,
+                calculationContextStore,
+                marketStore,
+                tradeStore,
+                riskResultStore,
+                resultPublisher);
         this.addProcess(processSimulator);
         return processSimulator;
     }

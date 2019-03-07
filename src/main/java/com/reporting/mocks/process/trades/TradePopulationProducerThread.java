@@ -1,12 +1,12 @@
 package com.reporting.mocks.process.trades;
 
 import com.reporting.mocks.configuration.TradeConfig;
-import com.reporting.mocks.endpoints.IResultPublisher;
 import com.reporting.mocks.generators.TradeGenerator;
+import com.reporting.mocks.interfaces.persistence.ITradeStore;
+import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.model.TradeLifecycleType;
-import com.reporting.mocks.persistence.ITradeStore;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
 
@@ -25,7 +25,7 @@ public class TradePopulationProducerThread implements Runnable {
     protected BlockingQueue<TradeLifecycleType> tradeEventQueue;
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected TradeConfig tradeConfig;
-    protected IResultPublisher IResultPublisher;
+    protected com.reporting.mocks.interfaces.publishing.IResultPublisher IResultPublisher;
 
     public TradePopulationProducerThread(TradeConfig tradeConfig,
                                          ITradeStore tradeStore,

@@ -3,8 +3,9 @@ package com.reporting.mocks.controllers;
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.Configurations;
 import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.interfaces.persistence.*;
+import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.PricingGroup;
-import com.reporting.mocks.persistence.*;
 import com.reporting.mocks.process.ProcessFactory;
 import com.reporting.mocks.process.ProcessSimulator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,8 @@ public class ControlProcess {
     @Autowired
     IPersistenceStoreFactory<ITradeStore> mongoTradeStoreFactory;
 
-//    @Autowired
-//    IRiskResultSetStore riskResultStore;
+    @Autowired
+    IResultPublisher resultPublisher;
 
     @Autowired
     IRiskResultStore riskResultStore;
@@ -55,7 +56,8 @@ public class ControlProcess {
                         calculationContextStoreFactory,
                         marketStoreFactory,
                         mongoTradeStoreFactory,
-                        riskResultStore);
+                        riskResultStore,
+                        resultPublisher);
                 return processSimulator.start();
             }
             else

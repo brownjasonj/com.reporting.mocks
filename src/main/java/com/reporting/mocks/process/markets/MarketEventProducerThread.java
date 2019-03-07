@@ -1,10 +1,10 @@
 package com.reporting.mocks.process.markets;
 
-import com.reporting.mocks.endpoints.IResultPublisher;
+import com.reporting.mocks.interfaces.persistence.IMarketStore;
+import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.DataMarkerType;
 import com.reporting.mocks.model.PricingGroup;
-import com.reporting.mocks.persistence.IMarketStore;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
 

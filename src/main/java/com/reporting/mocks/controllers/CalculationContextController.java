@@ -1,9 +1,11 @@
 package com.reporting.mocks.controllers;
 
+import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
+import com.reporting.mocks.interfaces.persistence.IMarketStore;
+import com.reporting.mocks.interfaces.persistence.IPersistenceStoreFactory;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.PricingGroup;
-import com.reporting.mocks.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

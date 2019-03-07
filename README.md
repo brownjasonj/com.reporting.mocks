@@ -12,10 +12,13 @@ above activities.  This includes calculating the valuations and risks for tradin
 consequences of the activity and business processes.
 
 <h1>Additional Packages</h1>
-Before you can build the project you need to fork the additional github projects:
+Before you can build the project you need to clone the additional github projects:
 <p> 
     <ul>
     <li>https://github.com/brownjasonj/com.reporting.mocks.model</li>
+    <li>https://github.com/brownjasonj/com.reporting.mocks.interfaces</li>
+    <li>https://github.com/brownjasonj/com.reporting.mocks.persistence.mongodb</li>
+    <li>https://github.com/brownjasonj/com.reporting.mocks.publishing.kafka</li>        
     <li>https://github.com/brownjasonj/com.reporting.kafka.serialization</li>
     </ul>
 </p>

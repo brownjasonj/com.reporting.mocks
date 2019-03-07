@@ -2,22 +2,25 @@ package com.reporting.mocks.process;
 
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
-import com.reporting.mocks.endpoints.IResultPublisher;
 import com.reporting.mocks.endpoints.JavaQueue.RiskRunConsumerThread;
-import com.reporting.mocks.endpoints.kafka.ResultKafkaPublisher;
 import com.reporting.mocks.generators.process.minibatch.RiskRunGeneratorThread;
 import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.generators.process.streaming.StreamRiskResultPublisherThread;
 import com.reporting.mocks.generators.process.streaming.StreamRiskResultSetPublisherThread;
 import com.reporting.mocks.generators.process.streaming.StreamRiskRunGeneratorThread;
+import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
+import com.reporting.mocks.interfaces.persistence.IMarketStore;
+import com.reporting.mocks.interfaces.persistence.IRiskResultStore;
+import com.reporting.mocks.interfaces.persistence.ITradeStore;
+import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
-import com.reporting.mocks.persistence.*;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.markets.MarketEventProducerThread;
 import com.reporting.mocks.process.trades.TradePopulationProducerThread;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -41,7 +44,7 @@ public class ProcessSimulator {
     protected TradePopulationProducerThread tradePopulationProducerThread;
     protected IRiskResultStore riskResultStore;
 
-    protected IResultPublisher resultPublisher;
+    IResultPublisher resultPublisher;
 
     ProcessEventQueues processEventQueues;
 
@@ -52,17 +55,17 @@ public class ProcessSimulator {
                             ICalculationContextStore calculationContextStore,
                             IMarketStore marketStore,
                             ITradeStore tradeStore,
-                            IRiskResultStore riskResultStore) {
+                            IRiskResultStore riskResultStore,
+                            IResultPublisher resultPublisher) {
         this.id = UUID.randomUUID();
         this.config = config;
         this.tradeStore = tradeStore;
         this.calculationContextStore = calculationContextStore;
         this.marketStore = marketStore;
         this.riskResultStore = riskResultStore;
+        this.resultPublisher = resultPublisher;
         this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
         this.processEventQueues = new JavaProcessEventQueues();
-        this.resultPublisher = new ResultKafkaPublisher(appConfig);
-        //this.riskRunPublisher = new IResultSetResultQueuePublisher(this.processEventQueues.getRiskResultSetQueue());
     }
 
     public Collection<TradePopulation> getTradePopulations() {

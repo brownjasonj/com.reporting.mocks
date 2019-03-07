@@ -1,6 +1,6 @@
 package com.reporting.mocks.endpoints.JavaQueue;
 
-import com.reporting.mocks.endpoints.IResultPublisher;
+import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.*;
 
 import java.util.concurrent.BlockingQueue;

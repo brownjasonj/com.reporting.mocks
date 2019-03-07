@@ -1,15 +1,14 @@
 package com.reporting.mocks.generators.process.streaming;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
-import com.reporting.mocks.endpoints.IResultPublisher;
+import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
+import com.reporting.mocks.interfaces.persistence.IRiskResultStore;
+import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.RiskResult;
 import com.reporting.mocks.model.id.MarketEnvId;
 import com.reporting.mocks.model.risks.Risk;
-import com.reporting.mocks.persistence.ICalculationContextStore;
-import com.reporting.mocks.persistence.IRiskResultStore;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

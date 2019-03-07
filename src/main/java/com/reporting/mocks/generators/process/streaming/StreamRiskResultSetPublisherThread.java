@@ -1,10 +1,10 @@
 package com.reporting.mocks.generators.process.streaming;
 
 import com.reporting.mocks.configuration.PricingGroupConfig;
-import com.reporting.mocks.endpoints.IResultPublisher;
+import com.reporting.mocks.interfaces.persistence.IRiskResultSetStore;
+import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.RiskResultSet;
 import com.reporting.mocks.model.risks.Risk;
-import com.reporting.mocks.persistence.IRiskResultSetStore;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
