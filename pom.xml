@@ -5,7 +5,7 @@
 
 	<groupId>com.reporting</groupId>
 	<artifactId>mocks</artifactId>
-	<version>0.4.0</version>
+	<version>0.5.0</version>
 	<packaging>jar</packaging>
 
 	<name>mocks</name>
@@ -87,7 +87,7 @@
 		<dependency>
 			<groupId>com.reporting.mocks</groupId>
 			<artifactId>interfaces</artifactId>
-			<version>0.1.1</version>
+			<version>0.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.reporting.mocks.persistence</groupId>
