@@ -5,7 +5,7 @@
 
 	<groupId>com.reporting</groupId>
 	<artifactId>mocks</artifactId>
-	<version>0.5.0</version>
+	<version>0.5.1</version>
 	<packaging>jar</packaging>
 
 	<name>mocks</name>
@@ -97,7 +97,12 @@
 		<dependency>
 			<groupId>com.reporting.mocks.publishing</groupId>
 			<artifactId>kafka</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.reporting.kafka</groupId>
+			<artifactId>serialization</artifactId>
+			<version>0.3.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

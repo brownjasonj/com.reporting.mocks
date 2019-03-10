@@ -1,6 +1,7 @@
 package com.reporting.mocks.endpoints.JavaQueue;
 
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
+import com.reporting.mocks.interfaces.publishing.IResultPublisherConfiguration;
 import com.reporting.mocks.model.*;
 
 import java.util.concurrent.BlockingQueue;
@@ -17,6 +18,11 @@ public class IResultSetResultQueuePublisher implements IResultPublisher {
 //    public void publish(RiskRunResult riskRunResult) {
 //
 //    }
+
+    @Override
+    public void init(IResultPublisherConfiguration iResultPublisherConfiguration) {
+
+    }
 
     @Override
     public void publishIntradayTrade(TradeLifecycle tradeLifecycle) {

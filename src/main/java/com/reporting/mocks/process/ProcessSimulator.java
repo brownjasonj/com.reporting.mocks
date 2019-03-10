@@ -27,6 +27,7 @@ import java.util.UUID;
 
 public class ProcessSimulator {
     protected UUID id;
+    protected ApplicationConfig appConfig;
     protected PricingGroupConfig config;
     protected MarketEventProducerThread marketEventProducerThread;
     protected IntradayRiskEventProducerThread intradayRiskEventProducerThread;
@@ -58,6 +59,7 @@ public class ProcessSimulator {
                             IRiskResultStore riskResultStore,
                             IResultPublisher resultPublisher) {
         this.id = UUID.randomUUID();
+        this.appConfig = appConfig;
         this.config = config;
         this.tradeStore = tradeStore;
         this.calculationContextStore = calculationContextStore;
@@ -83,6 +85,7 @@ public class ProcessSimulator {
     protected void init() {
         if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
                 this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
+                this.resultPublisher.init(this.appConfig);
 
                 // initialize the start calculation context
                 CalculationContext cc = this.calculationContextStore.getCurrentContext();
