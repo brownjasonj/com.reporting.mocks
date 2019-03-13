@@ -25,19 +25,19 @@ public class TradePopulationProducerThread implements Runnable {
     protected BlockingQueue<TradeLifecycleType> tradeEventQueue;
     protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected TradeConfig tradeConfig;
-    protected com.reporting.mocks.interfaces.publishing.IResultPublisher IResultPublisher;
+    protected IResultPublisher resultPublisher;
 
     public TradePopulationProducerThread(TradeConfig tradeConfig,
                                          ITradeStore tradeStore,
                                          TradeGenerator tradeGenerator,
                                          BlockingQueue<IntradayEvent<?>> intradayEventQueue,
-                                         IResultPublisher IResultPublisher) {
+                                         IResultPublisher resultPublisher) {
         this.tradeEventQueue = new ArrayBlockingQueue(1024);
         this.tradeStore = tradeStore;
         this.tradeGenerator = tradeGenerator;
         this.intradayEventQueue = intradayEventQueue;
         this.tradeConfig = tradeConfig;
-        this.IResultPublisher = IResultPublisher;
+        this.resultPublisher = resultPublisher;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class TradePopulationProducerThread implements Runnable {
                         Trade newTrade = this.tradeGenerator.generateOneOtc();
                         TradeLifecycle newTradeLifecycle = new TradeLifecycle(tradeEvent, newTrade);
                         this.tradeStore.add(newTrade);
-                        this.IResultPublisher.publishIntradayTrade(newTradeLifecycle);
+                        this.resultPublisher.publishIntradayTrade(newTradeLifecycle);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, newTradeLifecycle));
                         tradeTimer.schedule(new TradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.New), nextNewTrade);
                         break;
@@ -74,7 +74,7 @@ public class TradePopulationProducerThread implements Runnable {
                         Trade modifiedTrade = tradeToModify.createNewVersion();
                         TradeLifecycle modifiedTradeLifecycle = new TradeLifecycle(tradeEvent, modifiedTrade);
                         this.tradeStore.modified(tradeToModify, modifiedTrade);
-                        this.IResultPublisher.publishIntradayTrade(modifiedTradeLifecycle);
+                        this.resultPublisher.publishIntradayTrade(modifiedTradeLifecycle);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, modifiedTradeLifecycle));
                         modifiedTradeTimer.schedule(new TradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.Modify), nextModifyTrade);
                         break;
@@ -83,7 +83,7 @@ public class TradePopulationProducerThread implements Runnable {
                         Trade tradeToDelete = this.tradeStore.oneAtRandom();
                         TradeLifecycle deleteTradeLifecycle = new TradeLifecycle(tradeEvent, tradeToDelete);
                         this.tradeStore.delete(tradeToDelete.getTcn());
-                        this.IResultPublisher.publishIntradayTrade(deleteTradeLifecycle);
+                        this.resultPublisher.publishIntradayTrade(deleteTradeLifecycle);
                         this.intradayEventQueue.put(new IntradayEvent<>(IntradayEventType.Trade, deleteTradeLifecycle));
                         deleteTradeTimer.schedule(new TradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.Delete), newDeleteTrade);
                         break;

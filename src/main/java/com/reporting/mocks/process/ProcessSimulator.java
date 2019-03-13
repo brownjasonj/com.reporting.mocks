@@ -85,7 +85,6 @@ public class ProcessSimulator {
     protected void init() {
         if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
                 this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
-                this.resultPublisher.init(this.appConfig);
 
                 // initialize the start calculation context
                 CalculationContext cc = this.calculationContextStore.getCurrentContext();

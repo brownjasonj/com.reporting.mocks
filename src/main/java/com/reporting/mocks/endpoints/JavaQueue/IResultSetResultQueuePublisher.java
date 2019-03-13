@@ -13,17 +13,6 @@ public class IResultSetResultQueuePublisher implements IResultPublisher {
         this.riskQueue= riskQueue;
     }
 
-
-//    @Override
-//    public void publish(RiskRunResult riskRunResult) {
-//
-//    }
-
-    @Override
-    public void init(IResultPublisherConfiguration iResultPublisherConfiguration) {
-
-    }
-
     @Override
     public void publishIntradayTrade(TradeLifecycle tradeLifecycle) {
 
