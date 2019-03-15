@@ -17,3 +17,6 @@ kafka:
     market: MarketEnv
 zookeeper:
     server: zookeepr.kafka.svc.cluster.local:2181
+com:
+  google:
+    projectId: gm-repbus-lab-ph7xs
