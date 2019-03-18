@@ -20,3 +20,5 @@ zookeeper:
 com:
   google:
     projectId: gm-repbus-lab-ph7xs
+    bigtable:
+      instance: simulator
