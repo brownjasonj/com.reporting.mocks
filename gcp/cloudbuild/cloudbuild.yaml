@@ -1,0 +1,56 @@
+## Full cloudbuild config.
+## Build all depdencieds, mocks, docker image and push to GCR
+steps:
+# build model
+- name: gcr.io/cloud-builders/git
+  args: ['clone', 'https://github.com/brownjasonj/com.reporting.mocks.model.git']
+- name: gcr.io/cloud-builders/mvn:3.5.0-jdk-8
+  entrypoint: 'mvn'
+  args: ['package', 'install']
+  dir: 'com.reporting.mocks.model'
+  volumes:
+  - name: 'm2'
+    path: '/root/.m2'
+# bulid interfaces
+- name: gcr.io/cloud-builders/git
+  args: ['clone', 'https://github.com/brownjasonj/com.reporting.mocks.interfaces.git']
+- name: gcr.io/cloud-builders/mvn:3.5.0-jdk-8
+  entrypoint: 'mvn'
+  args: ['package', 'install']
+  dir: com.reporting.mocks.interfaces
+  volumes:
+  - name: 'm2'
+    path: '/root/.m2'
+# build pubsub
+- name: gcr.io/cloud-builders/git
+  args: ['clone', 'https://github.com/brownjasonj/com.reporting.mocks.publishing.pubsub.git']
+- name: gcr.io/cloud-builders/mvn:3.5.0-jdk-8
+  entrypoint: 'mvn'
+  args: ['package', 'install']
+  dir: com.reporting.mocks.publishing.pubsub
+  volumes:
+  - name: 'm2'
+    path: '/root/.m2'
+# build bigtable
+- name: gcr.io/cloud-builders/git
+  args: ['clone', 'https://github.com/brownjasonj/com.reporting.mocks.persistence.bigtable.git']
+- name: gcr.io/cloud-builders/mvn:3.5.0-jdk-8
+  entrypoint: 'mvn'
+  args: ['package', 'install']
+  dir: com.reporting.mocks.persistence.bigtable
+  volumes:
+  - name: 'm2'
+    path: '/root/.m2'
+# final target
+- name: gcr.io/cloud-builders/git
+  args: ['clone', '-b', 'docker-fix', 'https://github.com/glinmac/com.reporting.mocks.git']
+- name: gcr.io/cloud-builders/mvn:3.5.0-jdk-8
+  entrypoint: 'mvn'
+  args: ['-Ddocker.image.prefix=${_GCR}/${PROJECT_ID}', 'package', 'dockerfile:build']
+  dir: com.reporting.mocks
+  volumes:
+  - name: 'm2'
+    path: '/root/.m2'
+images: ['eu.gcr.io/${PROJECT_ID}/com.reporting.mocks']
+substitutions:
+  _GCR: 'eu.gcr.io'
