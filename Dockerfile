@@ -1,7 +1,5 @@
-FROM openjdk:8-jdk-alpine
+FROM anapsix/alpine-java:8_jdk_unlimited
+ARG JAR_FILE
+COPY target/${JAR_FILE} /app/simulator.jar
 VOLUME /tmp
-ARG DEPENDENCY=target/dependency
-COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY ${DEPENDENCY}/META-INF /app/META-INF
-COPY ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.reporting.mocks.MocksApplication"]
+ENTRYPOINT ["java","-jar", "/app/simulator.jar"]
