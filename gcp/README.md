@@ -57,8 +57,11 @@ For instance with letsencrypt:
   * update `<YOUR_K8S_SECRET>` with previously generated secret
   * update `<YOUR_IMAGE>` with the GCR image used 
   * update the `SPRING_APPLICATION_JSON` value to add/update more Spring/Application related parameters
-* Update `k8s/ingress.tpl.yaml`
+* Edit `k8s/ingress.tpl.yaml`:
+  * Update `<YOUR_DOMAIN>` with the appropriate DNS
 * Apply the full config:
 
       kubectl apply -f k8s/
+* Wait...
+* Simulators will be available at `<YOUR_DOMAIN>/sim1`,...
 

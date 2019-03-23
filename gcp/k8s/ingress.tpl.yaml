@@ -9,7 +9,7 @@ metadata:
     ingress.gcp.kubernetes.io/pre-shared-cert: "repbus-simulator"
 spec:
   rules:
-    - host: repbus-simulator.polaris.kaolin.dev
+    - host: <YOUR_DOMAIN>
       http:
         paths:
         - path: /sim1
