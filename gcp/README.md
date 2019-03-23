@@ -1,5 +1,7 @@
 # GCP Configuration
 
+Some docs/helpers/tools to build and deploy the simulator on GCP.
+
 ## Cloud Build
 
 [cloudbuild](cloudbuild) contains an example to build the dependencies, mocks
@@ -11,11 +13,11 @@ and Docker image using Cloud Build.
 ## Kubernetes
 
 [k8s](k8s) contains an example of deployment using 3 distinct simulators. They are
-available at `/sim`, `/sim2`, `/sim3`.
+available at `/sim1`, `/sim2`, `/sim3`.
 
 **Requirements:**
 
-* VPC-native Kubernetes cluster
+* **VPC-native** Kubernetes cluster
 * A domain name
 * SSL certificate for the domain
 * Service account for the application
@@ -27,7 +29,7 @@ available at `/sim`, `/sim2`, `/sim3`.
 
 ### SSL Cert
 
-For instance with letsencrypt:
+For instance with [Let’s Encrypt](https://letsencrypt.org/):
 
 * Create the certificate
 
