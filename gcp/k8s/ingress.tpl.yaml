@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "repbus-simulator"
+    kubernetes.io/ingress.allow-http: "false"
+    ingress.gcp.kubernetes.io/pre-shared-cert: "repbus-simulator"
+spec:
+  rules:
+    - host: <YOUR_DOMAIN>
+      http:
+        paths:
+        - path: /sim1
+          backend:
+            serviceName: mocks-sim1
+            servicePort: 30010
+        - path: /sim1/*
+          backend:
+            serviceName: mocks-sim1
+            servicePort: 30010
+        - path: /sim2
+          backend:
+            serviceName: mocks-sim2
+            servicePort: 30020
+        - path: /sim2/*
+          backend:
+            serviceName: mocks-sim2
+            servicePort: 30020
+        - path: /sim3
+          backend:
+            serviceName: mocks-sim3
+            servicePort: 30030
+        - path: /sim3/*
+          backend:
+            serviceName: mocks-sim3
+            servicePort: 30030

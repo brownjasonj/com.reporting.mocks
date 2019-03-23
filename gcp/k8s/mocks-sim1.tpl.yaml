@@ -1,0 +1,74 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mocks-sim1
+  labels:
+    app: mocks-sim1
+spec:
+   replicas: 1
+   minReadySeconds: 60
+   selector:
+     matchLabels:
+       app: mocks-sim1
+   template:
+     metadata: 
+       labels:
+         app: mocks-sim1
+     spec:
+       terminationGracePeriodSeconds: 60
+       containers: 
+         - name: mocks-sim1
+           image: <YOUR_IMAGE>
+           readinessProbe:
+             httpGet:
+               path: /sim1/v2/api-docs
+               port: 30010
+           imagePullPolicy: Always
+           ports:
+             - containerPort: 30010
+           volumeMounts:
+             - name: google-cloud-key
+               mountPath: /usr/local/app/config
+               readOnly: true
+           env:
+             - name: GOOGLE_APPLICATION_CREDENTIALS
+               value: /usr/local/app/config/app-key.json
+             - name: SPRING_APPLICATION_JSON
+               value: '{"server": {"port": 30010, "servlet": { "contextPath": "/sim1"}}}'
+       volumes:
+         - name: google-cloud-key
+           secret:
+             secretName: <YOUR_K8S_SECRET>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mocks-sim1
+  labels:
+    app: mocks-sim1
+  annotations:
+    beta.cloud.google.com/backend-config:
+      '{"default": "mocks-sim1"}'
+    cloud.google.com/neg:
+      '{"ingress": true}'
+spec:
+  selector:
+    app: mocks-sim1
+  ports:
+  - port: 30010
+    protocol: TCP
+  type: NodePort
+---
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  name: mocks-sim1
+  labels:
+    app: mocks-sim1
+spec:
+  iap:
+    enabled: false
+    oauthclientCredentials:
+      secretName: secret
+      includeProtocol: true
+      includeQueryString: false
