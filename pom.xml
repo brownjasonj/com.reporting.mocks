@@ -164,10 +164,13 @@
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>1.4.10</version>
                 <configuration>
-                    <repository>${docker.image.prefix}/${project.groupId}.${project.artifactId}</repository>
-					<tag>${project.version}</tag>
-					<useMavenSettingsForAuth>true</useMavenSettingsForAuth>
-				</configuration>
+                  <repository>${docker.image.prefix}/${project.groupId}.${project.artifactId}</repository>
+		  <tag>${project.version}</tag>
+		  <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+		  <buildArgs>
+		    <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+		  </buildArgs>
+		</configuration>
             </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
