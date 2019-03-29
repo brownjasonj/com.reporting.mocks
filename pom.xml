@@ -104,7 +104,7 @@
 		<dependency>
 			<groupId>com.reporting.mocks.persistence</groupId>
 			<artifactId>bigtable</artifactId>
-			<version>0.2.0</version>
+			<version>0.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.reporting.mocks.publishing</groupId>
