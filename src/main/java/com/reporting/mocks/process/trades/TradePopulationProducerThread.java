@@ -32,7 +32,7 @@ public class TradePopulationProducerThread implements Runnable {
                                          TradeGenerator tradeGenerator,
                                          BlockingQueue<IntradayEvent<?>> intradayEventQueue,
                                          IResultPublisher resultPublisher) {
-        this.tradeEventQueue = new ArrayBlockingQueue(1024);
+        this.tradeEventQueue = new ArrayBlockingQueue(1024 * 96);
         this.tradeStore = tradeStore;
         this.tradeGenerator = tradeGenerator;
         this.intradayEventQueue = intradayEventQueue;

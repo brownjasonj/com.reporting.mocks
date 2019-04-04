@@ -86,6 +86,12 @@ public class ProcessSimulator {
         if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
                 this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
 
+                // initiate construction of initial trade population
+                for (int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {
+                    Trade newTrade = this.tradeGenerator.generateOneOtc();
+                    this.tradeStore.add(newTrade);
+                }
+
                 // initialize the start calculation context
                 CalculationContext cc = this.calculationContextStore.getCurrentContext();
                 if (cc == null) {
@@ -97,27 +103,12 @@ public class ProcessSimulator {
                 RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.processEventQueues.getRiskResultSetQueue());
                 new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
 
-//                this.riskRunGeneratorThread = new RiskRunGeneratorThread(
-//                        this.processEventQueues.getRiskRunRequestQueue(),
-//                        config,
-//                        this.calculationContextStore,
-//                        this.tradeStore,
-//                        this.riskRunPublisher,
-//                        this.riskResultStore
-//                );
-//            new Thread(threadGroup, this.riskRunGeneratorThread, "RiskRunGeneratorThread").start();
-
                 this.streamRiskRunGeneratorThread = new StreamRiskRunGeneratorThread(this.processEventQueues.getRiskRunRequestQueue(),
                         this.processEventQueues.getRiskStreamMessageQueue(),
                         this.config,
                         this.calculationContextStore,
                         this.tradeStore,
                         this.resultPublisher);
-
-//                this.streamRiskResultSetPublisherThread = new StreamRiskResultSetPublisherThread(this.processEventQueues.getRiskStreamMessageQueue(),
-//                    this.config,
-//                    this.resultPublisher,
-//                    this.riskResultStore);
 
                 this.streamRiskResultPublisherThread = new StreamRiskResultPublisherThread(
                         this.processEventQueues.getRiskStreamMessageQueue(),
@@ -127,12 +118,8 @@ public class ProcessSimulator {
                         this.riskResultStore
                 );
 
-                //new Thread(threadGroup, this.streamRiskResultSetPublisherThread, "StreamRiskResultSetPublisherThread").start();
                 new Thread(threadGroup, this.streamRiskResultPublisherThread, "StreamRiskResultPublisherThread").start();
                 new Thread(threadGroup, this.streamRiskRunGeneratorThread, "StreamRiskRunGeneratorThread").start();
-
-
-
 
                 // kick-off end-of-day
 
@@ -200,15 +187,7 @@ public class ProcessSimulator {
         if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
             if (this.config.getPricingGroupId() == config.getPricingGroupId()) {
                 this.config = config;
-
-                // initiate construction of initial trade population
-                for (int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {
-                    Trade newTrade = this.tradeGenerator.generateOneOtc();
-                    this.tradeStore.add(newTrade);
-                }
-
                 this.init();
-
                 return config;
             }
         }

@@ -17,12 +17,12 @@ public class JavaProcessEventQueues implements ProcessEventQueues {
     protected BlockingQueue<RiskStreamMessage> riskStreamMessageQueue;
 
     public JavaProcessEventQueues() {
-        this.intradayEventQueue = new ArrayBlockingQueue<>(4096);
-        this.tradeLifecycleQueue = new ArrayBlockingQueue<>(4096);;
-        this.riskResultSetQueue = new ArrayBlockingQueue<>(4096);
-        this.riskResultSetQueue = new ArrayBlockingQueue<>(4096);
-        this.riskRunRequestQueue = new ArrayBlockingQueue<>(4096);
-        this.riskStreamMessageQueue = new ArrayBlockingQueue<>(4096 * 10);
+        this.intradayEventQueue = new ArrayBlockingQueue<>(1024 * 96);
+        this.tradeLifecycleQueue = new ArrayBlockingQueue<>(1024 * 96);
+        this.riskResultSetQueue = new ArrayBlockingQueue<>(1024 * 96);
+        this.riskResultSetQueue = new ArrayBlockingQueue<>(1024 * 96);
+        this.riskRunRequestQueue = new ArrayBlockingQueue<>(1024 * 96);
+        this.riskStreamMessageQueue = new ArrayBlockingQueue<>(1024 * 96);
     }
 
     @Override

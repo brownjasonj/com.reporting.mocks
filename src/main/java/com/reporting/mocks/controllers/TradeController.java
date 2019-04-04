@@ -16,16 +16,16 @@ import java.util.UUID;
 @RestController
 public class TradeController {
     @Autowired
-    IPersistenceStoreFactory<ITradeStore> mongoTradeStoreFactory;
+    IPersistenceStoreFactory<ITradeStore> tradeStoreFactory;
 
     @Autowired
-    public TradeController(IPersistenceStoreFactory<ITradeStore> mongoTradeStoreFactory) {
-        this.mongoTradeStoreFactory = mongoTradeStoreFactory;
+    public TradeController(IPersistenceStoreFactory<ITradeStore> tradeStoreFactory) {
+        this.tradeStoreFactory = tradeStoreFactory;
     }
 
     @GetMapping("/tradepopulations/{pricingGroupName}")
     public List<TradePopulationId> tradePopulations(@PathVariable String pricingGroupName) {
-        ITradeStore store = this.mongoTradeStoreFactory.get(new PricingGroup(pricingGroupName));
+        ITradeStore store = this.tradeStoreFactory.get(new PricingGroup(pricingGroupName));
         if (store != null) {
             return store.getTradePopulationsIds();
         } else {
@@ -35,7 +35,7 @@ public class TradeController {
 
     @GetMapping("/tradepopulation/{pricingGroupName}/{id}")
     public Collection<Trade> tradePopulation(@PathVariable String pricingGroupName, @PathVariable UUID id) {
-        ITradeStore store = this.mongoTradeStoreFactory.get(new PricingGroup(pricingGroupName));
+        ITradeStore store = this.tradeStoreFactory.get(new PricingGroup(pricingGroupName));
         if (store != null) {
             TradePopulation tradePopulation = store.getTradePopulation(new TradePopulationId(pricingGroupName,id));
             if (tradePopulation != null)

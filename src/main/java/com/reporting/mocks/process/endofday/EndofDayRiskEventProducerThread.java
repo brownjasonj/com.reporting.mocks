@@ -26,7 +26,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
     protected IResultPublisher riskPublisher;
     protected ITradeStore tradeStore;
-    protected com.reporting.mocks.interfaces.persistence.IMarketStore IMarketStore;
+    protected IMarketStore marketStore;
     protected EndofDayConfig config;
     protected PricingGroup pricingGroup;
     protected CalculationContext currentCalculationContext;
@@ -37,15 +37,15 @@ public class EndofDayRiskEventProducerThread implements Runnable {
             PricingGroup pricingGroup,
             EndofDayConfig eodConfig,
             ITradeStore tradeStore,
-            IMarketStore IMarketStore,
+            IMarketStore marketStore,
             ICalculationContextStore calculationContextStore,
             BlockingQueue<RiskRunRequest> riskRunRequestQueue,
             IResultPublisher riskPublisher) {
         this.pricingGroup = pricingGroup;
-        this.IMarketStore = IMarketStore;
+        this.marketStore = marketStore;
         this.config = eodConfig;
         this.tradeStore = tradeStore;
-        this.tradePopulationIdQueue = new ArrayBlockingQueue(1024);
+        this.tradePopulationIdQueue = new ArrayBlockingQueue(1024 * 96);
         this.riskRunRequestQueue = riskRunRequestQueue;
         this.riskPublisher = riskPublisher;
         this.calculationContextStore = calculationContextStore;
@@ -108,7 +108,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
                 TradePopulation tradePopulation = this.tradeStore.create(DataMarkerType.EOD);
 
                 if (tradePopulation != null) {
-                    MarketEnv market = this.IMarketStore.create(tradePopulation.getType(), this.eodCounts++);
+                    MarketEnv market = this.marketStore.create(tradePopulation.getType(), this.eodCounts++);
 
                     tradePopulation = runEoDProcess(tradeStore, tradePopulation, market.getAsOf());
 
