@@ -37,6 +37,10 @@ public class ProcessFactory {
             return null;
     }
 
+    public Boolean noSimulatorsRunning() {
+        return processes.isEmpty();
+    }
+
     public ProcessSimulator createProcess(ApplicationConfig applicationConfig,
                                           PricingGroupConfig config,
                                           IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory,

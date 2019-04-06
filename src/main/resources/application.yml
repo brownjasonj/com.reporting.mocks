@@ -7,6 +7,24 @@ server:
   port: 30001
   #port: ${PORT:${SERVER_PORT:0}}
 version: 0.0.1
+
+persistence:
+  datasets:
+    calculationcontext: CalculationContextSet
+    marketenv: MarketEnvSet
+    riskresultset: RiskResultSetSet
+    riskresult: RiskResultSet
+    tradepopulation: TradePopulationSet
+    trade: TradeSet
+
+publishing:
+  topic:
+    intradayriskset: IntraDayRiskSet
+    intradayrisktick: IntraDayRiskTick
+    intradaytrade: IntraDayTrade
+    calccontext: CalculationContext
+    market: MarketEnv
+
 kafka:
   server: localhost:9092
   topic:
@@ -15,6 +33,7 @@ kafka:
     intradaytrade: IntraDayTrade
     calccontext: CalculationContext
     market: MarketEnv
+
 zookeeper:
     server: zookeepr.kafka.svc.cluster.local:2181
 com:

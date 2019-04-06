@@ -22,6 +22,7 @@ kafka:
     calccontext: CalculationContext
     market: Market
      */
+
     public String getKafkaServer() {
         return environment.getProperty("kafka.server");
     }
@@ -45,4 +46,12 @@ kafka:
     public String getMarketEnvTopic() {
         return environment.getProperty("kafka.topic.market");
     }
+
+    public String getCalculationContextDataSetName() { return environment.getProperty("persistence.dataset.calculationcontext");}
+    public String getMarketEnvDataSetName() { return environment.getProperty("persistence.dataset.marketenv");}
+    public String getRiskResultDataSetName() { return environment.getProperty("persistence.dataset.riskresultset");}
+    public String getRiskResultSetDataSetName() { return environment.getProperty("persistence.dataset.riskresult");}
+    public String getTradePopulationDataSetName() { return environment.getProperty("persistence.dataset.tradepopulation");}
+    public String getTradeDataSetName() { return environment.getProperty("persistence.dataset.trade");}
+
 }

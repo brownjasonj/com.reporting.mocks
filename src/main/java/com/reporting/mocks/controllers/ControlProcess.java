@@ -38,6 +38,9 @@ public class ControlProcess {
     IRiskResultStore riskResultStore;
 
     @Autowired
+    IPersistenceAdmin persistenceAdmin;
+
+    @Autowired
     public ControlProcess(ProcessFactory processFactory) {
         this.processFactory = processFactory;
     }
@@ -76,6 +79,17 @@ public class ControlProcess {
         }
         else {
             return false;
+        }
+    }
+
+    @GetMapping("/controlprocess/resetpersistence")
+    public String resetPersistence() {
+        if (this.processFactory.noSimulatorsRunning()) {
+            persistenceAdmin.clearDataSets();
+            return "All persisted datasets cleared";
+        }
+        else {
+            return "Stop all simulators before proceeding";
         }
     }
 }
