@@ -5,7 +5,7 @@
 
 	<groupId>com.reporting</groupId>
 	<artifactId>mocks</artifactId>
-	<version>0.9.1</version>
+	<version>0.9.2</version>
 	<packaging>jar</packaging>
 
 	<name>mocks</name>
@@ -104,7 +104,7 @@
 		<dependency>
 			<groupId>com.reporting.mocks.persistence</groupId>
 			<artifactId>bigtable</artifactId>
-			<version>0.5.2</version>
+			<version>0.5.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.reporting.mocks.publishing</groupId>
