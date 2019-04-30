@@ -6,7 +6,7 @@ import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.risks.RiskRunRequest;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class JavaProcessEventQueues implements ProcessEventQueues {
@@ -17,12 +17,12 @@ public class JavaProcessEventQueues implements ProcessEventQueues {
     protected BlockingQueue<RiskStreamMessage> riskStreamMessageQueue;
 
     public JavaProcessEventQueues() {
-        this.intradayEventQueue = new ArrayBlockingQueue<>(1024 * 96);
-        this.tradeLifecycleQueue = new ArrayBlockingQueue<>(1024 * 96);
-        this.riskResultSetQueue = new ArrayBlockingQueue<>(1024 * 96);
-        this.riskResultSetQueue = new ArrayBlockingQueue<>(1024 * 96);
-        this.riskRunRequestQueue = new ArrayBlockingQueue<>(1024 * 96);
-        this.riskStreamMessageQueue = new ArrayBlockingQueue<>(1024 * 96);
+        this.intradayEventQueue = new LinkedBlockingQueue<>();
+        this.tradeLifecycleQueue = new LinkedBlockingQueue<>();
+        this.riskResultSetQueue = new LinkedBlockingQueue<>();
+        this.riskResultSetQueue = new LinkedBlockingQueue<>();
+        this.riskRunRequestQueue = new LinkedBlockingQueue<>();
+        this.riskStreamMessageQueue = new LinkedBlockingQueue<>();
     }
 
     @Override

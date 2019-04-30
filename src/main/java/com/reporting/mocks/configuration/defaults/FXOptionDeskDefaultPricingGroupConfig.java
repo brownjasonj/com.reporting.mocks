@@ -39,7 +39,7 @@ public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         tradeTypeAndRisks.put(TradeType.Spot, Arrays.asList(RiskType.PV, RiskType.DELTA));
         tradeTypeAndRisks.put(TradeType.Forward, Arrays.asList(RiskType.PV, RiskType.DELTA));
         tradeTypeAndRisks.put(TradeType.Swap, Arrays.asList(RiskType.PV, RiskType.DELTA));
-        tradeTypeAndRisks.put(TradeType.VanillaOption, Arrays.asList(RiskType.PV, RiskType.DELTA, RiskType.GAMMA, RiskType.VEGA));
+        tradeTypeAndRisks.put(TradeType.VanillaOption, Arrays.asList(RiskType.PV, RiskType.DELTA, RiskType.GAMMA));
 
 
         this.tradeConfig = new TradeConfig(books, underlyings, tradeTypeAndRisks);
@@ -55,7 +55,7 @@ public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         ArrayList<RiskType> eodr = new ArrayList<>();
         eodr.add(RiskType.PV);
         eodr.add(RiskType.DELTA);
-        eodr.add(RiskType.GAMMA);
+//        eodr.add(RiskType.GAMMA);
         eodr.add(RiskType.VEGA);
         this.endofdayConfig = new EndofDayConfig(eodr, 5 * 60 * 1000);
 
@@ -63,7 +63,7 @@ public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         indr.add(new IntradayRiskType(RiskType.PV, 1));
         indr.add(new IntradayRiskType(RiskType.DELTA, 1));
         indr.add(new IntradayRiskType(RiskType.GAMMA, 2));
-        indr.add(new IntradayRiskType(RiskType.VEGA, 3));
+//        indr.add(new IntradayRiskType(RiskType.VEGA, 3));
         this.intradayConfig = new IntradayConfig(indr);
     }
 }
