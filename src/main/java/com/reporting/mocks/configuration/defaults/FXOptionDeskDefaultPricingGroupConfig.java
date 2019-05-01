@@ -55,7 +55,7 @@ public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         ArrayList<RiskType> eodr = new ArrayList<>();
         eodr.add(RiskType.PV);
         eodr.add(RiskType.DELTA);
-//        eodr.add(RiskType.GAMMA);
+        eodr.add(RiskType.GAMMA);
         eodr.add(RiskType.VEGA);
         this.endofdayConfig = new EndofDayConfig(eodr, 5 * 60 * 1000);
 
