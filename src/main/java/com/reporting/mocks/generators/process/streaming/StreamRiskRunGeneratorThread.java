@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 public class StreamRiskRunGeneratorThread implements Runnable  {
     private static final Logger LOGGER = Logger.getLogger( StreamRiskRunGeneratorThread.class.getName() );
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
-    protected BlockingQueue<RiskStreamMessage> riskQueue;
+    protected BlockingQueue<RiskStreamMessage<? extends Risk>> riskQueue;
     protected ICalculationContextStore calculationContextStore;
     protected ITradeStore tradeStore;
     protected IResultPublisher resultPublisher;
@@ -33,7 +33,7 @@ public class StreamRiskRunGeneratorThread implements Runnable  {
 
 
     public StreamRiskRunGeneratorThread(BlockingQueue<RiskRunRequest> riskRunRequestQueue,
-                                        BlockingQueue<RiskStreamMessage> riskStreamQueue,
+                                        BlockingQueue<RiskStreamMessage<? extends Risk>> riskStreamQueue,
                                         PricingGroupConfig appConfig,
                                         ICalculationContextStore calculationContextStore,
                                         ITradeStore tradeStore,
@@ -73,7 +73,7 @@ public class StreamRiskRunGeneratorThread implements Runnable  {
                 for(Trade trade : tradePopulation.getByTradeType(tradeType)) {
                     riskNo++;
                     Risk risk = riskGenerator.generate(riskRequest, trade);
-                    RiskStreamMessage riskStreamMsg = new RiskStreamMessage(calculationContext.getCalculationContextId(),
+                    RiskStreamMessage<? extends Risk> riskStreamMsg = new RiskStreamMessage<>(calculationContext.getCalculationContextId(),
                                                                 tradePopulationId,
                                                                 riskRunRequest.getRiskRunId(),
                                                                 riskRunRequest.getRiskRunType(),
@@ -101,7 +101,7 @@ public class StreamRiskRunGeneratorThread implements Runnable  {
                 IRiskGenerator<? extends Risk> riskGenerator = RiskGeneratorFactory.getGenerator(riskType);
                 riskNo++;
                 Risk risk = riskGenerator.generate(riskRequest, trade);
-                RiskStreamMessage riskStreamMsg = new RiskStreamMessage(calculationContext.getCalculationContextId(),
+                RiskStreamMessage<? extends Risk> riskStreamMsg = new RiskStreamMessage<>(calculationContext.getCalculationContextId(),
                         tradePopulationId,
                         riskRunRequest.getRiskRunId(),
                         riskRunRequest.getRiskRunType(),

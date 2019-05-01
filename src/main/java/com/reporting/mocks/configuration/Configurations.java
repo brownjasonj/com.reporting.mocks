@@ -1,15 +1,15 @@
 package com.reporting.mocks.configuration;
 
-import com.reporting.mocks.configuration.defaults.FXOptionDeskDefaultPricingGroupConfig;
-import com.reporting.mocks.configuration.defaults.FXSpotDeskDefaultPricingGroupConfig;
-import com.reporting.mocks.configuration.defaults.FXSwapsDeskDefaultPricingGroupConfig;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.reporting.mocks.configuration.defaults.FXOptionDeskDefaultPricingGroupConfig;
+import com.reporting.mocks.configuration.defaults.FXSpotDeskDefaultPricingGroupConfig;
+import com.reporting.mocks.configuration.defaults.FXSwapsDeskDefaultPricingGroupConfig;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 @Component
 @Scope

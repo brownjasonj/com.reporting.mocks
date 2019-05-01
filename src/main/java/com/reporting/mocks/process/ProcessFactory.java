@@ -49,7 +49,6 @@ public class ProcessFactory {
                                           IRiskResultStore riskResultStore,
                                           IResultPublisher resultPublisher
                                           ) {
-        String pricingGroupName = config.getPricingGroupId().getName();
         ITradeStore tradeStore = tradeStoreFactory.create(config.getPricingGroupId());
         IMarketStore marketStore = marketStoreFactory.create(config.getPricingGroupId());
         ICalculationContextStore calculationContextStore = calculationContextStoreFactory.create(config.getPricingGroupId());

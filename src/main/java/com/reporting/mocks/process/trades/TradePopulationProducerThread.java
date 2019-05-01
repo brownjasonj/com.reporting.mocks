@@ -1,22 +1,22 @@
 package com.reporting.mocks.process.trades;
 
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.reporting.mocks.configuration.TradeConfig;
 import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.interfaces.persistence.ITradeStore;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
-import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.model.TradeLifecycleType;
+import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.process.intraday.IntradayEvent;
 import com.reporting.mocks.process.intraday.IntradayEventType;
-
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TradePopulationProducerThread implements Runnable {
     private static final Logger LOGGER = Logger.getLogger( TradePopulationProducerThread.class.getName() );
@@ -32,7 +32,7 @@ public class TradePopulationProducerThread implements Runnable {
                                          TradeGenerator tradeGenerator,
                                          BlockingQueue<IntradayEvent<?>> intradayEventQueue,
                                          IResultPublisher resultPublisher) {
-        this.tradeEventQueue = new ArrayBlockingQueue(1024 * 96);
+        this.tradeEventQueue = new LinkedBlockingDeque<>();
         this.tradeStore = tradeStore;
         this.tradeGenerator = tradeGenerator;
         this.intradayEventQueue = intradayEventQueue;

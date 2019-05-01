@@ -1,12 +1,11 @@
 package com.reporting.mocks.configuration;
 
-import com.reporting.mocks.model.risks.RiskType;
-import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.model.underlying.SecurityStatic;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.reporting.mocks.model.risks.RiskType;
+import com.reporting.mocks.model.trade.TradeType;
 
 public class TradeConfig {
     protected int startingTradeCount = 100;

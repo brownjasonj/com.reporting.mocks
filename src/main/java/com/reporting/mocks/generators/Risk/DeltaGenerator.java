@@ -1,14 +1,13 @@
 package com.reporting.mocks.generators.Risk;
 
+import java.util.Random;
+
 import com.reporting.mocks.generators.IRiskGenerator;
-import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.process.risks.RiskRequest;
-import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.risks.Delta;
 import com.reporting.mocks.model.risks.RiskType;
-import com.reporting.mocks.process.risks.RiskRunRequest;
-
-import java.util.Random;
+import com.reporting.mocks.model.trade.Trade;
+import com.reporting.mocks.model.trade.TradeType;
+import com.reporting.mocks.process.risks.RiskRequest;
 
 public class DeltaGenerator implements IRiskGenerator<Delta>{
     @Override
@@ -35,6 +34,10 @@ public class DeltaGenerator implements IRiskGenerator<Delta>{
                 return 3;
             case VanillaOption:
                 return 5;
+            case Balance:
+                return 0;
+            case Payment:
+                return 0;
         }
         return 0;
     }

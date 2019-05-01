@@ -1,6 +1,5 @@
 package com.reporting.mocks.generators.process.streaming;
 
-import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.id.CalculationContextId;
 import com.reporting.mocks.model.id.RiskRunId;
 import com.reporting.mocks.model.id.TradePopulationId;

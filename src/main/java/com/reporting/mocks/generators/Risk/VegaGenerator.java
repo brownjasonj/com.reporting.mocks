@@ -1,17 +1,16 @@
 package com.reporting.mocks.generators.Risk;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 import com.reporting.mocks.generators.IRiskGenerator;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.risks.Vega;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.model.underlying.Underlying;
 import com.reporting.mocks.process.risks.RiskRequest;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 public class VegaGenerator implements IRiskGenerator<Vega> {
 

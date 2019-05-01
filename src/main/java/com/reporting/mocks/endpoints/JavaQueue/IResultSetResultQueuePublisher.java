@@ -1,8 +1,8 @@
 package com.reporting.mocks.endpoints.JavaQueue;
 
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
-import com.reporting.mocks.interfaces.publishing.IResultPublisherConfiguration;
 import com.reporting.mocks.model.*;
+import com.reporting.mocks.model.risks.Risk;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -39,7 +39,7 @@ public class IResultSetResultQueuePublisher implements IResultPublisher {
     }
 
     @Override
-    public void publishIntradayRiskResult(RiskResult riskResult) {
+    public void publishIntradayRiskResult(RiskResult<? extends Risk> riskResult) {
 
     }
 

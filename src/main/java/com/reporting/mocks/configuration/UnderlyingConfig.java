@@ -19,7 +19,7 @@ public class UnderlyingConfig {
     }
 
     public Underlying selectRandomUnderlying1() {
-        ArrayList<String> keys = new ArrayList(this.underlyingCrosses.keySet());
+        ArrayList<String> keys = new ArrayList<>(this.underlyingCrosses.keySet());
         return new Underlying(keys.get(new Random().nextInt(keys.size() - 1)));
     }
 

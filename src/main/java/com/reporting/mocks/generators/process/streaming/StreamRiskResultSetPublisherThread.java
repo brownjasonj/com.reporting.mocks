@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 public class StreamRiskResultSetPublisherThread implements Runnable {
     private static final Logger LOGGER = Logger.getLogger( StreamRiskResultSetPublisherThread.class.getName() );
-    protected BlockingQueue<RiskStreamMessage> riskQueue;
+    protected BlockingQueue<RiskStreamMessage<? extends Risk>> riskQueue;
     protected PricingGroupConfig appConfig;
     protected IResultPublisher riskResultSetPublisher;
     protected IRiskResultSetStore riskResultStore;
@@ -21,7 +21,7 @@ public class StreamRiskResultSetPublisherThread implements Runnable {
 
 
     public StreamRiskResultSetPublisherThread(
-            BlockingQueue<RiskStreamMessage> riskQueue,
+            BlockingQueue<RiskStreamMessage<? extends Risk>> riskQueue,
             PricingGroupConfig appConfig,
             IResultPublisher riskResultSetPublisher,
             IRiskResultSetStore riskResultStore

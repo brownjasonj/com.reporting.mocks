@@ -1,10 +1,13 @@
 package com.reporting.mocks.process;
 
+import java.util.Collection;
+import java.util.UUID;
+
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.endpoints.JavaQueue.RiskRunConsumerThread;
-import com.reporting.mocks.generators.process.minibatch.RiskRunGeneratorThread;
 import com.reporting.mocks.generators.TradeGenerator;
+import com.reporting.mocks.generators.process.minibatch.RiskRunGeneratorThread;
 import com.reporting.mocks.generators.process.streaming.StreamRiskResultPublisherThread;
 import com.reporting.mocks.generators.process.streaming.StreamRiskResultSetPublisherThread;
 import com.reporting.mocks.generators.process.streaming.StreamRiskRunGeneratorThread;
@@ -13,17 +16,17 @@ import com.reporting.mocks.interfaces.persistence.IMarketStore;
 import com.reporting.mocks.interfaces.persistence.IRiskResultStore;
 import com.reporting.mocks.interfaces.persistence.ITradeStore;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
-import com.reporting.mocks.model.*;
+import com.reporting.mocks.model.CalculationContext;
+import com.reporting.mocks.model.DataMarkerType;
+import com.reporting.mocks.model.MarketEnv;
+import com.reporting.mocks.model.PricingGroup;
+import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
 import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
 import com.reporting.mocks.process.markets.MarketEventProducerThread;
 import com.reporting.mocks.process.trades.TradePopulationProducerThread;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Collection;
-import java.util.UUID;
 
 public class ProcessSimulator {
     protected UUID id;

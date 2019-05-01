@@ -1,13 +1,20 @@
 package com.reporting.mocks.configuration.defaults;
 
-import com.reporting.mocks.configuration.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.reporting.mocks.configuration.EndofDayConfig;
+import com.reporting.mocks.configuration.IntradayConfig;
+import com.reporting.mocks.configuration.PricingGroupConfig;
+import com.reporting.mocks.configuration.TradeConfig;
+import com.reporting.mocks.configuration.UnderlyingConfig;
 import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.model.underlying.SecurityStatic;
-
-import java.util.*;
 
 public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     protected final int startingTradeCount = 1;
@@ -63,7 +70,7 @@ public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         indr.add(new IntradayRiskType(RiskType.PV, 1));
         indr.add(new IntradayRiskType(RiskType.DELTA, 1));
         indr.add(new IntradayRiskType(RiskType.GAMMA, 2));
-//        indr.add(new IntradayRiskType(RiskType.VEGA, 3));
+        indr.add(new IntradayRiskType(RiskType.VEGA, 3));
         this.intradayConfig = new IntradayConfig(indr);
     }
 }

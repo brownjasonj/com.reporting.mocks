@@ -1,19 +1,15 @@
 package com.reporting.mocks.generators.Risk;
 
-import com.reporting.mocks.generators.IRiskGenerator;
-import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.process.risks.RiskRequest;
-import com.reporting.mocks.model.trade.Trade;
-import com.reporting.mocks.model.risks.Pv;
-import com.reporting.mocks.model.risks.Risk;
-import com.reporting.mocks.model.risks.RiskType;
-import com.reporting.mocks.process.risks.RiskRunRequest;
-
-import javax.validation.constraints.Null;
+import static com.reporting.mocks.model.risks.RiskType.PV;
 
 import java.util.Random;
 
-import static com.reporting.mocks.model.risks.RiskType.PV;
+import com.reporting.mocks.generators.IRiskGenerator;
+import com.reporting.mocks.model.risks.Pv;
+import com.reporting.mocks.model.risks.RiskType;
+import com.reporting.mocks.model.trade.Trade;
+import com.reporting.mocks.model.trade.TradeType;
+import com.reporting.mocks.process.risks.RiskRequest;
 
 
 public class PvGenerator implements IRiskGenerator<Pv> {
@@ -50,6 +46,10 @@ public class PvGenerator implements IRiskGenerator<Pv> {
                 return 3;
             case VanillaOption:
                 return 5;
+            case Balance:
+                return 0;
+            case Payment:
+                return 0;
         }
         return 0;
     }

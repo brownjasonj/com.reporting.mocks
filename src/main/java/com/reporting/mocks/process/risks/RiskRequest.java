@@ -2,7 +2,6 @@ package com.reporting.mocks.process.risks;
 
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.id.CalculationContextId;
-import com.reporting.mocks.model.id.MarketEnvId;
 import com.reporting.mocks.model.id.RiskRunId;
 import com.reporting.mocks.model.id.TradePopulationId;
 

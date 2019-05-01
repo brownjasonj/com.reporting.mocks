@@ -1,13 +1,11 @@
 package com.reporting.mocks.process.risks;
 
+import java.util.List;
+
 import com.reporting.mocks.model.id.CalculationContextId;
 import com.reporting.mocks.model.id.MarketEnvId;
-import com.reporting.mocks.model.id.RiskRunId;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.risks.RiskType;
-import com.reporting.mocks.model.trade.Trade;
-
-import java.util.List;
 
 public class CalculationRunManifest {
     protected RiskRunType riskRunType;
