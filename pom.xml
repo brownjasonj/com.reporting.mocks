@@ -85,7 +85,7 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.4</version>
 		</dependency>
-
+<!--
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_2.12</artifactId>
@@ -106,6 +106,7 @@
 			<artifactId>serialization</artifactId>
 			<version>0.4.0</version>
 		</dependency>
+		-->
         <dependency>
 			<groupId>com.reporting.mocks</groupId>
 			<artifactId>model</artifactId>
@@ -116,7 +117,7 @@
 			<artifactId>interfaces</artifactId>
 			<version>0.9.0</version>
 		</dependency>
-<!--
+
 		<dependency>
 			<groupId>com.reporting.mocks.publishing</groupId>
 			<artifactId>pubsub</artifactId>
@@ -131,7 +132,8 @@
 			<groupId>com.reporting.mocks.persistence</groupId>
 			<artifactId>bigtable</artifactId>
 			<version>0.6.0</version>
-		</dependency> -->
+		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -140,7 +142,7 @@
 			<groupId>com.reporting.mocks.persistence</groupId>
 			<artifactId>mongodb</artifactId>
 			<version>0.2.0</version>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 
 	<dependencyManagement>
