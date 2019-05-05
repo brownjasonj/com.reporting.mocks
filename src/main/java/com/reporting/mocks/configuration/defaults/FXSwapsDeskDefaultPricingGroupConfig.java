@@ -19,6 +19,9 @@ public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     protected final int deleteTadeStart = 120 * 1000;
     protected final int deleteTradePeriodicity = 120 * 1000;
 
+    protected final int eodMarketPeridocity = 5 * 60 * 1000;
+    protected final int intradayMarketPeriodicity = 1 * 60 * 1000;
+
     public FXSwapsDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
         UnderlyingConfig underlyings = new UnderlyingConfig();
@@ -54,11 +57,11 @@ public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         eodr.add(RiskType.PV);
         eodr.add(RiskType.DELTA);
         eodr.add(RiskType.GAMMA);
-        this.endofdayConfig = new EndofDayConfig(eodr, 5 * 60 * 1000);
+        this.endofdayConfig = new EndofDayConfig(eodr, eodMarketPeridocity);
 
         ArrayList<IntradayRiskType> indr = new ArrayList<>();
         indr.add(new IntradayRiskType(RiskType.PV, 1));
         indr.add(new IntradayRiskType(RiskType.DELTA, 3));
         indr.add(new IntradayRiskType(RiskType.GAMMA, 3));
-        this.intradayConfig = new IntradayConfig(indr);
+        this.intradayConfig = new IntradayConfig(indr, intradayMarketPeriodicity);
     }}

@@ -5,16 +5,22 @@ import com.reporting.mocks.model.risks.IntradayRiskType;
 import java.util.List;
 
 public class IntradayConfig {
-    List<IntradayRiskType> risks;
+    private List<IntradayRiskType> risks;
+    private int periodicity;
 
     public IntradayConfig() {
     }
 
-    public IntradayConfig(List<IntradayRiskType> risks) {
+    public IntradayConfig(List<IntradayRiskType> risks, int periodicity) {
         this.risks = risks;
+        this.periodicity = periodicity;
     }
 
     public List<IntradayRiskType> getRisks() {
-        return risks;
+        return this.risks;
+    }
+
+    public int getPeriodicity() {
+        return this.periodicity;
     }
 }

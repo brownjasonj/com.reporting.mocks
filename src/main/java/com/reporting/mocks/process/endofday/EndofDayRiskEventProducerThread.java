@@ -9,6 +9,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.reporting.mocks.configuration.EndofDayConfig;
 import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
@@ -29,7 +31,8 @@ import com.reporting.mocks.process.risks.RiskRunRequest;
 import com.reporting.mocks.process.risks.RiskRunType;
 
 public class EndofDayRiskEventProducerThread implements Runnable {
-    // private static final Logger LOGGER = Logger.getLogger( EndofDayRiskEventProducerThread.class.getName() );
+
+    private static final Logger LOGGER = Logger.getLogger( EndofDayRiskEventProducerThread.class.getName() );
     protected BlockingQueue<TradePopulationId> tradePopulationIdQueue;
     protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
     protected IResultPublisher riskPublisher;
@@ -110,33 +113,42 @@ public class EndofDayRiskEventProducerThread implements Runnable {
         Timer tradeTimer = new Timer(true);
         tradeTimer.scheduleAtFixedRate(eodTradePopTimerTask, 0, this.config.getPeriodicity());
 
-        while(true) {
-            TradePopulation tradePopulation = this.tradeStore.create(DataMarkerType.EOD);
+        try {
+            while (true) {
 
-            if (tradePopulation != null) {
-                MarketEnv market = this.marketStore.create(tradePopulation.getType(), this.eodCounts++);
+                TradePopulationId tradePopulationId = this.tradePopulationIdQueue.take();
 
-                tradePopulation = runEoDProcess(tradeStore, tradePopulation, market.getAsOf());
+                TradePopulation tradePopulation = this.tradeStore.getTradePopulation(tradePopulationId);
 
-                this.currentCalculationContext = this.calculationContextStore.create();
-                for(RiskType riskType : this.config.getRisks()) {
-                    this.currentCalculationContext.add(riskType, market);
+                if (tradePopulation != null) {
+                    MarketEnv market = this.marketStore.create(tradePopulation.getType(), this.eodCounts++);
+
+                    tradePopulation = runEoDProcess(tradeStore, tradePopulation, market.getAsOf());
+
+                    this.currentCalculationContext = this.calculationContextStore.create();
+                    for (RiskType riskType : this.config.getRisks()) {
+                        this.currentCalculationContext.add(riskType, market);
+                    }
+                    this.calculationContextStore.setCurrentContext(this.currentCalculationContext);
+
+                    riskPublisher.publish(market);
+                    riskPublisher.publish(this.currentCalculationContext);
+
+                    this.riskRunRequestQueue.add(new RiskRunRequest(
+                            RiskRunType.EndOfDay,
+                            this.currentCalculationContext.getCalculationContextId(),
+                            null,
+                            tradePopulation.getId(),
+                            this.config.getRisks(),
+                            null,
+                            false // this is NOT a delete event
+                    ));
                 }
-                this.calculationContextStore.setCurrentContext(this.currentCalculationContext);
-
-                riskPublisher.publish(market);
-                riskPublisher.publish(this.currentCalculationContext);
-
-                this.riskRunRequestQueue.add(new RiskRunRequest(
-                        RiskRunType.EndOfDay,
-                        this.currentCalculationContext.getCalculationContextId(),
-                        null,
-                        tradePopulation.getId(),
-                        this.config.getRisks(),
-                        null,
-                        false // this is NOT a delete event
-                ));
             }
+        }
+        catch (InterruptedException e) {
+            // LOGGER.log( Level.FINE, "processing {0} entries in loop", list.size() );
+            LOGGER.log( Level.FINE, "thread interrupted");
         }
 
     }
