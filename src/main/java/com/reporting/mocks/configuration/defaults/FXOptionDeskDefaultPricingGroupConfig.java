@@ -19,16 +19,16 @@ import com.reporting.mocks.model.trade.TradeType;
 public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     protected final int startingTradeCount = 1;
     protected final int newTradeStart = 0;
-    protected final int newTradePeriodicity = 60 * 1000;        // number of milliseconds between new tcnTrades (default: 10s)
+    protected final int newTradePeriodicity = 10 * 1000;        // number of milliseconds between new tcnTrades (default: 10s)
 
-    protected final int modifiedTradeStart = 10 * 60 * 1000;
-    protected final int modifiedTradePeriodicity = 10 * 60 * 1000;    // number of milliseconds between trade modifications (default: 30s)
+    protected final int modifiedTradeStart = 30 * 1000;
+    protected final int modifiedTradePeriodicity = 30 * 1000;    // number of milliseconds between trade modifications (default: 30s)
 
-    protected final int deleteTadeStart = 20 * 60 * 1000;
-    protected final int deleteTradePeriodicity = 20 * 60 * 1000;
+    protected final int deleteTadeStart = 60 * 1000;
+    protected final int deleteTradePeriodicity = 60 * 1000;
 
-    protected final int eodMarketPeridocity = 50 * 60 * 1000;
-    protected final int intradayMarketPeriodicity = 3 * 60 * 1000;
+    protected final int eodMarketPeridocity = 20 * 60 * 1000;
+    protected final int intradayMarketPeriodicity = 5 * 60 * 1000;
 
     public FXOptionDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();

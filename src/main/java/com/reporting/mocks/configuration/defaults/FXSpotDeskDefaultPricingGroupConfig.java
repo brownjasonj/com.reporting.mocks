@@ -27,7 +27,7 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     protected final int deleteTadeStart = 6 * 1000;
     protected final int deleteTradePeriodicity = 6 * 1000;
 
-    protected final int eodMarketPeridocity = 5 * 60 * 1000;
+    protected final int eodMarketPeridocity = 20 * 60 * 1000;
     protected final int intradayMarketPeriodicity = 1 * 60 * 1000;
 
     public FXSpotDeskDefaultPricingGroupConfig() {

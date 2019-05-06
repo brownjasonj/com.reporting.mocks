@@ -20,7 +20,7 @@ public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     protected final int deleteTradePeriodicity = 120 * 1000;
 
     protected final int eodMarketPeridocity = 5 * 60 * 1000;
-    protected final int intradayMarketPeriodicity = 1 * 60 * 1000;
+    protected final int intradayMarketPeriodicity = 5 * 60 * 1000;
 
     public FXSwapsDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
