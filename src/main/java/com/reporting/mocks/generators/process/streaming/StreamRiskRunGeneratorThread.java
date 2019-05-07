@@ -8,6 +8,7 @@ import com.reporting.mocks.interfaces.persistence.ITradeStore;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.TradePopulation;
+import com.reporting.mocks.model.id.CalculationContextId;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.risks.RiskType;
@@ -46,11 +47,41 @@ public class StreamRiskRunGeneratorThread implements Runnable  {
         this.appConfig = appConfig;
     }
 
+    protected CalculationContext tryGettingCalculationContext(CalculationContextId calculationContextId) {
+        CalculationContext calculationContext = this.calculationContextStore.get(calculationContextId.getId());
+        // it is possible that the calculationContext get returns Null due to the Store not having persisted it yet.  As a 
+        // consequence one needs to try several times to retreive the context, if after seveal attempts then abandon
+        // trying to run the calculations as something more catastrophic may have happened!
+        if (calculationContext == null) {
+            Boolean retreivedCC = false;
+            int retryCount = 5;
+            int backOffPeriodms = 500;
+            while (!retreivedCC && retryCount > 0) {
+                retryCount--;
+                calculationContext = this.calculationContextStore.get(calculationContextId.getId());
+
+                if (calculationContext == null) {
+                    try {
+                        Thread.sleep(backOffPeriodms);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        return calculationContext;
+    }
+
     protected void processBulkRiskRequest(RiskRunRequest riskRunRequest) {
         TradePopulationId tradePopulationId = riskRunRequest.getTradePopulationId();
         TradePopulation tradePopulation = this.tradeStore.getTradePopulation(tradePopulationId);
         Map<TradeType, List<Trade>> tradeTypeToTradeMapping = tradePopulation.tradeTypeToTradeMapping();
-        CalculationContext calculationContext = this.calculationContextStore.get(riskRunRequest.getCalculationId().getId());
+        CalculationContext calculationContext = this.tryGettingCalculationContext(riskRunRequest.getCalculationId());
+
+        // if the calculatonContext is still null, then return without doing anything as it is not possible to proceed
+        if (calculationContext == null)
+            return;
 
         RiskRequest riskRequest = new RiskRequest(calculationContext, tradePopulationId);
 
@@ -90,7 +121,12 @@ public class StreamRiskRunGeneratorThread implements Runnable  {
     protected void processSingleTradeRiskRunRequest(RiskRunRequest riskRunRequest) {
         if (riskRunRequest.isSingleTrade()) {
             TradePopulationId tradePopulationId = riskRunRequest.getTradePopulationId();
-            CalculationContext calculationContext = this.calculationContextStore.get(riskRunRequest.getCalculationId().getId());
+            CalculationContext calculationContext = this.tryGettingCalculationContext(riskRunRequest.getCalculationId());
+
+            // if the calculatonContext is still null, then return without doing anything as it is not possible to proceed
+            if (calculationContext == null)
+                return;
+
             Trade trade = riskRunRequest.getTrade();
             RiskRequest riskRequest = new RiskRequest(calculationContext, tradePopulationId);
 
