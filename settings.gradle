@@ -1,6 +1,0 @@
-rootProject.name = 'com.reporting.mocks'
-
-includeBuild('../com.reporting.mocks.model')
-includeBuild('../com.reporting.kafka.serialization')
-
-
