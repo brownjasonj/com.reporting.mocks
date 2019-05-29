@@ -48,9 +48,14 @@ kafka:
     market: MarketEnv
 </pre>
 
-To start the simulator run the following
+Currently the simulator can be built and run against two different setups:  Kafka with MongoDB, or Google Pubsub with Google BigTable.  Each setup is associated with a mvn profile: KafkaMongoDB or PubSubBigTable.  So, to run the simulator with Kafka and MongoDB execute the following command 
 
-<tt>mvn spring-boot:run</tt>
+<tt>mvn spring-boot:run -P KafkaMongoDB</tt>
+
+and to run it with Pubsub and BigTable execute the following command
+
+<tt>mvn spring-boot:run -P PubSubBigTable</tt>
+
 
 Use the swagger ui to see all available endpoints (<a href="http://localhost:30001/swagger-ui.html">http://localhost:30001/swagger-ui.html</a>)
 

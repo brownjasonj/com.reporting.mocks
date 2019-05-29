@@ -5,7 +5,7 @@
 
 	<groupId>com.reporting</groupId>
 	<artifactId>mocks</artifactId>
-	<version>0.12.3</version>
+	<version>0.13.0</version>
 	<packaging>jar</packaging>
 
 	<name>mocks</name>
@@ -88,62 +88,74 @@
 		<dependency>
 			<groupId>com.reporting.mocks</groupId>
 			<artifactId>model</artifactId>
-			<version>0.9.0</version>
+			<version>0.12.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.reporting.mocks</groupId>
 			<artifactId>interfaces</artifactId>
-			<version>0.9.0</version>
-		</dependency>
-		<!--
-
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.12</artifactId>
-            <version>2.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-            <version>2.2.2.RELEASE</version>
-        </dependency>
-		<dependency>
-			<groupId>com.reporting.mocks.publishing</groupId>
-			<artifactId>kafka</artifactId>
-			<version>0.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.reporting.kafka</groupId>
-			<artifactId>serialization</artifactId>
-			<version>0.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.reporting.mocks.persistence</groupId>
-			<artifactId>mongodb</artifactId>
-			<version>0.2.0</version>
-		</dependency> 
-		-->
-		<dependency>
-			<groupId>com.reporting.mocks.publishing</groupId>
-			<artifactId>pubsub</artifactId>
-			<version>0.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.cloud.bigtable</groupId>
-			<artifactId>bigtable-hbase-1.x-hadoop</artifactId>
-			<version>${bigtable.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.reporting.mocks.persistence</groupId>
-			<artifactId>bigtable</artifactId>
-			<version>0.6.0</version>
-		</dependency>
-		
+			<version>0.12.0</version>
+		</dependency>	
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>PubSubBigTable</id>
+			<properties>
+				<bigtable.version>1.10.0</bigtable.version>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>com.reporting.mocks.publishing</groupId>
+					<artifactId>pubsub</artifactId>
+					<version>0.3.0</version>
+				</dependency>
+				<dependency>
+					<groupId>com.google.cloud.bigtable</groupId>
+					<artifactId>bigtable-hbase-1.x-hadoop</artifactId>
+					<version>${bigtable.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.reporting.mocks.persistence</groupId>
+					<artifactId>bigtable</artifactId>
+					<version>0.6.0</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>KafkaMongoDB</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.apache.kafka</groupId>
+					<artifactId>kafka_2.12</artifactId>
+					<version>2.2.0</version>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.kafka</groupId>
+					<artifactId>spring-kafka</artifactId>
+					<version>2.2.2.RELEASE</version>
+				</dependency>
+				<dependency>
+					<groupId>com.reporting.mocks.publishing</groupId>
+					<artifactId>kafka</artifactId>
+					<version>0.2.2</version>
+				</dependency>
+				<dependency>
+					<groupId>com.reporting.kafka</groupId>
+					<artifactId>serialization</artifactId>
+					<version>0.4.0</version>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-data-mongodb</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.reporting.mocks.persistence</groupId>
+					<artifactId>mongodb</artifactId>
+					<version>0.2.0</version>
+				</dependency> 
+			</dependencies>
+		</profile>
+	</profiles>
 
 	<dependencyManagement>
 		<dependencies>
