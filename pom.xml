@@ -5,7 +5,7 @@
 
 	<groupId>com.reporting</groupId>
 	<artifactId>mocks</artifactId>
-	<version>0.13.0</version>
+	<version>0.14.0</version>
 	<packaging>jar</packaging>
 
 	<name>mocks</name>
@@ -25,6 +25,7 @@
 		<bigtable.version>1.10.0</bigtable.version>
 		<spring-cloud.version>Greenwich.M1</spring-cloud.version>
 		<docker.image.prefix>jajabro</docker.image.prefix>
+		<mocks.version>0.14.0</mocks.version>
 	</properties>
 
 	<dependencies>
@@ -88,12 +89,12 @@
 		<dependency>
 			<groupId>com.reporting.mocks</groupId>
 			<artifactId>model</artifactId>
-			<version>0.12.0</version>
+			<version>${mocks.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.reporting.mocks</groupId>
 			<artifactId>interfaces</artifactId>
-			<version>0.12.0</version>
+			<version>${mocks.version}</version>
 		</dependency>	
 	</dependencies>
 
@@ -137,7 +138,7 @@
 				<dependency>
 					<groupId>com.reporting.mocks.publishing</groupId>
 					<artifactId>kafka</artifactId>
-					<version>0.3.0</version>
+					<version>${mocks.version}</version>
 				</dependency>
 				<dependency>
 					<groupId>com.reporting.kafka</groupId>
@@ -151,7 +152,7 @@
 				<dependency>
 					<groupId>com.reporting.mocks.persistence</groupId>
 					<artifactId>mongodb</artifactId>
-					<version>0.3.0</version>
+					<version>${mocks.version}</version>
 				</dependency> 
 			</dependencies>
 		</profile>

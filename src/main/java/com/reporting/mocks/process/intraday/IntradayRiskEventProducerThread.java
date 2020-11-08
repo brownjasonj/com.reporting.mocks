@@ -107,7 +107,6 @@ public class IntradayRiskEventProducerThread implements Runnable {
                         break;
                         case Trade: {
                             IntradayEvent<TradeLifecycle> tradeEvent = (IntradayEvent<TradeLifecycle>) intradayEvent;
-                            System.out.println("Trade Event " + tradeEvent.getEvent().getLifecycleType() + " trade: " + tradeEvent.getEvent().getTrade().toString());
                             // 1. calculate all risks for the current trade (if new)
                             TradeLifecycle tradeLifecycleEvent = tradeEvent.getEvent();
                             this.riskPublisher.publishIntradayTrade(tradeLifecycleEvent);
@@ -117,7 +116,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                 case New: {
                                     // before calculating risk, check that the trade was not in the current TradePopulation
                                     // if it is, then the risk was already calculated for it, so skip this trade
-                                    Trade trade = tradeLifecycleEvent.getTrade();
+                                    Trade trade = tradeLifecycleEvent.getTradeAfterLifeCycle();
                                     if (trade != null) {
                                         Trade existingTrade = this.tradePopulation.getTrade(trade.getTcn());
                                         if (existingTrade == null) {
@@ -138,23 +137,24 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                 }
                                 break;
                                 case Modify: {
-                                    Trade trade = tradeLifecycleEvent.getTrade();
-                                    if (trade != null) {
-                                        Trade existingTrade = this.tradePopulation.getTrade(trade.getTcn());
-                                        if (existingTrade != null && trade.getVersion() != existingTrade.getVersion()) {
+                                    Trade tradeBeforeModify = tradeLifecycleEvent.getTradeBeforeLifeCycle();
+                                    Trade tradeAfterModify = tradeLifecycleEvent.getTradeAfterLifeCycle();
+                                    if (tradeBeforeModify != null && tradeAfterModify != null) {
+                                        Trade existingTrade = this.tradePopulation.getTrade(tradeBeforeModify.getTcn());
+                                        if (existingTrade != null && tradeAfterModify.getVersion() != existingTrade.getVersion()) {
                                             this.currentCalculationContext = this.calculationContextStore.getCurrentContext();
                                             // modify trade in the current trade population
-                                            this.tradePopulation.delete(existingTrade.getTcn());
+                                            this.tradePopulation.delete(tradeBeforeModify.getTcn());
                                             this.riskRunRequestQueue.add(new RiskRunRequest(
                                                     RiskRunType.Intraday,
                                                     this.currentCalculationContext.getCalculationContextId(),
                                                     null,
                                                     this.tradePopulation.getId(),
                                                     config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
-                                                    existingTrade,
+                                                    tradeBeforeModify,
                                                     true  // this IS a delete event
                                             ));
-                                            this.tradePopulation.add(trade);
+                                            this.tradePopulation.add(tradeAfterModify);
                                             // caclulate all the risks for this trade, since it is not in current population or has a different version
                                             this.riskRunRequestQueue.add(new RiskRunRequest(
                                                     RiskRunType.Intraday,
@@ -162,7 +162,7 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                                     null,
                                                     this.tradePopulation.getId(),
                                                     config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
-                                                    trade,
+                                                    tradeAfterModify,
                                                     false  // this is NOT a delete event
                                             ));
                                         }
@@ -171,18 +171,18 @@ public class IntradayRiskEventProducerThread implements Runnable {
                                 break;
                                 case Delete: {
                                     // send something????
-                                    Trade trade = tradeLifecycleEvent.getTrade();
-                                    if (trade != null) {
-                                        Trade existingTrade = this.tradePopulation.getTrade(trade.getTcn());
+                                    Trade tradeBeforeDelete = tradeLifecycleEvent.getTradeBeforeLifeCycle();
+                                    if (tradeBeforeDelete != null) {
+                                        Trade existingTrade = this.tradePopulation.getTrade(tradeBeforeDelete.getTcn());
                                         if (existingTrade != null) {
-                                            this.tradePopulation.delete(existingTrade.getTcn());
+                                            this.tradePopulation.delete(tradeBeforeDelete.getTcn());
                                             this.riskRunRequestQueue.add(new RiskRunRequest(
                                                     RiskRunType.Intraday,
                                                     this.currentCalculationContext.getCalculationContextId(),
                                                     null,
                                                     this.tradePopulation.getId(),
                                                     config.getRisks().stream().map(itr -> itr.getRiskType()).collect(Collectors.toList()),
-                                                    existingTrade,
+                                                    tradeBeforeDelete,
                                                     true  // this IS a delete event
                                             ));
                                         }
