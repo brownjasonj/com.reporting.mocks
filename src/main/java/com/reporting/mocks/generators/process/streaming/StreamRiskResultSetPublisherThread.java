@@ -67,7 +67,7 @@ public class StreamRiskResultSetPublisherThread implements Runnable {
 
                         switch (riskStreamMsg.getRiskRunType()) {
                             case EndOfDay:
-                                riskResultSetPublisher.publishEndofDayRiskRun(riskResultSet);
+                                riskResultSetPublisher.publishEndOfDayRiskResultSet(riskResultSet);
                                 break;
                             case OnDemand:
                             case Intraday:

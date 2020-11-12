@@ -35,6 +35,10 @@ kafka:
     intradaytrade: IntraDayTrade
     calccontext: CalculationContext
     market: MarketEnv
+    endofdayrisk: EndOfDayRisk
+    endofdayriskset: EndOfDayRiskSet
+    startofdayrisk: StartOfDayRisk
+    startofdayriskset: StartOfDayRiskSet
 
 zookeeper:
     #server: kafka-zookeepr.kafka:2181

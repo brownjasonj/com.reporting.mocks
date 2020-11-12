@@ -35,6 +35,18 @@ kafka:
         return environment.getProperty("kafka.topic.intradayrisktick");
     }
 
+    @Override
+    public String getEndOfDayRiskResultTopic() { return environment.getProperty("kafka.topic.endofdayrisk"); }
+
+    @Override
+    public String getEndOfDayRiskResultSetTopic() { return environment.getProperty("kafka.topic.endofdayriskset"); }
+
+    @Override
+    public String getStartOfDayRiskResultTopic() { return environment.getProperty("kafka.topic.startofdayrisk"); }
+
+    @Override
+    public String getStartOfDayRiskResultSetTopic() { return environment.getProperty("kafka.topic.startofdayriskset"); }
+
     public String getCalculationContextTopic() {
         return environment.getProperty("kafka.topic.calccontext");
     }

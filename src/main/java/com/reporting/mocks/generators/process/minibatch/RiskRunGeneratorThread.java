@@ -76,7 +76,7 @@ public class RiskRunGeneratorThread implements Runnable {
 
             switch (riskRunRequest.getRiskRunType()) {
                 case EndOfDay:
-                    resultPublisher.publishEndofDayRiskRun(riskResultSet);
+                    resultPublisher.publishEndOfDayRiskResultSet(riskResultSet);
                     break;
                 case OnDemand:
                 case Intraday:

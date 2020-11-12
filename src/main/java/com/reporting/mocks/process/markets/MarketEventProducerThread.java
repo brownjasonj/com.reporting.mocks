@@ -40,7 +40,7 @@ public class MarketEventProducerThread implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("MarketEventProducerThread created");
+        LOGGER.info("MarketEventProducerThread created");
         try {
             while(run)
             {

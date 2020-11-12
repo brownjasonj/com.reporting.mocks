@@ -55,6 +55,7 @@ public class TradePopulationProducerThread implements Runnable {
         Timer modifiedTradeTimer = new Timer(true);
         modifiedTradeTimer.schedule(modifiedTradeTask, this.tradeConfig.getModifiedTradePeriodicity());
 
+        LOGGER.fine("**** This is just fine ****");
         try {
             while(true) {
                 TradeLifecycleType tradeEvent = this.tradeEventQueue.take();

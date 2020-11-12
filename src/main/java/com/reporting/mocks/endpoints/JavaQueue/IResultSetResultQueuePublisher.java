@@ -44,7 +44,22 @@ public class IResultSetResultQueuePublisher implements IResultPublisher {
     }
 
     @Override
-    public void publishEndofDayRiskRun(RiskResultSet riskResultSet) {
+    public void publishEndOfDayRiskResultSet(RiskResultSet riskResultSet) {
+
+    }
+
+    @Override
+    public void publishEndOfDayRiskResult(RiskResult<? extends Risk> riskResult) {
+
+    }
+
+    @Override
+    public void publishStartOfDayRiskResultSet(RiskResultSet riskResultSet) {
+
+    }
+
+    @Override
+    public void publishStartOfDayRiskResult(RiskResult<? extends Risk> riskResult) {
 
     }
 }

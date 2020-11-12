@@ -15,6 +15,9 @@ public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
 
     protected final int modifiedTradeStart = 60 * 1000;
     protected final int modifiedTradePeriodicity = 60 * 1000;    // number of milliseconds between trade modifications (default: 30s)
+    protected final boolean modifyPostReverse = false;           // a modify even does not create two values
+    protected final boolean riskOnDelete = false;
+
 
     protected final int deleteTadeStart = 120 * 1000;
     protected final int deleteTradePeriodicity = 120 * 1000;
@@ -63,5 +66,5 @@ public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         indr.add(new IntradayRiskType(RiskType.PV, 1));
         indr.add(new IntradayRiskType(RiskType.DELTA, 3));
         indr.add(new IntradayRiskType(RiskType.GAMMA, 3));
-        this.intradayConfig = new IntradayConfig(indr, intradayMarketPeriodicity);
+        this.intradayConfig = new IntradayConfig(indr, intradayMarketPeriodicity, modifyPostReverse, riskOnDelete);
     }}
