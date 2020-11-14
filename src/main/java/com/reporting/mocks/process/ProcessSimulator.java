@@ -12,11 +12,7 @@ import com.reporting.mocks.interfaces.persistence.IMarketStore;
 import com.reporting.mocks.interfaces.persistence.IRiskResultStore;
 import com.reporting.mocks.interfaces.persistence.ITradeStore;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
-import com.reporting.mocks.model.CalculationContext;
-import com.reporting.mocks.model.DataMarkerType;
-import com.reporting.mocks.model.MarketEnv;
-import com.reporting.mocks.model.PricingGroup;
-import com.reporting.mocks.model.TradePopulation;
+import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.process.intraday.IntradayMarketEventRiskProducerThread;
@@ -81,6 +77,11 @@ public class ProcessSimulator {
             for (int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {
                 Trade newTrade = this.tradeGenerator.generateOneOtc();
                 this.tradeStore.add(newTrade);
+                this.resultPublisher.publishIntradayTrade(new TradeLifecycle(
+                        TradeLifecycleType.New,
+                        null,
+                        newTrade
+                ));
             }
 
             // initialize the start calculation context
