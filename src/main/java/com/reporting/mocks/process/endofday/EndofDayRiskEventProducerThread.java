@@ -27,14 +27,14 @@ import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeTypes.Payment;
 import com.reporting.mocks.model.underlying.Underlying;
-import com.reporting.mocks.process.risks.RiskRunRequest;
+import com.reporting.mocks.process.risks.TradePopulationRiskRunRequest;
 import com.reporting.mocks.process.risks.RiskRunType;
 
 public class EndofDayRiskEventProducerThread implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger( EndofDayRiskEventProducerThread.class.getName() );
     protected BlockingQueue<TradePopulationId> tradePopulationIdQueue;
-    protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
+    protected BlockingQueue<TradePopulationRiskRunRequest> riskRunRequestQueue;
     protected IResultPublisher riskPublisher;
     protected ITradeStore tradeStore;
     protected IMarketStore marketStore;
@@ -50,7 +50,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
             ITradeStore tradeStore,
             IMarketStore marketStore,
             ICalculationContextStore calculationContextStore,
-            BlockingQueue<RiskRunRequest> riskRunRequestQueue,
+            BlockingQueue<TradePopulationRiskRunRequest> riskRunRequestQueue,
             IResultPublisher riskPublisher) {
         this.pricingGroup = pricingGroup;
         this.marketStore = marketStore;
@@ -118,7 +118,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
 
                 TradePopulationId tradePopulationId = this.tradePopulationIdQueue.take();
 
-                TradePopulation tradePopulation = this.tradeStore.getTradePopulation(tradePopulationId);
+                TradePopulation tradePopulation = this.tradeStore.getTradePopulationById(tradePopulationId);
 
                 if (tradePopulation != null) {
                     MarketEnv market = this.marketStore.create(tradePopulation.getType(), this.eodCounts++);
@@ -126,22 +126,17 @@ public class EndofDayRiskEventProducerThread implements Runnable {
                     tradePopulation = runEoDProcess(tradeStore, tradePopulation, market.getAsOf());
 
                     this.currentCalculationContext = this.calculationContextStore.create();
-                    for (RiskType riskType : this.config.getRisks()) {
-                        this.currentCalculationContext.add(riskType, market);
-                    }
+                    this.currentCalculationContext.update(this.config.getRisks(), market);
                     this.calculationContextStore.setCurrentContext(this.currentCalculationContext);
 
                     riskPublisher.publish(market);
                     riskPublisher.publish(this.currentCalculationContext);
 
-                    this.riskRunRequestQueue.add(new RiskRunRequest(
+                    this.riskRunRequestQueue.add(new TradePopulationRiskRunRequest(
                             RiskRunType.EndOfDay,
                             this.currentCalculationContext.getCalculationContextId(),
-                            null,
-                            tradePopulation.getId(),
                             this.config.getRisks(),
-                            null,
-                            false // this is NOT a delete event
+                            tradePopulation.getId()
                     ));
                 }
             }

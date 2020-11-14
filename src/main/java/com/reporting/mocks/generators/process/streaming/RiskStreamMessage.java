@@ -8,7 +8,6 @@ import com.reporting.mocks.process.risks.RiskRunType;
 
 public class RiskStreamMessage<T extends Risk> {
     protected CalculationContextId calculationContextId;
-    protected TradePopulationId tradePopulationId;
     protected RiskRunId riskRunId;
     protected int riskCount;
     protected int riskNo;
@@ -18,7 +17,6 @@ public class RiskStreamMessage<T extends Risk> {
 
     public RiskStreamMessage (
         CalculationContextId calculationContextId,
-        TradePopulationId tradePopulationId,
         RiskRunId riskRunId,
         RiskRunType riskRunType,
         int riskCount,
@@ -27,7 +25,6 @@ public class RiskStreamMessage<T extends Risk> {
         boolean isDelete)
     {
         this.calculationContextId = calculationContextId;
-        this.tradePopulationId = tradePopulationId;
         this.riskRunId = riskRunId;
         this.riskRunType = riskRunType;
         this.riskCount = riskCount;
@@ -38,10 +35,6 @@ public class RiskStreamMessage<T extends Risk> {
 
     public CalculationContextId getCalculationContextId() {
         return calculationContextId;
-    }
-
-    public TradePopulationId getTradePopulationId() {
-        return tradePopulationId;
     }
 
     public RiskRunId getRiskRunId() {

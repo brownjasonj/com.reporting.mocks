@@ -4,31 +4,23 @@ import com.reporting.mocks.generators.process.streaming.RiskStreamMessage;
 import com.reporting.mocks.model.RiskResultSet;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.model.risks.Risk;
-import com.reporting.mocks.process.intraday.IntradayEvent;
-import com.reporting.mocks.process.risks.RiskRunRequest;
+import com.reporting.mocks.process.risks.TradePopulationRiskRunRequest;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class JavaProcessEventQueues implements ProcessEventQueues {
-    protected BlockingQueue<IntradayEvent<?>> intradayEventQueue;
     protected BlockingQueue<TradeLifecycle> tradeLifecycleQueue;
     protected BlockingQueue<RiskResultSet> riskResultSetQueue;
-    protected BlockingQueue<RiskRunRequest> riskRunRequestQueue;
+    protected BlockingQueue<TradePopulationRiskRunRequest> riskRunRequestQueue;
     protected BlockingQueue<RiskStreamMessage<? extends Risk>> riskStreamMessageQueue;
 
     public JavaProcessEventQueues() {
-        this.intradayEventQueue = new LinkedBlockingQueue<>();
         this.tradeLifecycleQueue = new LinkedBlockingQueue<>();
         this.riskResultSetQueue = new LinkedBlockingQueue<>();
         this.riskResultSetQueue = new LinkedBlockingQueue<>();
         this.riskRunRequestQueue = new LinkedBlockingQueue<>();
         this.riskStreamMessageQueue = new LinkedBlockingQueue<>();
-    }
-
-    @Override
-    public BlockingQueue<IntradayEvent<?>> getIntradayEventQueue() {
-        return this.intradayEventQueue;
     }
 
     @Override
@@ -42,7 +34,7 @@ public class JavaProcessEventQueues implements ProcessEventQueues {
     }
 
     @Override
-    public BlockingQueue<RiskRunRequest> getRiskRunRequestQueue() {
+    public BlockingQueue<TradePopulationRiskRunRequest> getRiskRunRequestQueue() {
         return this.riskRunRequestQueue;
     }
 

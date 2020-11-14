@@ -9,39 +9,26 @@ import com.reporting.mocks.model.trade.Trade;
 
 import java.util.List;
 
-public class RiskRunRequest {
+public class TradePopulationRiskRunRequest {
     protected RiskRunId riskRunId;
     protected RiskRunType riskRunType;
     protected CalculationContextId calculationId;
-    protected MarketEnvId marketEnvId;
     protected TradePopulationId tradePopulationId;
     protected List<RiskType> risksToRun;
-    protected Trade trade;
-    protected boolean isDeleteEvent;
 
-    public RiskRunRequest(RiskRunType riskRunType,
-                          CalculationContextId calculationId,
-                          MarketEnvId marketEnvId,
-                          TradePopulationId tradePopulationId,
-                          List<RiskType> risksToRun,
-                          Trade trade,
-                          boolean isDeleteEvent) {
+    public TradePopulationRiskRunRequest(RiskRunType riskRunType,
+                                         CalculationContextId calculationId,
+                                         List<RiskType> risksToRun,
+                                         TradePopulationId tradePopulationId) {
         this.riskRunId = new RiskRunId(calculationId.getPricingGroupName());
         this.riskRunType = riskRunType;
         this.calculationId = calculationId;
-        this.marketEnvId = marketEnvId;
         this.tradePopulationId = tradePopulationId;
         this.risksToRun = risksToRun;
-        this.trade = trade;
-        this.isDeleteEvent = isDeleteEvent;
     }
 
     public CalculationContextId getCalculationId() {
         return calculationId;
-    }
-
-    public MarketEnvId getMarketEnvId() {
-        return marketEnvId;
     }
 
     public TradePopulationId getTradePopulationId() {
@@ -58,17 +45,5 @@ public class RiskRunRequest {
 
     public List<RiskType> getRisksToRun() {
         return risksToRun;
-    }
-
-    public boolean isSingleTrade() {
-        return this.trade != null;
-    }
-
-    public Trade getTrade() {
-        return trade;
-    }
-
-    public boolean isDeleteEvent() {
-        return isDeleteEvent;
     }
 }

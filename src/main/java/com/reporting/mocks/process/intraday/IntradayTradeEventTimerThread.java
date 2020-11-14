@@ -1,15 +1,15 @@
-package com.reporting.mocks.process.trades;
+package com.reporting.mocks.process.intraday;
 
 import com.reporting.mocks.model.TradeLifecycleType;
 
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 
-public class TradeEventTimerThread extends TimerTask {
+public class IntradayTradeEventTimerThread extends TimerTask {
     protected BlockingQueue<TradeLifecycleType> tradeEvent;
     protected TradeLifecycleType event;
 
-    public TradeEventTimerThread(BlockingQueue<TradeLifecycleType> tradeEvent, TradeLifecycleType event) {
+    public IntradayTradeEventTimerThread(BlockingQueue<TradeLifecycleType> tradeEvent, TradeLifecycleType event) {
         this.tradeEvent = tradeEvent;
         this.event = event;
     }
@@ -18,8 +18,7 @@ public class TradeEventTimerThread extends TimerTask {
     public void run() {
         try {
             this.tradeEvent.put(this.event);
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             System.out.println("Exception: TradeEventTimerThread : " + this.event + " " + e);
         }
     }

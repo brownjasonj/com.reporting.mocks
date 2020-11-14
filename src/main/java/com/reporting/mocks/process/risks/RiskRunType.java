@@ -4,6 +4,7 @@ public enum RiskRunType {
     Intraday("Intraday"),
     IntradayTick("IntradayTick"),
     EndOfDay("End of Day"),
+    StartOfDay("Start of Day"),
     OnDemand("On Demand");
 
     protected String name;

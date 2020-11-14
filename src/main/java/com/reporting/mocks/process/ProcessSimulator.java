@@ -5,12 +5,8 @@ import java.util.UUID;
 
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
-import com.reporting.mocks.endpoints.JavaQueue.RiskRunConsumerThread;
 import com.reporting.mocks.generators.TradeGenerator;
-import com.reporting.mocks.generators.process.minibatch.RiskRunGeneratorThread;
 import com.reporting.mocks.generators.process.streaming.StreamRiskResultPublisherThread;
-import com.reporting.mocks.generators.process.streaming.StreamRiskResultSetPublisherThread;
-import com.reporting.mocks.generators.process.streaming.StreamRiskRunGeneratorThread;
 import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
 import com.reporting.mocks.interfaces.persistence.IMarketStore;
 import com.reporting.mocks.interfaces.persistence.IRiskResultStore;
@@ -23,29 +19,21 @@ import com.reporting.mocks.model.PricingGroup;
 import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
-import com.reporting.mocks.process.endofday.EndofDayRiskEventProducerThread;
-import com.reporting.mocks.process.intraday.IntradayRiskEventProducerThread;
-import com.reporting.mocks.process.markets.MarketEventProducerThread;
-import com.reporting.mocks.process.trades.TradePopulationProducerThread;
+import com.reporting.mocks.process.intraday.IntradayMarketEventRiskProducerThread;
+import com.reporting.mocks.process.intraday.IntradayTradeEventProducerThread;
+import com.reporting.mocks.process.intraday.IntradayTradeEventRiskProducerThread;
+import com.reporting.mocks.process.risks.RiskRunType;
+import com.reporting.mocks.process.risks.TradePopulationRiskProducerThread;
+import com.reporting.mocks.process.risks.TradePopulationRiskRunRequest;
 
 public class ProcessSimulator {
     protected UUID id;
     protected ApplicationConfig appConfig;
     protected PricingGroupConfig config;
-    protected MarketEventProducerThread marketEventProducerThread;
-    protected IntradayRiskEventProducerThread intradayRiskEventProducerThread;
-    protected RiskRunGeneratorThread riskRunGeneratorThread;
-    protected StreamRiskRunGeneratorThread streamRiskRunGeneratorThread;
-    protected StreamRiskResultSetPublisherThread streamRiskResultSetPublisherThread;
-    protected StreamRiskResultPublisherThread streamRiskResultPublisherThread;
-
-
-
     protected ITradeStore tradeStore;
     protected ICalculationContextStore calculationContextStore;
     protected IMarketStore marketStore;
     protected TradeGenerator tradeGenerator;
-    protected TradePopulationProducerThread tradePopulationProducerThread;
     protected IRiskResultStore riskResultStore;
 
     IResultPublisher resultPublisher;
@@ -78,7 +66,7 @@ public class ProcessSimulator {
     }
 
     public TradePopulation getTradePopulation(TradePopulationId tradePopulationId) {
-        return this.tradeStore.getTradePopulation(tradePopulationId);
+        return this.tradeStore.getTradePopulationById(tradePopulationId);
     }
 
     public PricingGroup getPricingGroupId() {
@@ -87,97 +75,113 @@ public class ProcessSimulator {
 
     protected void init() {
         if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
-                this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
+            this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
 
-                // initiate construction of initial trade population
-                for (int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {
-                    Trade newTrade = this.tradeGenerator.generateOneOtc();
-                    this.tradeStore.add(newTrade);
-                }
+            // initiate construction of initial trade population
+            for (int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {
+                Trade newTrade = this.tradeGenerator.generateOneOtc();
+                this.tradeStore.add(newTrade);
+            }
 
-                // initialize the start calculation context
-                CalculationContext cc = this.calculationContextStore.getCurrentContext();
-                if (cc == null) {
-                    cc = this.calculationContextStore.create();
-                    cc.update(this.config.findAllRiskTypes(), marketStore.create(DataMarkerType.SOD));
-                    this.calculationContextStore.setCurrentContext(cc);
-                }
+            // initialize the start calculation context
+            CalculationContext cc = this.calculationContextStore.getCurrentContext();
+            MarketEnv sodMarket = marketStore.create(DataMarkerType.SOD);
+            if (cc == null) {
+                cc = this.calculationContextStore.create();
+                cc.update(this.config.findAllRiskTypes(), sodMarket);
+                this.calculationContextStore.setCurrentContext(cc);
+            }
 
-                RiskRunConsumerThread riskRunThread = new RiskRunConsumerThread(this.processEventQueues.getRiskResultSetQueue());
-                new Thread(threadGroup, riskRunThread, "RiskRunConsumer").start();
+            this.resultPublisher.publish(cc);
 
-                this.streamRiskRunGeneratorThread = new StreamRiskRunGeneratorThread(this.processEventQueues.getRiskRunRequestQueue(),
-                        this.processEventQueues.getRiskStreamMessageQueue(),
-                        this.config,
-                        this.calculationContextStore,
-                        this.tradeStore,
-                        this.resultPublisher);
+            // Create the thread that receives requests to calculate risks for trade populations
+            new Thread(threadGroup,
+                    new TradePopulationRiskProducerThread(
+                            this.processEventQueues.getRiskRunRequestQueue(),
+                            this.processEventQueues.getRiskStreamMessageQueue(),
+                            this.config,
+                            this.calculationContextStore,
+                            this.tradeStore,
+                            this.resultPublisher
+                    ),
+                    "TradePopulationRiskProducerThread").start();
 
-                this.streamRiskResultPublisherThread = new StreamRiskResultPublisherThread(
-                        this.processEventQueues.getRiskStreamMessageQueue(),
-                        this.config,
-                        this.calculationContextStore,
-                        this.resultPublisher,
-                        this.riskResultStore
-                );
+           new Thread(threadGroup,
+                   new StreamRiskResultPublisherThread(
+                    this.processEventQueues.getRiskStreamMessageQueue(),            // input queue to process
+                    this.config,
+                    this.calculationContextStore,
+                    this.resultPublisher,
+                    this.riskResultStore
+            ), "StreamRiskResultPublisherThread").start();;
 
-                new Thread(threadGroup, this.streamRiskResultPublisherThread, "StreamRiskResultPublisherThread").start();
-                new Thread(threadGroup, this.streamRiskRunGeneratorThread, "StreamRiskRunGeneratorThread").start();
+            // kick-off start-of-day
 
-                // kick-off end-of-day
+            // create a new trade population for the start of day
+            TradePopulation sodTradePopulation = this.tradeStore.create(DataMarkerType.SOD);
+            // send a trade population risk request to have all risks calculated for the start of day trades
+            this.processEventQueues.getRiskRunRequestQueue().add(
+                    new TradePopulationRiskRunRequest(
+                            RiskRunType.StartOfDay,
+                            cc.getCalculationContextId(),
+                            this.config.findAllRiskTypes(),
+                            sodTradePopulation.getId()
+                    )
+            );
 
-                EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(
-                        this.config.getPricingGroupId(),
-                        this.config.getEndofdayConfig(),
-                        this.tradeStore,
-                        this.marketStore,
-                        this.calculationContextStore,
-                        this.processEventQueues.getRiskRunRequestQueue(),
-                        this.resultPublisher);
-                new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
+            // kick-off end-of-day
 
-                // kick-off start-of-day
-
-                // start intra-day process
-                // initiate market environment change process
-                this.marketEventProducerThread = new MarketEventProducerThread(
-                        this.config.getPricingGroupId(),
-                        this.marketStore,
-                        this.resultPublisher,
-                        this.config.getMarketPeriodicity(),
-                        this.processEventQueues.getIntradayEventQueue());
-                // start the market event thread
-                new Thread(threadGroup, this.marketEventProducerThread, "MarketEventProducer").start();
+//                EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(
+//                        this.config.getPricingGroupId(),
+//                        this.config.getEndofdayConfig(),
+//                        this.tradeStore,
+//                        this.marketStore,
+//                        this.calculationContextStore,
+//                        this.processEventQueues.getRiskRunRequestQueue(),               // output queue from process
+//                        this.resultPublisher);
+//                new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
 
 
-                // initiate intra-day risk jobs
-                this.intradayRiskEventProducerThread = new IntradayRiskEventProducerThread(
-                        this.config.getPricingGroupId(),
-                        this.config.getIntradayConfig(),
-                        this.tradeStore,
-                        this.marketStore,
-                        this.calculationContextStore,
-                        this.processEventQueues.getIntradayEventQueue(),
-                        this.processEventQueues.getRiskRunRequestQueue(),
-                        this.resultPublisher,
-                        new MarketEnv(this.config.getPricingGroupId(), DataMarkerType.IND));
+            new Thread(threadGroup,
+                    new IntradayMarketEventRiskProducerThread(
+                            this.config,
+                            this.tradeStore,
+                            this.marketStore,
+                            this.calculationContextStore,
+                            this.processEventQueues.getRiskRunRequestQueue(),
+                            this.resultPublisher,
+                            sodMarket
+                    ),
+                    "IntradayMarketEventRiskProducerThread").start();
 
-                new Thread(threadGroup, this.intradayRiskEventProducerThread, "IntradayRiskEvent").start();
+            new Thread(threadGroup,
+                    new IntradayTradeEventRiskProducerThread(
+                            this.config,
+                            this.tradeStore,
+                            this.marketStore,
+                            this.calculationContextStore,
+                            this.processEventQueues.getTradeLifecycleQueue(),
+                            this.processEventQueues.getRiskStreamMessageQueue(),
+                            this.resultPublisher,
+                            sodMarket
+                    ),
+                    "IntradayTradeEventRiskProducerThread").start();
 
-                //TradeConfig tradeConfig, TradeStore tradeStore, BlockingQueue<Trade> tradeQueue
-                this.tradePopulationProducerThread = new TradePopulationProducerThread(this.config.getTradeConfig(),
-                        this.tradeStore,
-                        this.tradeGenerator,
-                        this.processEventQueues.getIntradayEventQueue(),
-                        this.resultPublisher);
-                new Thread(threadGroup, this.tradePopulationProducerThread, "TradePopulationProducer").start();
 
+            new Thread(threadGroup,
+                    new IntradayTradeEventProducerThread(
+                            this.config.getTradeConfig(),
+                            this.tradeStore,
+                            this.tradeGenerator,
+                            this.processEventQueues.getTradeLifecycleQueue(),
+                            this.resultPublisher
+                    ),
+                    "IntradayTradeEventProducerThread").start();
         }
     }
 
     public void stop() {
         if (this.threadGroup != null && !this.threadGroup.isDestroyed()) {
-            //this.threadGroup.interrupt();
             this.threadGroup.interrupt();;
         }
     }

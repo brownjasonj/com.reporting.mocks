@@ -37,7 +37,7 @@ public class TradeController {
     public Collection<Trade> tradePopulation(@PathVariable String pricingGroupName, @PathVariable UUID id) {
         ITradeStore store = this.tradeStoreFactory.get(new PricingGroup(pricingGroupName));
         if (store != null) {
-            TradePopulation tradePopulation = store.getTradePopulation(new TradePopulationId(pricingGroupName,id));
+            TradePopulation tradePopulation = store.getTradePopulationById(new TradePopulationId(pricingGroupName,id));
             if (tradePopulation != null)
                 return tradePopulation.getAllTrades();
         }

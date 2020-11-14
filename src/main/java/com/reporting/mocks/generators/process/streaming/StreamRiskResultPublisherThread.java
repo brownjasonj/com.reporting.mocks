@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class StreamRiskResultPublisherThread implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger( StreamRiskResultSetPublisherThread.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger( StreamRiskResultPublisherThread.class.getName() );
     protected BlockingQueue<RiskStreamMessage<? extends Risk>> riskQueue;
     protected PricingGroupConfig appConfig;
     protected ICalculationContextStore calculationContextStore;
@@ -68,7 +68,6 @@ public class StreamRiskResultPublisherThread implements Runnable {
                         RiskResult<? extends Risk> riskResult = new RiskResult<>(
                                 riskStreamMsg.getRiskRunId(),
                                 marketEnvId,
-                                riskStreamMsg.getTradePopulationId(),
                                 riskStream.getFragmentCount(),
                                 riskStream.getFragmentNo(),
                                 riskStreamMsg.getRisk(),
@@ -84,6 +83,7 @@ public class StreamRiskResultPublisherThread implements Runnable {
                                 break;
                             case OnDemand:
                             case Intraday:
+                            case StartOfDay:
                                 riskRunPublisher.publishIntradayRiskResult(riskResult);
                                 break;
                             case IntradayTick:

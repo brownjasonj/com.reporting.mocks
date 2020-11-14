@@ -5,7 +5,7 @@
 
 	<groupId>com.reporting</groupId>
 	<artifactId>mocks</artifactId>
-	<version>0.14.0</version>
+	<version>0.16.0</version>
 	<packaging>jar</packaging>
 
 	<name>mocks</name>
@@ -25,7 +25,7 @@
 		<bigtable.version>1.10.0</bigtable.version>
 		<spring-cloud.version>Greenwich.M1</spring-cloud.version>
 		<docker.image.prefix>jajabro</docker.image.prefix>
-		<mocks.version>0.15.0</mocks.version>
+		<mocks.version>0.16.0</mocks.version>
 		<jackson.version>[2.9.10.5,)</jackson.version>
 	</properties>
 

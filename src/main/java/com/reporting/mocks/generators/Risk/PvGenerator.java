@@ -4,19 +4,20 @@ import static com.reporting.mocks.model.risks.RiskType.PV;
 
 import java.util.Random;
 
-import com.reporting.mocks.generators.IRiskGenerator;
+import com.reporting.mocks.generators.IRiskGeneratorLite;
+import com.reporting.mocks.model.id.MarketEnvId;
 import com.reporting.mocks.model.risks.Pv;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeType;
-import com.reporting.mocks.process.risks.RiskRequest;
 
 
-public class PvGenerator implements IRiskGenerator<Pv> {
+public class PvGenerator implements IRiskGeneratorLite<Pv> {
     @Override
-    public Pv generate(RiskRequest riskRequest, Trade trade) {
+    public Pv generate(MarketEnvId marketEnvId, Trade trade) {
         try {
-            return new Pv(riskRequest.getCalculationContext().get(this.getRiskType()),
+            return new Pv(
+                    marketEnvId,
                     trade.getBook(),
                     trade.getTcn(),
                     trade.getUnderlying1(),
@@ -26,7 +27,6 @@ public class PvGenerator implements IRiskGenerator<Pv> {
             return null;
         }
     }
-
 
     @Override
     public RiskType getRiskType() {
