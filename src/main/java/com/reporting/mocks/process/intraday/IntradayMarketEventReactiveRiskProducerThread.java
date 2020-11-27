@@ -3,38 +3,39 @@ package com.reporting.mocks.process.intraday;
 import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.interfaces.persistence.*;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
-import com.reporting.mocks.model.*;
+import com.reporting.mocks.model.CalculationContext;
+import com.reporting.mocks.model.DataMarkerType;
+import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.process.risks.RiskRunType;
-import com.reporting.mocks.process.risks.TradePopulationRiskRunRequest;
+import com.reporting.mocks.process.risks.TradePopulationReactiveRiskRunRequest;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class IntradayMarketEventRiskProducerThread implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger( IntradayMarketEventRiskProducerThread.class.getName() );
-    BlockingQueue<TradePopulationRiskRunRequest> riskRunRequestQueue;
+public class IntradayMarketEventReactiveRiskProducerThread implements Runnable {
+    private static final Logger LOGGER = Logger.getLogger(IntradayMarketEventReactiveRiskProducerThread.class.getName());
+    protected BlockingQueue<TradePopulationReactiveRiskRunRequest> tradePopulationReactiveRiskRunRequests;
     protected IResultPublisher riskPublisher;
     protected ITradeStore tradeStore;
     protected IMarketStore marketStore;
     protected PricingGroupConfig config;
-    protected ITradePopulation tradePopulation;
     protected IntradayCalculationSchedule calculationSchedule;
     protected CalculationContext currentCalculationContext;
     protected ICalculationContextStore calculationContextStore;
     protected Map<RiskType, Set<MarketEnv>> riskMarkets;
     protected boolean run = true;
 
-    public IntradayMarketEventRiskProducerThread(PricingGroupConfig config,
-                                                 ITradeStore tradeStore,
-                                                 IMarketStore IMarketStore,
-                                                 ICalculationContextStore ICalculationContextStore,
-                                                 BlockingQueue<TradePopulationRiskRunRequest> riskRunRequestQueue,
-                                                 IResultPublisher riskPublisher,
-                                                 MarketEnv market) {
+    public IntradayMarketEventReactiveRiskProducerThread(PricingGroupConfig config,
+                                                         ITradeStore tradeStore,
+                                                         IMarketStore IMarketStore,
+                                                         ICalculationContextStore ICalculationContextStore,
+                                                         BlockingQueue<TradePopulationReactiveRiskRunRequest> riskRunRequestQueue,
+                                                         IResultPublisher riskPublisher,
+                                                         MarketEnv market) {
         this.config = config;
         this.tradeStore = tradeStore;
         this.marketStore = IMarketStore;
@@ -42,9 +43,9 @@ public class IntradayMarketEventRiskProducerThread implements Runnable {
         this.calculationSchedule = new IntradayCalculationSchedule();
         this.calculationContextStore = ICalculationContextStore;
         this.currentCalculationContext = ICalculationContextStore.create();
-        this.riskRunRequestQueue = riskRunRequestQueue;
+        this.tradePopulationReactiveRiskRunRequests = riskRunRequestQueue;
         this.riskMarkets = new HashMap<>();
-        for(IntradayRiskType riskType : config.getIntradayConfig().getRisks()) {
+        for (IntradayRiskType riskType : config.getIntradayConfig().getRisks()) {
             this.calculationSchedule.add(riskType.getPeriodicity(), riskType.getRiskType());
             this.currentCalculationContext.add(riskType.getRiskType(), market);
             Set<MarketEnv> marketEnvSet = new HashSet<>();
@@ -57,7 +58,7 @@ public class IntradayMarketEventRiskProducerThread implements Runnable {
     public void run() {
         LOGGER.info("Intraday Market Event Risk Producer Thread created");
         try {
-            while(run) {
+            while (run) {
                 Thread.sleep(config.getMarketPeriodicity());
 
                 MarketEnv newMarket = this.marketStore.create(DataMarkerType.IND);
@@ -72,7 +73,7 @@ public class IntradayMarketEventRiskProducerThread implements Runnable {
                 riskPublisher.publish(newMarket);
 
                 // this gets and creates a new trade population
-                this.tradePopulation = this.tradeStore.createSnapShot(DataMarkerType.IND);
+                ITradePopulationReactive tradePopulation = this.tradeStore.createReactiveSnapShot(DataMarkerType.IND);
 
                 // increment the risk schedule since a new market arrived
                 this.calculationSchedule.increment();
@@ -87,18 +88,18 @@ public class IntradayMarketEventRiskProducerThread implements Runnable {
 
                 this.riskPublisher.publish(this.currentCalculationContext);
 
-                this.riskRunRequestQueue.add(
-                        new TradePopulationRiskRunRequest(
+                this.tradePopulationReactiveRiskRunRequests.add(
+                        new TradePopulationReactiveRiskRunRequest(
                                 RiskRunType.Intraday,
                                 this.currentCalculationContext.getCalculationContextId(),
                                 risksToRun,
-                                this.tradePopulation.getId()
+                                tradePopulation.getId()
                         )
                 );
             }
         } catch (InterruptedException e) {
             // LOGGER.log( Level.FINE, "processing {0} entries in loop", list.size() );
-            LOGGER.log( Level.FINE, "thread interrupted");
+            LOGGER.log(Level.FINE, "thread interrupted");
         }
     }
 }

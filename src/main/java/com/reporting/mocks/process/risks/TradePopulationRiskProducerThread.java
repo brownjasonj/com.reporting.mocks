@@ -5,10 +5,10 @@ import com.reporting.mocks.generators.IRiskGeneratorLite;
 import com.reporting.mocks.generators.RiskGeneratorFactory;
 import com.reporting.mocks.generators.process.streaming.RiskStreamMessage;
 import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
+import com.reporting.mocks.interfaces.persistence.ITradePopulation;
 import com.reporting.mocks.interfaces.persistence.ITradeStore;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.CalculationContext;
-import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.MarketEnvId;
 import com.reporting.mocks.model.id.RiskRunId;
 import com.reporting.mocks.model.risks.Risk;
@@ -17,7 +17,6 @@ import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeType;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,19 +53,19 @@ public class TradePopulationRiskProducerThread implements Runnable {
                 TradePopulationRiskRunRequest tradePopulationRiskRunRequest = this.tradePopulationRiskRunRequests.take();
 
                 CalculationContext calculationContext = this.calculationContextStore.getCalculationContextById(tradePopulationRiskRunRequest.getCalculationId());
-                TradePopulation tradePopulation = this.tradeStore.getTradePopulationById(tradePopulationRiskRunRequest.getTradePopulationId());
-                Map<TradeType, List<Trade>> tradeTypeToTradeMapping = tradePopulation.tradeTypeToTradeMapping();
+                ITradePopulation tradePopulation = this.tradeStore.getTradePopulationById(tradePopulationRiskRunRequest.getTradePopulationId());
+                //Map<TradeType, List<Trade>> tradeTypeToTradeMapping = tradePopulation.tradeTypeToTradeMapping();
+                List<TradeType> populationTradeTypes = tradePopulation.getTradeTypes();
                 List<RiskType> risksToRun = tradePopulationRiskRunRequest.getRisksToRun();
 
                 int riskCount = 0;
-                for(Map.Entry<TradeType, List<Trade>> entry : tradeTypeToTradeMapping.entrySet()) {
-                    if (!entry.getValue().isEmpty()) {
-                        int tradeCount = entry.getValue().size();
-                        TradeType tradeType = entry.getKey();
+                for(TradeType tradeType : tradePopulation.getTradeTypes()) {
+                    List<Trade> tradesForType = tradePopulation.getByTradeType(tradeType);
+                    if (!tradesForType.isEmpty()) {
                         List<RiskType> tradeRisks = this.pricingGroupConfig.getTradeConfig().findRiskByTradeType(tradeType);
                         for(RiskType riskType : tradeRisks) {
                             if (risksToRun.contains(riskType)) {
-                                riskCount += tradeCount;
+                                riskCount += tradesForType.size();
                             }
                         }
                     }
@@ -74,7 +73,7 @@ public class TradePopulationRiskProducerThread implements Runnable {
 
                 RiskRunId riskRunId = new RiskRunId(this.pricingGroupConfig.getPricingGroupId().getName());
                 int riskNo = 0;
-                for(TradeType tradeType : tradePopulation.getAllTradeTypes()) {
+                for(TradeType tradeType : tradePopulation.getTradeTypes()) {
                     List<RiskType> tradeRisks = this.pricingGroupConfig.getTradeConfig().findRiskByTradeType(tradeType);
                     for(RiskType riskType : tradeRisks) {
                         if (risksToRun.contains(riskType)) {

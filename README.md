@@ -57,19 +57,17 @@ and to run it with Pubsub and BigTable execute the following command
 <tt>mvn spring-boot:run -P PubSubBigTable</tt>
 
 
-Use the swagger ui to see all available endpoints (<a href="http://localhost:30001/swagger-ui.html">http://localhost:30001/swagger-ui.html</a>)
+Use the swagger ui to see all available endpoints (http://localhost:30001/swagger-ui/index.html)
 
 The behaviour of the simulator is defined by a configuration. There is currently three predefined configurations, but it is possible
-to create an setup new configurations.  To see all configurations available got to
-<a href="http://localhost:30001/getpricinggroups">http://localhost:30001/getpricinggroups</a>.
+to create an setup new configurations.  To see all configurations available got to http://localhost:30001/getpricinggroups.
 
 To start the simulator you need to got to the process start endpoint and start it for a specific configuration.  The simulator enables
 multiple pricing groups to be running at the same time which provides a more realistic simulation of a multi-trading desk
 situation that can be found in banks.
 
 The predefined configurations are <b>fxspotdesk</b>, <b>fxoptiondesk</b> and <b>fxswapdesk</b>.  To start the simulator for 
-the fxspotdesk, for example, use 
-<a href="http://localhost:30001/controlprocess/start/fxspotdesk">http://localhost:30001/controlprocess/start/fxspotdesk</a>.
+the fxspotdesk, for example, use http://localhost:30001/controlprocess/start/fxspotdesk.
 This will start all the simulator processes and you should see some output to the console, something like:
 <pre>
 TradeEvent New

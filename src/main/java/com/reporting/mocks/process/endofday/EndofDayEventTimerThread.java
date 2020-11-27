@@ -1,8 +1,8 @@
 package com.reporting.mocks.process.endofday;
 
+import com.reporting.mocks.interfaces.persistence.ITradePopulation;
 import com.reporting.mocks.interfaces.persistence.ITradeStore;
 import com.reporting.mocks.model.DataMarkerType;
-import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
 
 import java.util.TimerTask;
@@ -23,7 +23,7 @@ public class EndofDayEventTimerThread extends TimerTask {
 
     @Override
     public void run() {
-        TradePopulation tradePop = this.tradeStore.create(DataMarkerType.EOD);
+        ITradePopulation tradePop = this.tradeStore.createSnapShot(DataMarkerType.EOD);
         try {
             this.tradePopulationIdQueue.put(tradePop.getId());
         }

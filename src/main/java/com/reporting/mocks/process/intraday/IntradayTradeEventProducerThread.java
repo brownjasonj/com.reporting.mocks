@@ -2,6 +2,7 @@ package com.reporting.mocks.process.intraday;
 
 import com.reporting.mocks.configuration.TradeConfig;
 import com.reporting.mocks.generators.TradeGenerator;
+import com.reporting.mocks.interfaces.persistence.ITradePopulationLive;
 import com.reporting.mocks.interfaces.persistence.ITradeStore;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.TradeLifecycle;
@@ -53,6 +54,7 @@ public class IntradayTradeEventProducerThread implements Runnable {
 
         LOGGER.fine("**** This is just fine ****");
         try {
+            ITradePopulationLive liveTrades = this.tradeStore.getLiveTradePopulation();
             while(true) {
                 TradeLifecycleType tradeEvent = this.tradeEventQueue.take();
                 switch (tradeEvent) {
@@ -66,7 +68,7 @@ public class IntradayTradeEventProducerThread implements Runnable {
                         break;
                     case Modify:
                         int nextModifyTrade  = (new Random()).nextInt(this.tradeConfig.getModifiedTradePeriodicity());
-                        Trade tradeToModify = this.tradeStore.oneAtRandom();
+                        Trade tradeToModify = liveTrades.oneAtRandom();
                         Trade modifiedTrade = tradeToModify.createNewVersion();
                         TradeLifecycle modifiedTradeLifecycle = new TradeLifecycle(tradeEvent, tradeToModify, modifiedTrade);
                         this.resultPublisher.publishIntradayTrade(modifiedTradeLifecycle);
@@ -75,7 +77,7 @@ public class IntradayTradeEventProducerThread implements Runnable {
                         break;
                     case Delete:
                         int newDeleteTrade  = (new Random()).nextInt(this.tradeConfig.getModifiedTradePeriodicity());
-                        Trade tradeToDelete = this.tradeStore.oneAtRandom();
+                        Trade tradeToDelete = liveTrades.oneAtRandom();
                         TradeLifecycle deleteTradeLifecycle = new TradeLifecycle(tradeEvent, tradeToDelete, null);
                         this.resultPublisher.publishIntradayTrade(deleteTradeLifecycle);
                         this.intradayTradeLifeCycleEventQueue.put(deleteTradeLifecycle);

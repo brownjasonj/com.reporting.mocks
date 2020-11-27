@@ -8,12 +8,12 @@ import com.reporting.mocks.model.trade.TradeType;
 
 import java.util.*;
 
-public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
-    protected final int startingTradeCount = 100;
+public class FXForwardsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
+    protected final int startingTradeCount = 150000;
     protected final int newTradeStart = 0;
     protected final int newTradePeriodicity = 1000;        // number of milliseconds between new tcnTrades (default: 10s)
 
-    protected final int modifiedTradeStart = 60 * 1000;
+    protected final int modifiedTradeStart = 0;
     protected final int modifiedTradePeriodicity = 60 * 1000;    // number of milliseconds between trade modifications (default: 30s)
     protected final boolean modifyPostReverse = false;           // a modify even does not create two values
     protected final boolean riskOnDelete = false;
@@ -22,10 +22,10 @@ public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     protected final int deleteTadeStart = 120 * 1000;
     protected final int deleteTradePeriodicity = 120 * 1000;
 
-    protected final int eodMarketPeridocity = 5 * 60 * 1000;
-    protected final int intradayMarketPeriodicity = 5 * 60 * 1000;
+    protected final int eodMarketPeridocity = 20 * 60 * 60 * 1000;
+    protected final int intradayMarketPeriodicity = 15 * 60 * 1000;
 
-    public FXSwapsDeskDefaultPricingGroupConfig() {
+    public FXForwardsDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
         UnderlyingConfig underlyings = new UnderlyingConfig();
         Map<TradeType, List<RiskType>> tradeTypeAndRisks = new HashMap<>();
@@ -33,10 +33,10 @@ public class FXSwapsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         this.pricingGroupId = new PricingGroup("fxswapdesk");
         // - URN: book:<department pricingGroup>:<desk pricingGroup>:<book pricingGroup>
         //   e.g., book:fxdesk:fxspots:bookname
-        books.add("bank:fxdesk:fxswaps:Hedge");
-        books.add("bank:fxdesk:fxswaps:BankBook");
-        books.add("bank:fxdesk:fxswaps:Americas");
-        books.add("bank:fxdesk:fxswaps:EMEA");
+        books.add("bank:macro:fx:forwards:hedge");
+        books.add("bank:macro:fx:forwards:stirt");
+        books.add("bank:macro:fx:forwards:g10");
+        books.add("bank:macro:fx:forwards:longdated");
 
         underlyings.addSet("EUR", Arrays.asList("USD", "CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));
         underlyings.addSet("USD", Arrays.asList("CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));

@@ -53,7 +53,7 @@ public class ProcessFactory {
         IMarketStore marketStore = marketStoreFactory.create(config.getPricingGroupId());
         ICalculationContextStore calculationContextStore = calculationContextStoreFactory.create(config.getPricingGroupId());
 
-        ProcessSimulator processSimulator = new ProcessSimulator(config,
+        ProcessSimulator processSimulator = new ReactiveProcessSimulator(config,
                 applicationConfig,
                 calculationContextStore,
                 marketStore,

@@ -13,17 +13,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.reporting.mocks.configuration.EndofDayConfig;
-import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
-import com.reporting.mocks.interfaces.persistence.IMarketStore;
-import com.reporting.mocks.interfaces.persistence.ITradeStore;
+import com.reporting.mocks.interfaces.persistence.*;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.CalculationContext;
 import com.reporting.mocks.model.DataMarkerType;
 import com.reporting.mocks.model.MarketEnv;
 import com.reporting.mocks.model.PricingGroup;
-import com.reporting.mocks.model.TradePopulation;
 import com.reporting.mocks.model.id.TradePopulationId;
-import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.model.trade.TradeTypes.Payment;
 import com.reporting.mocks.model.underlying.Underlying;
@@ -63,11 +59,13 @@ public class EndofDayRiskEventProducerThread implements Runnable {
         this.eodCounts = 0;
     }
 
-    private TradePopulation runEoDProcess(ITradeStore tradeStore, TradePopulation tradePopulation, Date asOf) {
+    private ITradePopulation runEoDProcess(ITradeStore tradeStore, ITradePopulation tradePopulation, Date asOf) {
         Map<String, Map<String,Double>> bookUnderlyingBalances = new HashMap<>();
         List<Trade> tradesToDelete = new ArrayList<>();
 
-        for(Trade trade : tradePopulation.getAllTrades()) {
+        ITradePopulationLive tradePopulationLive = tradeStore.getLiveTradePopulation();
+
+        for(Trade trade : tradePopulation.getTrades()) {
             if (trade.hasExpired(asOf)) {
                 tradesToDelete.add(trade);
                 Map<String,Double> balances = bookUnderlyingBalances.get(trade.getBook());
@@ -94,15 +92,15 @@ public class EndofDayRiskEventProducerThread implements Runnable {
                         underlyingBalance.getValue(),
                         new Underlying(underlyingBalance.getKey()),
                         new Date());
-                tradeStore.add(balance);
+                tradePopulationLive.add(balance);
             }
         }
 
         for(Trade trade : tradesToDelete) {
-            tradeStore.delete(trade.getTcn());
+            tradePopulationLive.delete(trade.getTcn());
         }
 
-        return this.tradeStore.create(DataMarkerType.EOD);
+        return this.tradeStore.createSnapShot(DataMarkerType.EOD);
     }
 
     @Override
@@ -118,7 +116,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
 
                 TradePopulationId tradePopulationId = this.tradePopulationIdQueue.take();
 
-                TradePopulation tradePopulation = this.tradeStore.getTradePopulationById(tradePopulationId);
+                ITradePopulation tradePopulation = this.tradeStore.getTradePopulationById(tradePopulationId);
 
                 if (tradePopulation != null) {
                     MarketEnv market = this.marketStore.create(tradePopulation.getType(), this.eodCounts++);

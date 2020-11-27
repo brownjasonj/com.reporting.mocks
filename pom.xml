@@ -5,7 +5,7 @@
 
 	<groupId>com.reporting</groupId>
 	<artifactId>mocks</artifactId>
-	<version>0.17.0</version>
+	<version>0.18.0</version>
 	<packaging>jar</packaging>
 
 	<name>mocks</name>
@@ -25,8 +25,9 @@
 		<bigtable.version>1.10.0</bigtable.version>
 		<spring-cloud.version>Greenwich.M1</spring-cloud.version>
 		<docker.image.prefix>jajabro</docker.image.prefix>
-		<mocks.version>0.17.0</mocks.version>
+		<mocks.version>0.18.0</mocks.version>
 		<jackson.version>[2.9.10.5,)</jackson.version>
+		<swagger-version>3.0.0</swagger-version>
 	</properties>
 
 	<dependencies>
@@ -62,7 +63,12 @@
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-boot-starter</artifactId>
-			<version>3.0.0</version>
+			<version>${swagger-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swagger-version}</version>
 		</dependency>
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>

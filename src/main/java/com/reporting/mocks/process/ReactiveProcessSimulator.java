@@ -1,67 +1,24 @@
 package com.reporting.mocks.process;
 
-import java.util.Collection;
-import java.util.UUID;
-
 import com.reporting.mocks.configuration.ApplicationConfig;
 import com.reporting.mocks.configuration.PricingGroupConfig;
-import com.reporting.mocks.generators.TradeGenerator;
 import com.reporting.mocks.generators.process.streaming.StreamRiskResultPublisherThread;
 import com.reporting.mocks.interfaces.persistence.*;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.*;
-import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
+import com.reporting.mocks.process.intraday.IntradayMarketEventReactiveRiskProducerThread;
 import com.reporting.mocks.process.intraday.IntradayMarketEventRiskProducerThread;
 import com.reporting.mocks.process.intraday.IntradayTradeEventProducerThread;
 import com.reporting.mocks.process.intraday.IntradayTradeEventRiskProducerThread;
-import com.reporting.mocks.process.risks.RiskRunType;
-import com.reporting.mocks.process.risks.TradePopulationRiskProducerThread;
-import com.reporting.mocks.process.risks.TradePopulationRiskRunRequest;
+import com.reporting.mocks.process.risks.*;
 
-public class ProcessSimulator {
-    protected UUID id;
-    protected ApplicationConfig appConfig;
-    protected PricingGroupConfig config;
-    protected ITradeStore tradeStore;
-    protected ICalculationContextStore calculationContextStore;
-    protected IMarketStore marketStore;
-    protected TradeGenerator tradeGenerator;
-    protected IRiskResultStore riskResultStore;
-
-    IResultPublisher resultPublisher;
-
-    ProcessEventQueues processEventQueues;
-
-    protected ThreadGroup threadGroup;
-
-    public ProcessSimulator(PricingGroupConfig config,
-                            ApplicationConfig appConfig,
-                            ICalculationContextStore calculationContextStore,
-                            IMarketStore marketStore,
-                            ITradeStore tradeStore,
-                            IRiskResultStore riskResultStore,
-                            IResultPublisher resultPublisher) {
-        this.id = UUID.randomUUID();
-        this.appConfig = appConfig;
-        this.config = config;
-        this.tradeStore = tradeStore;
-        this.calculationContextStore = calculationContextStore;
-        this.marketStore = marketStore;
-        this.riskResultStore = riskResultStore;
-        this.resultPublisher = resultPublisher;
-        this.tradeGenerator = new TradeGenerator(config.getTradeConfig());
-        this.processEventQueues = new JavaProcessEventQueues();
+public class ReactiveProcessSimulator extends ProcessSimulator {
+    public ReactiveProcessSimulator(PricingGroupConfig config, ApplicationConfig appConfig, ICalculationContextStore calculationContextStore, IMarketStore marketStore, ITradeStore tradeStore, IRiskResultStore riskResultStore, IResultPublisher resultPublisher) {
+        super(config, appConfig, calculationContextStore, marketStore, tradeStore, riskResultStore, resultPublisher);
     }
 
-    public Collection<ITradePopulation> getTradePopulations() {
-        return this.tradeStore.getAllTradePopulation();
-    }
-
-    public PricingGroup getPricingGroupId() {
-        return this.config.getPricingGroupId();
-    }
-
+    @Override
     protected void init() {
         if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
             this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
@@ -92,8 +49,8 @@ public class ProcessSimulator {
 
             // Create the thread that receives requests to calculate risks for trade populations
             Thread tprpt = new Thread(threadGroup,
-                    new TradePopulationRiskProducerThread(
-                            this.processEventQueues.getRiskRunRequestQueue(),
+                    new TradePopulationReactiveRiskProducerThread(
+                            this.processEventQueues.getReactiveRiskRunRequestQueue(),
                             this.processEventQueues.getRiskStreamMessageQueue(),
                             this.config,
                             this.calculationContextStore,
@@ -104,25 +61,25 @@ public class ProcessSimulator {
             tprpt.setPriority(10);
             tprpt.start();
 
-           Thread srrpt = new Thread(threadGroup,
-                   new StreamRiskResultPublisherThread(
-                    this.processEventQueues.getRiskStreamMessageQueue(),            // input queue to process
-                    this.config,
-                    this.calculationContextStore,
-                    this.resultPublisher,
-                    this.riskResultStore
-            ), "StreamRiskResultPublisherThread");
-           srrpt.setPriority(10);
-           srrpt.start();
+            Thread srrpt = new Thread(threadGroup,
+                    new StreamRiskResultPublisherThread(
+                            this.processEventQueues.getRiskStreamMessageQueue(),            // input queue to process
+                            this.config,
+                            this.calculationContextStore,
+                            this.resultPublisher,
+                            this.riskResultStore
+                    ), "StreamRiskResultPublisherThread");
+            srrpt.setPriority(10);
+            srrpt.start();
 
             // kick-off start-of-day
 
             // create a new trade population for the start of day
-            ITradePopulation sodTradePopulation = this.tradeStore.createSnapShot(DataMarkerType.SOD);
+            ITradePopulationReactive sodTradePopulation = this.tradeStore.createReactiveSnapShot(DataMarkerType.SOD);
 
             // send a trade population risk request to have all risks calculated for the start of day trades
-            this.processEventQueues.getRiskRunRequestQueue().add(
-                    new TradePopulationRiskRunRequest(
+            this.processEventQueues.getReactiveRiskRunRequestQueue().add(
+                    new TradePopulationReactiveRiskRunRequest(
                             RiskRunType.StartOfDay,
                             cc.getCalculationContextId(),
                             this.config.findAllRiskTypes(),
@@ -130,26 +87,13 @@ public class ProcessSimulator {
                     )
             );
 
-            // kick-off end-of-day
-
-//                EndofDayRiskEventProducerThread eodThread = new EndofDayRiskEventProducerThread(
-//                        this.config.getPricingGroupId(),
-//                        this.config.getEndofdayConfig(),
-//                        this.tradeStore,
-//                        this.marketStore,
-//                        this.calculationContextStore,
-//                        this.processEventQueues.getRiskRunRequestQueue(),               // output queue from process
-//                        this.resultPublisher);
-//                new Thread(threadGroup, eodThread, "EndofDayRiskEvent").start();
-
-
             new Thread(threadGroup,
-                    new IntradayMarketEventRiskProducerThread(
+                    new IntradayMarketEventReactiveRiskProducerThread(
                             this.config,
                             this.tradeStore,
                             this.marketStore,
                             this.calculationContextStore,
-                            this.processEventQueues.getRiskRunRequestQueue(),
+                            this.processEventQueues.getReactiveRiskRunRequestQueue(),
                             this.resultPublisher,
                             sodMarket
                     ),
@@ -183,26 +127,5 @@ public class ProcessSimulator {
             itept.setPriority(1);
             itept.start();
         }
-    }
-
-    public void stop() {
-        if (this.threadGroup != null && !this.threadGroup.isDestroyed()) {
-            this.threadGroup.interrupt();;
-        }
-    }
-
-    public PricingGroupConfig start() {
-        return this.start(this.config);
-    }
-
-    public PricingGroupConfig start(PricingGroupConfig config) {
-        if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
-            if (this.config.getPricingGroupId() == config.getPricingGroupId()) {
-                this.config = config;
-                this.init();
-                return config;
-            }
-        }
-        return null;
     }
 }

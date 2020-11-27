@@ -17,7 +17,7 @@ import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.TradeType;
 
 public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
-    protected final int startingTradeCount = 100;
+    protected final int startingTradeCount = 170000;
     protected final int newTradeStart = 0;
     protected final int newTradePeriodicity = 100;        // number of milliseconds between new tcnTrades (default: 10s)
 
@@ -27,11 +27,11 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
     protected final boolean riskOnDelete = false;
 
 
-    protected final int deleteTadeStart = 6 * 1000;
-    protected final int deleteTradePeriodicity = 6 * 1000;
+    protected final int deleteTadeStart = 0;
+    protected final int deleteTradePeriodicity = 1000;
 
-    protected final int eodMarketPeridocity = 20 * 60 * 1000;
-    protected final int intradayMarketPeriodicity = 1 * 60 * 1000;
+    protected final int eodMarketPeridocity = 20 * 60 * 60 * 1000;
+    protected final int intradayMarketPeriodicity = 15 * 60 * 1000;
 
     public FXSpotDeskDefaultPricingGroupConfig() {
         ArrayList<String> books = new ArrayList<>();
@@ -42,9 +42,11 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         this.pricingGroupId = new PricingGroup("fxspotdesk");
         // - URN: book:<department pricingGroup>:<desk pricingGroup>:<book pricingGroup>
         //   e.g., book:fxdesk:fxspots:bookname
-        books.add("bank:fxdesk:fxspot:Book1");
-        books.add("bank:fxdesk:fxspot:Book2");
-        books.add("bank:fxdesk:fxspot:Book3");
+        books.add("bank:macro:apac:fx");
+        books.add("bank:macro:apac:structeqty");
+        books.add("bank:macro:apac:eqtyother");
+        books.add("bank:macro:em:emea");
+        books.add("bank:macro:em:latam");
 
 
         underlyings.addSet("EUR", Arrays.asList("USD", "CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));

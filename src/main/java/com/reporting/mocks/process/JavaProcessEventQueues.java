@@ -4,6 +4,7 @@ import com.reporting.mocks.generators.process.streaming.RiskStreamMessage;
 import com.reporting.mocks.model.RiskResultSet;
 import com.reporting.mocks.model.TradeLifecycle;
 import com.reporting.mocks.model.risks.Risk;
+import com.reporting.mocks.process.risks.TradePopulationReactiveRiskRunRequest;
 import com.reporting.mocks.process.risks.TradePopulationRiskRunRequest;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -13,6 +14,7 @@ public class JavaProcessEventQueues implements ProcessEventQueues {
     protected BlockingQueue<TradeLifecycle> tradeLifecycleQueue;
     protected BlockingQueue<RiskResultSet> riskResultSetQueue;
     protected BlockingQueue<TradePopulationRiskRunRequest> riskRunRequestQueue;
+    protected BlockingQueue<TradePopulationReactiveRiskRunRequest> reactiveRiskRunRequestQueue;
     protected BlockingQueue<RiskStreamMessage<? extends Risk>> riskStreamMessageQueue;
 
     public JavaProcessEventQueues() {
@@ -20,8 +22,12 @@ public class JavaProcessEventQueues implements ProcessEventQueues {
         this.riskResultSetQueue = new LinkedBlockingQueue<>();
         this.riskResultSetQueue = new LinkedBlockingQueue<>();
         this.riskRunRequestQueue = new LinkedBlockingQueue<>();
+        this.reactiveRiskRunRequestQueue = new LinkedBlockingQueue<>();
         this.riskStreamMessageQueue = new LinkedBlockingQueue<>();
     }
+
+    @Override
+    public BlockingQueue<TradePopulationReactiveRiskRunRequest> getReactiveRiskRunRequestQueue() { return this.reactiveRiskRunRequestQueue; }
 
     @Override
     public BlockingQueue<TradeLifecycle> getTradeLifecycleQueue() {

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.reporting.mocks.configuration.defaults.FXOptionDeskDefaultPricingGroupConfig;
 import com.reporting.mocks.configuration.defaults.FXSpotDeskDefaultPricingGroupConfig;
-import com.reporting.mocks.configuration.defaults.FXSwapsDeskDefaultPricingGroupConfig;
+import com.reporting.mocks.configuration.defaults.FXForwardsDeskDefaultPricingGroupConfig;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class Configurations {
     public Configurations() {
         this.pricingGroups = new HashMap<>();
 
-        this.addPricingGroup(new FXSwapsDeskDefaultPricingGroupConfig());
+        this.addPricingGroup(new FXForwardsDeskDefaultPricingGroupConfig());
         this.addPricingGroup(new FXOptionDeskDefaultPricingGroupConfig());
         this.addPricingGroup(new FXSpotDeskDefaultPricingGroupConfig());
     }

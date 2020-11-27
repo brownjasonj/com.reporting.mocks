@@ -6,6 +6,7 @@ import com.reporting.mocks.generators.RiskGeneratorFactory;
 import com.reporting.mocks.generators.process.streaming.RiskStreamMessage;
 import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
 import com.reporting.mocks.interfaces.persistence.IMarketStore;
+import com.reporting.mocks.interfaces.persistence.ITradePopulationLive;
 import com.reporting.mocks.interfaces.persistence.ITradeStore;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.*;
@@ -163,20 +164,21 @@ public class IntradayTradeEventRiskProducerThread implements Runnable {
     @Override
     public void run() {
         try {
+            ITradePopulationLive tradePopulationLive = this.tradeStore.getLiveTradePopulation();
             while(true) {
                 TradeLifecycle tradeLifecycleEvent = intradayEventQueue.take();
                 // grab the latest calculation context from the store as it may have changed due to an end of day event
                 this.currentCalculationContext = this.calculationContextStore.getCurrentContext();
                 switch (tradeLifecycleEvent.getLifecycleType()) {
                     case New: {
-                        // before calculating risk, check that the trade was not in the current TradePopulation
+                        // before calculating risk, check that the trade was not in the current ITradePopulation
                         // if it is, then the risk was already calculated for it, so skip this trade
                         Trade trade = tradeLifecycleEvent.getTradeAfterLifeCycle();
                         if (trade != null) {
-                            Trade existingTrade = this.tradeStore.getCurrentTradePopulation().getTrade(trade.getTcn());
+                            Trade existingTrade = tradePopulationLive.getTrade(trade.getTcn());
                             if (existingTrade == null) {
                                 // add the trade to the current tradepopulation
-                                this.tradeStore.add(trade);
+                                tradePopulationLive.add(trade);
                                 // calculate all the risks for this trade, since it is not in current population or has a different version
                                 calculateAndPublishRisk(
                                         this.calculationContextStore.getCurrentContext(),
@@ -192,11 +194,11 @@ public class IntradayTradeEventRiskProducerThread implements Runnable {
                         Trade tradeBeforeModify = tradeLifecycleEvent.getTradeBeforeLifeCycle();
                         Trade tradeAfterModify = tradeLifecycleEvent.getTradeAfterLifeCycle();
                         if (tradeBeforeModify != null && tradeAfterModify != null) {
-                            Trade existingTrade = this.tradeStore.getCurrentTradePopulation().getTrade(tradeBeforeModify.getTcn());
+                            Trade existingTrade = tradePopulationLive.getTrade(tradeBeforeModify.getTcn());
                             if (existingTrade != null && tradeAfterModify.getVersion() != existingTrade.getVersion()) {
                                 this.currentCalculationContext = this.calculationContextStore.getCurrentContext();
                                 // modify trade in the current trade population
-                                this.tradeStore.delete(tradeBeforeModify.getTcn());
+                                tradePopulationLive.delete(tradeBeforeModify.getTcn());
 
                                 if (this.config.getIntradayConfig().isModifyReversePost()) {
                                     calculateAndPublishRisk(
@@ -206,7 +208,7 @@ public class IntradayTradeEventRiskProducerThread implements Runnable {
                                             tradeBeforeModify,
                                             true);
                                 }
-                                this.tradeStore.add(tradeAfterModify);
+                                tradePopulationLive.add(tradeAfterModify);
                                 // calculate all the risks for this trade, since it is not in current population or has a different version
                                 calculateAndPublishRisk(
                                         this.calculationContextStore.getCurrentContext(),
@@ -223,9 +225,9 @@ public class IntradayTradeEventRiskProducerThread implements Runnable {
                         // send something????
                         Trade tradeBeforeDelete = tradeLifecycleEvent.getTradeBeforeLifeCycle();
                         if (tradeBeforeDelete != null) {
-                            Trade existingTrade = this.tradeStore.getCurrentTradePopulation().getTrade(tradeBeforeDelete.getTcn());
+                            Trade existingTrade = tradePopulationLive.getTrade(tradeBeforeDelete.getTcn());
                             if (existingTrade != null) {
-                                this.tradeStore.delete(tradeBeforeDelete.getTcn());
+                                tradePopulationLive.delete(tradeBeforeDelete.getTcn());
                                 if (this.config.getIntradayConfig().isRiskOnDelete()) {
                                     calculateAndPublishRisk(
                                             this.calculationContextStore.getCurrentContext(),
