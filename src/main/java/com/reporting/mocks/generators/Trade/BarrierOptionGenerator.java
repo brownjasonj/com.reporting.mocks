@@ -6,8 +6,8 @@ import com.reporting.mocks.model.trade.TradeTypes.BarrierOption;
 import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.model.underlying.Underlying;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Random;
 
@@ -22,7 +22,7 @@ public class BarrierOptionGenerator implements ITradeGenerator<BarrierOption> {
         Random rand = new Random();
         Double strike = rand.nextDouble();
         Double barrier = strike + rand.nextDouble();
-        Date expiryDate = Date.from(LocalDate.now().plusDays(2 + rand.nextInt(2000)).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Instant expiryDate = Clock.system(ZoneOffset.UTC).instant().plus(2 + rand.nextInt(2000), ChronoUnit.DAYS);
         Underlying underlying1 = underlyingConfig.selectRandomUnderlying1();
         Underlying underlying2 = underlyingConfig.selectRandomUnderlying2(underlying1.getName());
         BarrierOption barrierOption = new BarrierOption(

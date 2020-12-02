@@ -6,8 +6,8 @@ import com.reporting.mocks.model.trade.TradeTypes.VanillaOption;
 import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.model.underlying.Underlying;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Random;
 
@@ -21,7 +21,7 @@ public class VanillaOptionGenerator implements ITradeGenerator<VanillaOption> {
     public VanillaOption generate(UnderlyingConfig underlyingConfig, String book) {
         Random rand = new Random();
         Double strike = rand.nextDouble();
-        Date expiryDate = Date.from(LocalDate.now().plusDays(2 + rand.nextInt(2000)).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Instant expiryDate = Clock.system(ZoneOffset.UTC).instant().plus(2 + rand.nextInt(2000), ChronoUnit.DAYS);
         Underlying underlying1 = underlyingConfig.selectRandomUnderlying1();
         Underlying underlying2 = underlyingConfig.selectRandomUnderlying2(underlying1.getName());
         VanillaOption vanillaOption = new VanillaOption(

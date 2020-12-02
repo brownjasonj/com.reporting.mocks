@@ -1,5 +1,8 @@
 package com.reporting.mocks.process.endofday;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,7 +62,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
         this.eodCounts = 0;
     }
 
-    private ITradePopulation runEoDProcess(ITradeStore tradeStore, ITradePopulation tradePopulation, Date asOf) {
+    private ITradePopulation runEoDProcess(ITradeStore tradeStore, ITradePopulation tradePopulation, Instant asOf) {
         Map<String, Map<String,Double>> bookUnderlyingBalances = new HashMap<>();
         List<Trade> tradesToDelete = new ArrayList<>();
 
@@ -91,7 +94,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
                 Payment balance = new Payment(book,
                         underlyingBalance.getValue(),
                         new Underlying(underlyingBalance.getKey()),
-                        new Date());
+                        Instant.now(Clock.system(ZoneOffset.UTC)));
                 tradePopulationLive.add(balance);
             }
         }

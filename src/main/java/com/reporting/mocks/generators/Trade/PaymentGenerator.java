@@ -6,8 +6,7 @@ import com.reporting.mocks.model.trade.TradeType;
 import com.reporting.mocks.model.trade.TradeTypes.Payment;
 import com.reporting.mocks.model.underlying.Underlying;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.Date;
 import java.util.Random;
 
@@ -21,7 +20,7 @@ public class PaymentGenerator implements ITradeGenerator<Payment> {
     @Override
     public Payment generate(UnderlyingConfig underlyingConfig, String book) {
         Random rand = new Random();
-        Date settlementDate = Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Instant settlementDate = Instant.now(Clock.system(ZoneOffset.UTC));
         Underlying underlying1 = underlyingConfig.selectRandomUnderlying1();
         Payment payment = new Payment(
                 book,

@@ -9,7 +9,7 @@ import com.reporting.mocks.model.trade.TradeType;
 import java.util.*;
 
 public class FXForwardsDeskDefaultPricingGroupConfig extends PricingGroupConfig {
-    protected final int startingTradeCount = 150000;
+    protected final int startingTradeCount = 200000;
     protected final int newTradeStart = 0;
     protected final int newTradePeriodicity = 1000;        // number of milliseconds between new tcnTrades (default: 10s)
 

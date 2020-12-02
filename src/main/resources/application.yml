@@ -4,6 +4,9 @@ spring:
     mongodb:
       #uri: mongodb://mongodb-service.mongodb.svc.cluster.local/risk
       uri: mongodb://localhost/risk
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
 server:
   port: 30001
   #port: ${PORT:${SERVER_PORT:0}}
