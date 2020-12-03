@@ -195,6 +195,7 @@ public class IntradayTradeEventRiskProducerThread implements Runnable {
                         Trade tradeAfterModify = tradeLifecycleEvent.getTradeAfterLifeCycle();
                         if (tradeBeforeModify != null && tradeAfterModify != null) {
                             Trade existingTrade = tradePopulationLive.getTrade(tradeBeforeModify.getTcn());
+                            if (existingTrade == null)
                             if (existingTrade != null && tradeAfterModify.getVersion() != existingTrade.getVersion()) {
                                 this.currentCalculationContext = this.calculationContextStore.getCurrentContext();
                                 // modify trade in the current trade population

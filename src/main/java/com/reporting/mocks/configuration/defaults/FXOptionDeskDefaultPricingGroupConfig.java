@@ -17,16 +17,16 @@ import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.TradeType;
 
 public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
-    protected final int startingTradeCount = 20000;
-    protected final int newTradeStart = 1000;
-    protected final int newTradePeriodicity = 100;        // number of milliseconds between new tcnTrades (default: 10s)
+    protected final int startingTradeCount = 10000;
+    protected final int newTradeStart = 0;
+    protected final int newTradePeriodicity = 1000;        // number of milliseconds between new tcnTrades (default: 10s)
 
-    protected final int modifiedTradeStart = 1000;
-    protected final int modifiedTradePeriodicity = 30 * 1000;    // number of milliseconds between trade modifications (default: 30s)
+    protected final int modifiedTradeStart = 5 * 60 * 1000;
+    protected final int modifiedTradePeriodicity = 5 * 60 * 1000;    // number of milliseconds between trade modifications (default: 30s)
     protected final boolean modifyPostReverse = false;           // a modify even does not create two values
     protected final boolean riskOnDelete = false;
 
-    protected final int deleteTadeStart = 1000;
+    protected final int deleteTadeStart = 5 * 60 * 1000;
     protected final int deleteTradePeriodicity = 5 * 60 * 1000;
 
     protected final int eodMarketPeridocity = 20 * 60 * 60 * 1000;
