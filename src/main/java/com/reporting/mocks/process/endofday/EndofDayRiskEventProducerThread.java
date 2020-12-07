@@ -136,6 +136,7 @@ public class EndofDayRiskEventProducerThread implements Runnable {
                     this.riskRunRequestQueue.add(new TradePopulationRiskRunRequest(
                             RiskRunType.EndOfDay,
                             this.currentCalculationContext.getCalculationContextId(),
+                            market.getId(),
                             this.config.getRisks(),
                             tradePopulation.getId()
                     ));

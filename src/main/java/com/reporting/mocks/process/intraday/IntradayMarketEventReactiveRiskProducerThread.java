@@ -92,6 +92,7 @@ public class IntradayMarketEventReactiveRiskProducerThread implements Runnable {
                         new TradePopulationReactiveRiskRunRequest(
                                 RiskRunType.Intraday,
                                 this.currentCalculationContext.getCalculationContextId(),
+                                newMarket.getId(),
                                 risksToRun,
                                 tradePopulation.getId()
                         )

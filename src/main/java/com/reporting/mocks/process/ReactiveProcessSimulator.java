@@ -82,6 +82,7 @@ public class ReactiveProcessSimulator extends ProcessSimulator {
                     new TradePopulationReactiveRiskRunRequest(
                             RiskRunType.StartOfDay,
                             cc.getCalculationContextId(),
+                            sodMarket.getId(),
                             this.config.findAllRiskTypes(),
                             sodTradePopulation.getId()
                     )

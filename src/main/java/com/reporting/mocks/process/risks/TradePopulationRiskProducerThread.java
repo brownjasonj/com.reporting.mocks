@@ -52,7 +52,6 @@ public class TradePopulationRiskProducerThread implements Runnable {
             while (true) {
                 TradePopulationRiskRunRequest tradePopulationRiskRunRequest = this.tradePopulationRiskRunRequests.take();
 
-                CalculationContext calculationContext = this.calculationContextStore.getCalculationContextById(tradePopulationRiskRunRequest.getCalculationId());
                 ITradePopulation tradePopulation = this.tradeStore.getTradePopulationById(tradePopulationRiskRunRequest.getTradePopulationId());
                 //Map<TradeType, List<Trade>> tradeTypeToTradeMapping = tradePopulation.tradeTypeToTradeMapping();
                 List<TradeType> populationTradeTypes = tradePopulation.getTradeTypes();
@@ -71,6 +70,7 @@ public class TradePopulationRiskProducerThread implements Runnable {
                     }
                 }
 
+                MarketEnvId marketEnvId = tradePopulationRiskRunRequest.marketEnvId;
                 RiskRunId riskRunId = new RiskRunId(this.pricingGroupConfig.getPricingGroupId().getName());
                 int riskNo = 0;
                 for(TradeType tradeType : tradePopulation.getTradeTypes()) {
@@ -78,12 +78,12 @@ public class TradePopulationRiskProducerThread implements Runnable {
                     for(RiskType riskType : tradeRisks) {
                         if (risksToRun.contains(riskType)) {
                             IRiskGeneratorLite<? extends Risk> riskGenerator = RiskGeneratorFactory.getGeneratorLite(riskType);
-                            MarketEnvId marketEnvId = calculationContext.get(riskType);
+
                             for(Trade trade : tradePopulation.getByTradeType(tradeType)) {
                                 riskNo++;
                                 Risk risk = riskGenerator.generate(marketEnvId, trade);
                                 RiskStreamMessage<? extends Risk> riskStreamMsg = new RiskStreamMessage<>(
-                                        calculationContext.getCalculationContextId(),
+                                        tradePopulationRiskRunRequest.getCalculationContextId(),
                                         riskRunId,
                                         RiskRunType.Intraday,
                                         riskCount,

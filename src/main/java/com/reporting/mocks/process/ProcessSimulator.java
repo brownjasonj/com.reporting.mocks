@@ -125,6 +125,7 @@ public class ProcessSimulator {
                     new TradePopulationRiskRunRequest(
                             RiskRunType.StartOfDay,
                             cc.getCalculationContextId(),
+                            sodMarket.getId(),
                             this.config.findAllRiskTypes(),
                             sodTradePopulation.getId()
                     )

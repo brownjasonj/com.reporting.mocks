@@ -12,24 +12,29 @@ import java.util.List;
 public class TradePopulationRiskRunRequest {
     protected RiskRunId riskRunId;
     protected RiskRunType riskRunType;
-    protected CalculationContextId calculationId;
+    protected CalculationContextId calculationContextId;
+    protected MarketEnvId marketEnvId;
     protected TradePopulationId tradePopulationId;
     protected List<RiskType> risksToRun;
 
     public TradePopulationRiskRunRequest(RiskRunType riskRunType,
-                                         CalculationContextId calculationId,
+                                         CalculationContextId calculationContextId,
+                                         MarketEnvId marketEnvId,
                                          List<RiskType> risksToRun,
                                          TradePopulationId tradePopulationId) {
-        this.riskRunId = new RiskRunId(calculationId.getPricingGroupName());
+        this.riskRunId = new RiskRunId(marketEnvId.getPricingGroupName());
         this.riskRunType = riskRunType;
-        this.calculationId = calculationId;
+        this.calculationContextId = calculationContextId;
+        this.marketEnvId = marketEnvId;
         this.tradePopulationId = tradePopulationId;
         this.risksToRun = risksToRun;
     }
 
-    public CalculationContextId getCalculationId() {
-        return calculationId;
+    public CalculationContextId getCalculationContextId() {
+        return calculationContextId;
     }
+
+    public MarketEnvId getMarketEnvId() { return marketEnvId; }
 
     public TradePopulationId getTradePopulationId() {
         return tradePopulationId;
