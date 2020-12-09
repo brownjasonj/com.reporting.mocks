@@ -5,7 +5,7 @@
 
 	<groupId>com.reporting</groupId>
 	<artifactId>mocks</artifactId>
-	<version>0.19.2</version>
+	<version>0.19.3</version>
 	<packaging>jar</packaging>
 
 	<name>mocks</name>
@@ -149,11 +149,6 @@
 					<groupId>com.reporting.mocks.publishing</groupId>
 					<artifactId>kafka</artifactId>
 					<version>${project.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>com.reporting.kafka</groupId>
-					<artifactId>serialization</artifactId>
-					<version>0.4.0</version>
 				</dependency>
 				<dependency>
 					<groupId>org.springframework.boot</groupId>

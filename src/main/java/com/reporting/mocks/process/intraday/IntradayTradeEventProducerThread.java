@@ -69,18 +69,22 @@ public class IntradayTradeEventProducerThread implements Runnable {
                     case Modify:
                         int nextModifyTrade  = (new Random()).nextInt(this.tradeConfig.getModifiedTradePeriodicity());
                         Trade tradeToModify = liveTrades.oneAtRandom();
-                        Trade modifiedTrade = tradeToModify.createNewVersion();
-                        TradeLifecycle modifiedTradeLifecycle = new TradeLifecycle(tradeEvent, tradeToModify, modifiedTrade);
-                        this.resultPublisher.publishIntradayTrade(modifiedTradeLifecycle);
-                        this.intradayTradeLifeCycleEventQueue.put(modifiedTradeLifecycle);
+                        if (tradeToModify != null) {
+                            Trade modifiedTrade = tradeToModify.createNewVersion();
+                            TradeLifecycle modifiedTradeLifecycle = new TradeLifecycle(tradeEvent, tradeToModify, modifiedTrade);
+                            this.resultPublisher.publishIntradayTrade(modifiedTradeLifecycle);
+                            this.intradayTradeLifeCycleEventQueue.put(modifiedTradeLifecycle);
+                        }
                         modifiedTradeTimer.schedule(new IntradayTradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.Modify), nextModifyTrade);
                         break;
                     case Delete:
                         int newDeleteTrade  = (new Random()).nextInt(this.tradeConfig.getModifiedTradePeriodicity());
                         Trade tradeToDelete = liveTrades.oneAtRandom();
-                        TradeLifecycle deleteTradeLifecycle = new TradeLifecycle(tradeEvent, tradeToDelete, null);
-                        this.resultPublisher.publishIntradayTrade(deleteTradeLifecycle);
-                        this.intradayTradeLifeCycleEventQueue.put(deleteTradeLifecycle);
+                        if (tradeToDelete != null) {
+                            TradeLifecycle deleteTradeLifecycle = new TradeLifecycle(tradeEvent, tradeToDelete, null);
+                            this.resultPublisher.publishIntradayTrade(deleteTradeLifecycle);
+                            this.intradayTradeLifeCycleEventQueue.put(deleteTradeLifecycle);
+                        }
                         deleteTradeTimer.schedule(new IntradayTradeEventTimerThread(this.tradeEventQueue, TradeLifecycleType.Delete), newDeleteTrade);
                         break;
                     default:
