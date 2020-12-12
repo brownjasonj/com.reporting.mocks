@@ -17,7 +17,7 @@ import com.reporting.mocks.model.risks.RiskType;
 import com.reporting.mocks.model.trade.TradeType;
 
 public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
-    protected final int startingTradeCount = 10000;
+    protected final int startingTradeCount = 100000;
     protected final int newTradeStart = 0;
     protected final int newTradePeriodicity = 1000;        // number of milliseconds between new tcnTrades (default: 10s)
 
