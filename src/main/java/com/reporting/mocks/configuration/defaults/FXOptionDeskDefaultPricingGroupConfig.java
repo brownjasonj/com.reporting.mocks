@@ -37,12 +37,13 @@ public class FXOptionDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         UnderlyingConfig underlyings = new UnderlyingConfig();
         Map<TradeType, List<RiskType>> tradeTypeAndRisks = new HashMap<>();
 
-        this.pricingGroupId = new PricingGroup("fxoptiondesk");
         // - URN: book:<department pricingGroup>:<desk pricingGroup>:<book pricingGroup>
         //   e.g., book:fxdesk:fxspots:bookname
         books.add("bank:macro:fx:options:vanilla");
         books.add("bank:macro:fx:options:barriers");
         books.add("bank:macro:fx:options:exotics");
+
+        this.pricingGroupId = new PricingGroup("fxoptiondesk", books);
 
         underlyings.addSet("EUR", Arrays.asList("USD", "CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));
         underlyings.addSet("USD", Arrays.asList("CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));

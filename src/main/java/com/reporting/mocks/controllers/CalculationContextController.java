@@ -1,5 +1,7 @@
 package com.reporting.mocks.controllers;
 
+import com.reporting.mocks.configuration.Configurations;
+import com.reporting.mocks.configuration.PricingGroupConfig;
 import com.reporting.mocks.interfaces.persistence.ICalculationContextStore;
 import com.reporting.mocks.interfaces.persistence.IMarketStore;
 import com.reporting.mocks.interfaces.persistence.IPersistenceStoreFactory;
@@ -23,6 +25,9 @@ public class CalculationContextController {
     IPersistenceStoreFactory<IMarketStore> marketStoreFactory;
 
     @Autowired
+    Configurations configurations;
+
+    @Autowired
     CalculationContextController(IPersistenceStoreFactory<ICalculationContextStore> calculationContextStoreFactory, IPersistenceStoreFactory<IMarketStore> marketStoreFactory) {
         this.calculationContextStoreFactory = calculationContextStoreFactory;
         this.marketStoreFactory = marketStoreFactory;
@@ -30,31 +35,40 @@ public class CalculationContextController {
 
     @GetMapping("/calculationcontext/{pricingGroupName}")
     public Collection<CalculationContext> getCalculationContexts(@PathVariable String pricingGroupName) {
-        ICalculationContextStore store = this.calculationContextStoreFactory.get(new PricingGroup(pricingGroupName));
-        if (store != null) {
-            return store.getAll();
+        PricingGroupConfig pricingGroupConfig = this.configurations.getPricingGroup(pricingGroupName);
+        if (pricingGroupConfig != null) {
+            ICalculationContextStore store = this.calculationContextStoreFactory.get(pricingGroupConfig.getPricingGroupId());
+            if (store != null) {
+                return store.getAll();
+            }
         }
-        return null;
+        return new ArrayList<>();
     }
 
 
     @GetMapping("/calculationcontext/{pricingGroupName}/{id}")
     public Collection<CalculationContext> getCalculationContext(@PathVariable String pricingGroupName, @PathVariable UUID id) {
-        ICalculationContextStore store = this.calculationContextStoreFactory.get(new PricingGroup(pricingGroupName));
-        if (store != null) {
-            if (id == null)
-                return store.getAll();
-            else
-                return new ArrayList<>(Arrays.asList(store.get(id)));
+        PricingGroupConfig pricingGroupConfig = this.configurations.getPricingGroup(pricingGroupName);
+        if (pricingGroupConfig != null) {
+            ICalculationContextStore store = this.calculationContextStoreFactory.get(pricingGroupConfig.getPricingGroupId());
+            if (store != null) {
+                if (id == null)
+                    return store.getAll();
+                else
+                    return new ArrayList<>(Arrays.asList(store.get(id)));
+            }
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @GetMapping("/calculationcontext/market/{pricingGroupName}/{id}")
     public MarketEnv getMarketEnvironment(@PathVariable String pricingGroupName, @PathVariable UUID id) {
-        IMarketStore store = this.marketStoreFactory.get(new PricingGroup(pricingGroupName));
-        if (store != null) {
-            return store.get(id);
+        PricingGroupConfig pricingGroupConfig = this.configurations.getPricingGroup(pricingGroupName);
+        if (pricingGroupConfig != null) {
+            IMarketStore store = this.marketStoreFactory.get(pricingGroupConfig.getPricingGroupId());
+            if (store != null) {
+                return store.get(id);
+            }
         }
         return null;
     }

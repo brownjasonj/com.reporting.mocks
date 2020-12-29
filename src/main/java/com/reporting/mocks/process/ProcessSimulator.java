@@ -10,7 +10,6 @@ import com.reporting.mocks.generators.process.streaming.StreamRiskResultPublishe
 import com.reporting.mocks.interfaces.persistence.*;
 import com.reporting.mocks.interfaces.publishing.IResultPublisher;
 import com.reporting.mocks.model.*;
-import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.trade.Trade;
 import com.reporting.mocks.process.intraday.IntradayMarketEventRiskProducerThread;
 import com.reporting.mocks.process.intraday.IntradayTradeEventProducerThread;
@@ -66,7 +65,7 @@ public class ProcessSimulator {
         if (this.threadGroup == null || this.threadGroup.isDestroyed()) {
             this.threadGroup = new ThreadGroup("PricingGroup: " + config.getPricingGroupId());
 
-            ITradePopulationLive liveTrades = this.tradeStore.getLiveTradePopulation();
+            ITradePopulationLive liveTrades = this.tradeStore.getTradePopulationLive();
 
             // initiate construction of initial trade population
             for (int i = 0; i < config.getTradeConfig().getStartingTradeCount(); i++) {

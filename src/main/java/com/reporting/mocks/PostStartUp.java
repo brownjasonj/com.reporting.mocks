@@ -65,25 +65,26 @@ public class PostStartUp implements CommandLineRunner {
     }
     
     private PricingGroupConfig startCompleteProcess(String pricingGroupName) {
-        ProcessSimulator processSimulator = this.processFactory.getProcess(new PricingGroup(pricingGroupName));
-        if (processSimulator != null) {
-            return processSimulator.start();
-        }
-        else {
-            PricingGroupConfig config = this.configurations.getPricingGroup(pricingGroupName);
-            if (config != null) {
-                processSimulator = this.processFactory.createProcess(this.applicationConfig,
-                        config,
-                        calculationContextStoreFactory,
-                        marketStoreFactory,
-                        mongoTradeStoreFactory,
-                        riskResultStore,
-                        resultPublisher);
+        PricingGroupConfig pricingGroupConfig = this.configurations.getPricingGroup(pricingGroupName);
+        if (pricingGroupConfig != null) {
+            ProcessSimulator processSimulator = this.processFactory.getProcess(pricingGroupConfig.getPricingGroupId());
+            if (processSimulator != null) {
                 return processSimulator.start();
+            } else {
+                PricingGroupConfig config = this.configurations.getPricingGroup(pricingGroupName);
+                if (config != null) {
+                    processSimulator = this.processFactory.createProcess(this.applicationConfig,
+                            config,
+                            calculationContextStoreFactory,
+                            marketStoreFactory,
+                            mongoTradeStoreFactory,
+                            riskResultStore,
+                            resultPublisher);
+                    return processSimulator.start();
+                }
             }
-            else
-                return null;
         }
+        return null;
     }
 
     @Override

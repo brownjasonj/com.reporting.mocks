@@ -5,10 +5,10 @@
 
 	<groupId>com.reporting</groupId>
 	<artifactId>mocks</artifactId>
-	<version>0.19.3</version>
+	<version>0.20.0</version>
 	<packaging>jar</packaging>
 
-	<name>mocks</name>
+	<name>com.reporting.mocks</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -176,6 +176,25 @@
 				<dependency>
 					<groupId>com.reporting.mocks.persistence</groupId>
 					<artifactId>inmemory</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>KafkaService</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.kafka</groupId>
+					<artifactId>spring-kafka</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.reporting.mocks.publishing</groupId>
+					<artifactId>kafka</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.reporting.mocks.persistence</groupId>
+					<artifactId>service</artifactId>
 					<version>${project.version}</version>
 				</dependency>
 			</dependencies>

@@ -13,7 +13,6 @@ import com.reporting.mocks.model.*;
 import com.reporting.mocks.model.id.CalculationContextId;
 import com.reporting.mocks.model.id.MarketEnvId;
 import com.reporting.mocks.model.id.RiskRunId;
-import com.reporting.mocks.model.id.TradePopulationId;
 import com.reporting.mocks.model.risks.IntradayRiskType;
 import com.reporting.mocks.model.risks.Risk;
 import com.reporting.mocks.model.risks.RiskType;
@@ -164,7 +163,7 @@ public class IntradayTradeEventRiskProducerThread implements Runnable {
     @Override
     public void run() {
         try {
-            ITradePopulationLive tradePopulationLive = this.tradeStore.getLiveTradePopulation();
+            ITradePopulationLive tradePopulationLive = this.tradeStore.getTradePopulationLive();
             while(true) {
                 TradeLifecycle tradeLifecycleEvent = intradayEventQueue.take();
                 // grab the latest calculation context from the store as it may have changed due to an end of day event

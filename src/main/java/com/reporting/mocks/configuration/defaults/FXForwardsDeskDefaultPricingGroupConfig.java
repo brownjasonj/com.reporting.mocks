@@ -30,13 +30,14 @@ public class FXForwardsDeskDefaultPricingGroupConfig extends PricingGroupConfig 
         UnderlyingConfig underlyings = new UnderlyingConfig();
         Map<TradeType, List<RiskType>> tradeTypeAndRisks = new HashMap<>();
 
-        this.pricingGroupId = new PricingGroup("fxswapdesk");
         // - URN: book:<department pricingGroup>:<desk pricingGroup>:<book pricingGroup>
         //   e.g., book:fxdesk:fxspots:bookname
         books.add("bank:macro:fx:forwards:hedge");
         books.add("bank:macro:fx:forwards:stirt");
         books.add("bank:macro:fx:forwards:g10");
         books.add("bank:macro:fx:forwards:longdated");
+
+        this.pricingGroupId = new PricingGroup("fxswapdesk", books);
 
         underlyings.addSet("EUR", Arrays.asList("USD", "CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));
         underlyings.addSet("USD", Arrays.asList("CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));

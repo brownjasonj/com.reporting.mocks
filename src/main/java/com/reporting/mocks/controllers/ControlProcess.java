@@ -47,35 +47,43 @@ public class ControlProcess {
 
     @GetMapping("/controlprocess/start/{pricingGroupName}")
     public PricingGroupConfig startCompleteProcess(@PathVariable String pricingGroupName) {
-        ProcessSimulator processSimulator = this.processFactory.getProcess(new PricingGroup(pricingGroupName));
-        if (processSimulator != null) {
-            return processSimulator.start();
+        PricingGroupConfig config = this.configurations.getPricingGroup(pricingGroupName);
+        if (config != null) {
+            ProcessSimulator processSimulator = this.processFactory.getProcess(config.getPricingGroupId());
+            if (processSimulator != null) {
+                return processSimulator.start();
+            } else {
+                if (config != null) {
+                    processSimulator = this.processFactory.createProcess(this.applicationConfig,
+                            config,
+                            calculationContextStoreFactory,
+                            marketStoreFactory,
+                            mongoTradeStoreFactory,
+                            riskResultStore,
+                            resultPublisher);
+                    return processSimulator.start();
+                } else
+                    return null;
+            }
         }
         else {
-            PricingGroupConfig config = this.configurations.getPricingGroup(pricingGroupName);
-            if (config != null) {
-                processSimulator = this.processFactory.createProcess(this.applicationConfig,
-                        config,
-                        calculationContextStoreFactory,
-                        marketStoreFactory,
-                        mongoTradeStoreFactory,
-                        riskResultStore,
-                        resultPublisher);
-                return processSimulator.start();
-            }
-            else
-                return null;
+            return null;
         }
     }
 
     @GetMapping("/controlprocess/stop/{pricingGroupName}")
     public Boolean stopCompleteProcess(@PathVariable String pricingGroupName) {
-        PricingGroup pricingGroup = new PricingGroup(pricingGroupName);
-        ProcessSimulator processSimulator = this.processFactory.getProcess(pricingGroup);
-        if (processSimulator != null) {
-            processSimulator.stop();
-            this.processFactory.deleteProcess(pricingGroup);
-            return true;
+        PricingGroupConfig config = this.configurations.getPricingGroup(pricingGroupName);
+        if (config != null) {
+            PricingGroup pricingGroup = config.getPricingGroupId();
+            ProcessSimulator processSimulator = this.processFactory.getProcess(pricingGroup);
+            if (processSimulator != null) {
+                processSimulator.stop();
+                this.processFactory.deleteProcess(pricingGroup);
+                return true;
+            } else {
+                return false;
+            }
         }
         else {
             return false;

@@ -11,7 +11,6 @@ import com.reporting.mocks.model.trade.Trade;
 
 import java.util.Random;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
@@ -54,7 +53,7 @@ public class IntradayTradeEventProducerThread implements Runnable {
 
         LOGGER.fine("**** This is just fine ****");
         try {
-            ITradePopulationLive liveTrades = this.tradeStore.getLiveTradePopulation();
+            ITradePopulationLive liveTrades = this.tradeStore.getTradePopulationLive();
             while(true) {
                 TradeLifecycleType tradeEvent = this.tradeEventQueue.take();
                 switch (tradeEvent) {

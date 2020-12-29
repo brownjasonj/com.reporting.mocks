@@ -39,7 +39,6 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         Map<TradeType, List<RiskType>> tradeTypeAndRisks = new HashMap<>();
 
 
-        this.pricingGroupId = new PricingGroup("fxspotdesk");
         // - URN: book:<department pricingGroup>:<desk pricingGroup>:<book pricingGroup>
         //   e.g., book:fxdesk:fxspots:bookname
         books.add("bank:macro:apac:fx");
@@ -47,6 +46,8 @@ public class FXSpotDeskDefaultPricingGroupConfig extends PricingGroupConfig {
         books.add("bank:macro:apac:eqtyother");
         books.add("bank:macro:em:emea");
         books.add("bank:macro:em:latam");
+
+        this.pricingGroupId = new PricingGroup("fxspotdesk", books);
 
 
         underlyings.addSet("EUR", Arrays.asList("USD", "CHF", "GBP", "MXN", "JPY", "AUD", "RBL"));
